@@ -26,7 +26,7 @@ export default function ProgressBar({ step }: Props) {
             }} />
             <div style={{
               fontFamily: 'var(--font-display)',
-              fontSize: '8px',
+              fontSize: '9px',
               fontWeight: 700,
               letterSpacing: '1.5px',
               textTransform: 'uppercase' as const,

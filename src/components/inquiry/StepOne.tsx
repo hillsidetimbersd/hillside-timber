@@ -92,7 +92,7 @@ export default function StepOne({ form, set }: Props) {
 
 function FormRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div style={{ marginBottom: 18 }}>
+    <div style={{ marginBottom: 22 }}>
       <label style={{
         display: 'block', fontFamily: 'var(--font-display)',
         fontSize: '9px', fontWeight: 700, letterSpacing: '2px',

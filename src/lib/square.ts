@@ -1,0 +1,232 @@
+export interface SquareProduct {
+  id: string
+  name: string
+  description: string
+  price: number
+  images: string[]
+  species: string
+  type: string
+  dimensions: string
+  kilnStatus: 'solar-kiln' | 'air-dried' | 'green'
+  brand: 'ht' | 'sfw' | 'both'
+  inStock: boolean
+}
+
+export function formatPrice(cents: number): string {
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(cents / 100)
+}
+
+export async function getCatalogItems(brandKey: string): Promise<SquareProduct[]> {
+  const accessToken = process.env.SQUARE_ACCESS_TOKEN
+  if (!accessToken) {
+    return FALLBACK_PRODUCTS.filter((p) => p.brand === brandKey || p.brand === 'both')
+  }
+
+  try {
+    const res = await fetch('https://connect.squareup.com/v2/catalog/list?types=ITEM', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+        'Square-Version': '2024-01-18',
+      },
+      next: { revalidate: 300 },
+    })
+    if (!res.ok) return FALLBACK_PRODUCTS
+
+    const data = await res.json()
+    const items: SquareProduct[] = (data.objects ?? [])
+      .filter((obj: Record<string, unknown>) => {
+        const itemData = obj.item_data as Record<string, unknown> | undefined
+        const variations = itemData?.variations as unknown[] | undefined
+        return variations && variations.length > 0
+      })
+      .map((obj: Record<string, unknown>) => {
+        const itemData = obj.item_data as Record<string, unknown>
+        const variations = (itemData.variations as Record<string, unknown>[]) ?? []
+        const firstVar = variations[0] as Record<string, unknown>
+        const varData = firstVar?.item_variation_data as Record<string, unknown>
+        const priceMoney = varData?.price_money as Record<string, unknown>
+
+        const customAttrs = (itemData.custom_attribute_values as Record<string, Record<string, string>> | undefined) ?? {}
+        return {
+          id: obj.id as string,
+          name: itemData.name as string ?? 'Untitled',
+          description: itemData.description as string ?? '',
+          price: typeof priceMoney?.amount === 'number' ? priceMoney.amount : 0,
+          images: (itemData.image_ids as string[] | undefined) ?? [],
+          species: customAttrs.species?.string_value ?? '',
+          type: customAttrs.type?.string_value ?? '',
+          dimensions: customAttrs.dimensions?.string_value ?? '',
+          kilnStatus: (customAttrs.kiln_status?.string_value ?? 'solar-kiln') as SquareProduct['kilnStatus'],
+          brand: (customAttrs.brand?.string_value ?? 'ht') as SquareProduct['brand'],
+          inStock: true,
+        }
+      })
+      .filter((p: SquareProduct) => p.brand === brandKey || p.brand === 'both')
+
+    return items.length > 0 ? items : FALLBACK_PRODUCTS
+  } catch {
+    return FALLBACK_PRODUCTS
+  }
+}
+
+const SQ = 'https://images.squarespace-cdn.com/content/v1/60007801ebc4a249bd3ce872/'
+
+const FALLBACK_PRODUCTS: SquareProduct[] = [
+  {
+    id: 'f-1',
+    name: 'Black Walnut Slab 25"×46"×2½"',
+    description: 'Highly figured Black Walnut slab harvested in Sioux Falls, South Dakota. One of a kind. Air dried.',
+    price: 38500,
+    images: [`${SQ}1745095419568-LH71E35DTPQKHL61P6BK/9DF98A45-AB03-4795-9684-813C07F20FA3.jpeg?format=800w`],
+    species: 'Black Walnut',
+    type: 'Live Edge Slab',
+    dimensions: '25" x 46" x 2.5"',
+    kilnStatus: 'air-dried',
+    brand: 'ht',
+    inStock: true,
+  },
+  {
+    id: 'f-2',
+    name: 'Spalted Maple 47"×48"×3"',
+    description: 'Exceptional spalted maple with rich figuring, feathered grain, and deep color variation throughout. Perfect coffee table candidate. Milled October 2025.',
+    price: 48000,
+    images: [`${SQ}1761401660020-VJ5G2D3392H7MRV1C0LZ/A93426BF-DEC6-48AB-91DE-BB03E59DEA5D.jpeg?format=800w`],
+    species: 'Spalted Maple',
+    type: 'Live Edge Slab',
+    dimensions: '47" x 48" x 3"',
+    kilnStatus: 'solar-kiln',
+    brand: 'ht',
+    inStock: true,
+  },
+  {
+    id: 'f-3',
+    name: 'Redwood Burl Slab 47"×45"×2"',
+    description: 'Redwood root burl imported from California. Stunning swirling grain and rich reddish tones. Air dried. A statement piece.',
+    price: 79999,
+    images: [`${SQ}1759355687085-7AIZ7D8QCALT0C3GA1D6/9FAF763E-9726-4E27-A5F2-B0E353DFE575.jpeg?format=800w`],
+    species: 'Redwood Burl',
+    type: 'Burl Cap',
+    dimensions: '47" x 45" x 2"',
+    kilnStatus: 'air-dried',
+    brand: 'ht',
+    inStock: true,
+  },
+  {
+    id: 'f-4',
+    name: 'Silver Maple Mantel 61"L',
+    description: 'Lightly spalted silver maple mantel with 100% live edge. One stain coat applied. Ready to install. 61"L × 9"D × 2.25"H.',
+    price: 30500,
+    images: [`${SQ}1742855807836-AJ4CGF9Y2TAVS8UJNKRW/28D8A477-B232-454F-A79D-27E031680231.jpeg?format=800w`],
+    species: 'Silver Maple',
+    type: 'Mantel',
+    dimensions: '61" x 9" x 2.25"',
+    kilnStatus: 'solar-kiln',
+    brand: 'ht',
+    inStock: true,
+  },
+  {
+    id: 'f-5',
+    name: 'Bastogne Walnut 129"×53"×3"',
+    description: 'Massive Bastogne Walnut slab — over 10 feet long. Milled October 2024. Requires additional drying time. Preorder to secure.',
+    price: 645000,
+    images: [`${SQ}1750808621194-JX4ZOUAW9PR4AG1C9LDN/14D9FB14-4F2A-4D81-A063-50D1C1E6D7C3.jpeg?format=800w`],
+    species: 'Bastogne Walnut',
+    type: 'Live Edge Slab',
+    dimensions: '129" x 53" x 3"',
+    kilnStatus: 'air-dried',
+    brand: 'ht',
+    inStock: true,
+  },
+  {
+    id: 'f-6',
+    name: 'Buckeye Root Burl 50"×50"×2⅛"',
+    description: 'Buckeye root burl imported from California. Spectacular gray spalting with deep color variation throughout. Imported October 2025.',
+    price: 259999,
+    images: [`${SQ}1761697039666-AO6NP43V1TJMFDDBDK9T/880BD484-10A9-499E-98BB-80566B2C2A79.jpeg?format=800w`],
+    species: 'Buckeye Burl',
+    type: 'Burl Cap',
+    dimensions: '50" x 50" x 2.125"',
+    kilnStatus: 'air-dried',
+    brand: 'ht',
+    inStock: true,
+  },
+  {
+    id: 'f-7',
+    name: 'Figured Aspen',
+    description: 'Air-dried and sealed Aspen with striking figure and natural character. Approx. 10 board feet. Clean, light grain with unexpected depth.',
+    price: 32000,
+    images: [`${SQ}1697488198174-7SVF03EX4UGLZZ3I34GW/P1034392.jpg?format=800w`],
+    species: 'Aspen',
+    type: 'Live Edge Slab',
+    dimensions: '~10 bd/ft',
+    kilnStatus: 'air-dried',
+    brand: 'ht',
+    inStock: true,
+  },
+  {
+    id: 'f-8',
+    name: 'Claro Walnut 63"×21"×1¼"',
+    description: 'California Claro Walnut with beautiful figure. Slender and elegant — ideal for shelving, a desk, or a console table.',
+    price: 32000,
+    images: [`${SQ}1692104173691-BIEF3Y5F8OFOHBO8DQ0Q/P1034323.jpg?format=800w`],
+    species: 'Claro Walnut',
+    type: 'Live Edge Slab',
+    dimensions: '63" x 21" x 1.25"',
+    kilnStatus: 'solar-kiln',
+    brand: 'ht',
+    inStock: true,
+  },
+  {
+    id: 'f-9',
+    name: 'Claro Walnut 63"×24"×1¼"',
+    description: 'California Claro Walnut — 63 inches long. Rich chocolate tones with live edge intact and beautiful straight grain.',
+    price: 38000,
+    images: [`${SQ}1701369870793-FY5EXBGCQFL1FDGB96TN/P1034450.jpg?format=800w`],
+    species: 'Claro Walnut',
+    type: 'Live Edge Slab',
+    dimensions: '63" x 24" x 1.25"',
+    kilnStatus: 'solar-kiln',
+    brand: 'ht',
+    inStock: true,
+  },
+  {
+    id: 'f-10',
+    name: 'Claro Walnut 63"×24"×2"',
+    description: 'Thicker Claro Walnut slab — exceptional depth and warmth. Tighter grain, ready for a statement desk or dining table top.',
+    price: 51500,
+    images: [`${SQ}1708316209057-NHWRYM9BBIJRL0VQ12NS/P1034650.jpg?format=800w`],
+    species: 'Claro Walnut',
+    type: 'Live Edge Slab',
+    dimensions: '63" x 24" x 2"',
+    kilnStatus: 'solar-kiln',
+    brand: 'ht',
+    inStock: true,
+  },
+  {
+    id: 'f-11',
+    name: 'Claro Walnut 63"×25"×2¼"',
+    description: 'The thickest of our Claro Walnut set — 2¼ inches of California walnut. Widest board in the series with full live edge.',
+    price: 64000,
+    images: [`${SQ}681a7c84-6273-4630-8988-950545f190cc/P1023900.jpg?format=800w`],
+    species: 'Claro Walnut',
+    type: 'Live Edge Slab',
+    dimensions: '63" x 25" x 2.25"',
+    kilnStatus: 'solar-kiln',
+    brand: 'ht',
+    inStock: true,
+  },
+  {
+    id: 'f-12',
+    name: 'Buckeye Burl Coffee Table',
+    description: 'Handcrafted coffee table built from a Buckeye Burl slab atop a Madrone burl log base with metal bracket support. Every curve, color, and void is one of a kind.',
+    price: 800000,
+    images: [`${SQ}1764093395121-0WQ7WW0YAVSHZPO6D52D/9B46D0B9-5BD4-42C9-8428-3BEB7F129B63.jpeg?format=800w`],
+    species: 'Buckeye Burl',
+    type: 'Table',
+    dimensions: 'Custom',
+    kilnStatus: 'air-dried',
+    brand: 'sfw',
+    inStock: true,
+  },
+]

@@ -37,8 +37,8 @@ export const INITIAL_FORM: InquiryFormData = {
 
 export const SPECIES_OPTIONS = ['Walnut', 'White Oak', 'Cherry', 'Maple', 'Ash', 'Pine', 'Cedar', 'Not Sure']
 export const FINISH_OPTIONS = ['Natural / Raw', 'Matte Oil', 'Satin Lacquer', 'Semi-Gloss', 'Painted', 'Not Sure']
-export const BUDGET_OPTIONS = ['Under $1,000', '$1,000–$3,000', '$3,000–$6,000', '$6,000–$12,000', '$12,000+']
-export const TIMELINE_OPTIONS = ['As Soon As Possible', 'Within 3 Months', '3–6 Months', '6+ Months', 'No Rush']
+export const BUDGET_OPTIONS = ['Under $1,000', '$1,000 to $3,000', '$3,000 to $6,000', '$6,000 to $12,000', '$12,000+']
+export const TIMELINE_OPTIONS = ['As Soon As Possible', 'Within 3 Months', '3 to 6 Months', '6+ Months', 'No Rush']
 
 export function validateStep(step: Step, form: InquiryFormData): string | null {
   if (step === 1) {
@@ -59,7 +59,7 @@ export function validateStep(step: Step, form: InquiryFormData): string | null {
   if (step === 3) {
     if (!form.budget) return 'Please select a budget range.'
     if (!form.timeline) return 'Please select a timeline.'
-    if (form.vision.trim().length < 20) return 'Tell us a bit more — at least a sentence or two.'
+    if (form.vision.trim().length < 20) return 'Tell us a bit more. Even a sentence or two helps.'
     return null
   }
   return null

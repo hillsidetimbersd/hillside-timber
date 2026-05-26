@@ -1,7 +1,22 @@
 'use client'
 
 import { useRef, useState } from 'react'
-import { X, UploadSimple, Image } from '@phosphor-icons/react'
+import { X } from '@phosphor-icons/react'
+
+const UploadTraySvg = () => (
+  <svg width="34" height="34" viewBox="0 0 34 34" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M17 5 L17 21" />
+    <path d="M11 11 L17 5 L23 11" />
+    <path d="M5 22 L5 28 L29 28 L29 22" />
+  </svg>
+)
+
+const AddMoreSvg = () => (
+  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+    <line x1="7" y1="3" x2="7" y2="11" />
+    <line x1="3" y1="7" x2="11" y2="7" />
+  </svg>
+)
 
 interface Props {
   files: File[]
@@ -53,8 +68,8 @@ export default function DropZone({ files, onChange, maxFiles = 5, maxSizeMB = 10
           }}
         >
           {hasFiles ? (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-              <UploadSimple size={16} color="var(--green)" />
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, color: 'var(--green)' }}>
+              <AddMoreSvg />
               <span style={{ fontFamily: 'var(--font-display)', fontSize: '9px', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', color: 'var(--green)' }}>
                 Add More
               </span>
@@ -64,7 +79,9 @@ export default function DropZone({ files, onChange, maxFiles = 5, maxSizeMB = 10
             </div>
           ) : (
             <>
-              <Image size={32} color="var(--gray)" weight="light" style={{ marginBottom: 12 }} />
+              <div style={{ color: 'var(--gray)', marginBottom: 12, lineHeight: 0, display: 'inline-block' }}>
+                <UploadTraySvg />
+              </div>
               <div style={{ fontFamily: 'var(--font-display)', fontSize: '10px', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', color: 'var(--black)', marginBottom: 6 }}>
                 Drop photos here
               </div>
@@ -72,7 +89,7 @@ export default function DropZone({ files, onChange, maxFiles = 5, maxSizeMB = 10
                 or{' '}
                 <span style={{ color: 'var(--green)', textDecoration: 'underline' }}>browse files</span>
               </div>
-              <div style={{ fontFamily: 'var(--font-body)', fontSize: '11px', color: 'var(--border)', marginTop: 8 }}>
+              <div style={{ fontFamily: 'var(--font-body)', fontSize: '11px', color: 'var(--gray)', marginTop: 8, opacity: 0.7 }}>
                 JPG or PNG · Up to {maxFiles} photos · {maxSizeMB}MB each
               </div>
             </>

@@ -148,7 +148,7 @@ export default function StepTwo({ form, set }: Props) {
         />
       </FormRow>
 
-      <FormRow label="Dimensions (optional — your best estimate is fine)">
+      <FormRow label="Dimensions (optional, best estimate is fine)">
         <div style={{ display: 'flex', gap: 8, alignItems: 'flex-end' }}>
           {(['L', 'W', 'H'] as const).map(dim => {
             const key = `dimensions${dim}` as 'dimensionsL' | 'dimensionsW' | 'dimensionsH'
@@ -165,20 +165,31 @@ export default function StepTwo({ form, set }: Props) {
               </div>
             )
           })}
-          <div>
-            <button
-              type="button"
-              onClick={() => set('dimensionsUnit', form.dimensionsUnit === 'in' ? 'cm' : 'in')}
-              style={{
-                fontFamily: 'var(--font-display)', fontSize: '9px', fontWeight: 700,
-                letterSpacing: '1px', textTransform: 'uppercase' as const,
-                padding: '10px 10px', border: '1px solid var(--border)',
-                background: '#fff', color: 'var(--gray)', cursor: 'pointer',
-                borderRadius: 2, whiteSpace: 'nowrap' as const,
-              }}
-            >
-              {form.dimensionsUnit}
-            </button>
+          <div style={{
+            display: 'flex', border: '1px solid var(--border)',
+            borderRadius: 2, overflow: 'hidden', height: 38,
+          }}>
+            {(['in', 'cm'] as const).map(unit => {
+              const active = form.dimensionsUnit === unit
+              return (
+                <button
+                  key={unit}
+                  type="button"
+                  onClick={() => set('dimensionsUnit', unit)}
+                  style={{
+                    fontFamily: 'var(--font-display)', fontSize: '9px', fontWeight: 700,
+                    letterSpacing: '1.5px', textTransform: 'uppercase' as const,
+                    padding: '0 12px', border: 'none',
+                    background: active ? 'var(--black)' : '#fff',
+                    color: active ? '#fff' : 'var(--gray)',
+                    cursor: 'pointer',
+                    transition: 'background 0.15s, color 0.15s',
+                  }}
+                >
+                  {unit}
+                </button>
+              )
+            })}
           </div>
         </div>
       </FormRow>
@@ -188,7 +199,7 @@ export default function StepTwo({ form, set }: Props) {
 
 function FormRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div style={{ marginBottom: 24 }}>
+    <div style={{ marginBottom: 22 }}>
       <label style={{
         display: 'block', fontFamily: 'var(--font-display)',
         fontSize: '9px', fontWeight: 700, letterSpacing: '2px',

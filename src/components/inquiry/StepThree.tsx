@@ -48,7 +48,7 @@ export default function StepThree({ form, set }: Props) {
 
       <FormRow label="Your Vision, Your Way *">
         <p style={{ fontFamily: 'var(--font-body)', fontSize: '11px', color: 'var(--gray)', fontStyle: 'italic', marginBottom: 10, marginTop: -4 }}>
-          Share anything — a sketch, a vibe, a Pinterest board description, how the piece will be used, what matters most to you. We read every word and love to collaborate to make this exactly right.
+          Share anything. A sketch, a vibe, a Pinterest board description, how the piece will be used, what matters most to you. We read every word and love to collaborate to make this exactly right.
         </p>
         <textarea
           required
@@ -64,7 +64,7 @@ export default function StepThree({ form, set }: Props) {
 
 function FormRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div style={{ marginBottom: 24 }}>
+    <div style={{ marginBottom: 22 }}>
       <label style={{
         display: 'block', fontFamily: 'var(--font-display)',
         fontSize: '9px', fontWeight: 700, letterSpacing: '2px',
