@@ -7,7 +7,6 @@ import {
   SPECIES_ORDER,
   boardFeet,
   slabWeight,
-  shippingMethod,
 } from './calculator-data'
 
 const GRAIN_BG = `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E")`
@@ -37,7 +36,6 @@ export default function BoardFootCalculator() {
       totalMin: Math.round(totalMin),
       totalMax: Math.round(totalMax),
       weight: Math.round(weight),
-      shipping: shippingMethod(weight),
     }
   }, [species, thickness, width, length])
 
@@ -152,8 +150,8 @@ export default function BoardFootCalculator() {
         <div className="bf-result-stats" style={{
           padding: '44px 48px',
           display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: '32px 40px',
+          gridTemplateColumns: '1fr',
+          gap: '26px',
           alignContent: 'center',
           position: 'relative',
           zIndex: 1,
@@ -169,10 +167,6 @@ export default function BoardFootCalculator() {
           <ResultStat
             label="Approx. Weight"
             value={result ? `~${result.weight} lbs` : '—'}
-          />
-          <ResultStat
-            label="Shipping Method"
-            value={result ? result.shipping : '—'}
           />
         </div>
       </div>

@@ -86,10 +86,6 @@ export function slabWeight(bf: number, species: string): number {
   return bf * info.weightPerBF
 }
 
-export function shippingMethod(weightLbs: number): 'Ground' | 'LTL Freight' {
-  return weightLbs > 70 ? 'LTL Freight' : 'Ground'
-}
-
 // Table Planner rules
 export interface TableRecommendation {
   isRiverTable: boolean
