@@ -1,6 +1,7 @@
 'use client'
 
 import { useBrand } from './BrandContext'
+import BrandEmblem from './BrandEmblem'
 
 const BRANDS = [
   { key: 'ht', label: 'Hillside Timber', short: 'HT' },
@@ -30,21 +31,23 @@ export default function BrandSwitcher() {
         borderBottom: '1px solid rgba(0,0,0,0.1)',
       }}
     >
-      {BRANDS.map((b) => {
+      {BRANDS.map((b, i) => {
         const isActive = brand.key === b.key
+        const innerSide = i === 0 ? { paddingRight: 'calc(var(--emblem-size) * 0.7)' } : { paddingLeft: 'calc(var(--emblem-size) * 0.7)' }
         return (
           <button
             key={b.key}
             onClick={() => handleSwitch(b.key)}
+            aria-pressed={isActive}
             style={{
               flex: 1,
               height: '100%',
               background: isActive ? 'var(--green)' : '#f0ede8',
               color: isActive ? '#fff' : '#888',
               fontFamily: 'var(--font-display)',
-              fontSize: '10px',
+              fontSize: '14px',
               fontWeight: 700,
-              letterSpacing: '2px',
+              letterSpacing: '2.5px',
               textTransform: 'uppercase',
               border: 'none',
               cursor: isActive ? 'default' : 'pointer',
@@ -53,12 +56,13 @@ export default function BrandSwitcher() {
               alignItems: 'center',
               justifyContent: 'center',
               gap: '8px',
+              ...innerSide,
             }}
           >
             {isActive && (
               <span style={{
-                width: 5,
-                height: 5,
+                width: 6,
+                height: 6,
                 borderRadius: '50%',
                 background: '#fff',
                 flexShrink: 0,
@@ -69,6 +73,19 @@ export default function BrandSwitcher() {
           </button>
         )
       })}
+
+      {/* Center maker's seal — overhangs downward, straddling the switcher into the nav */}
+      <div
+        style={{
+          position: 'absolute',
+          left: '50%',
+          top: 5,
+          transform: 'translateX(-50%)',
+          zIndex: 5,
+        }}
+      >
+        <BrandEmblem />
+      </div>
     </div>
   )
 }

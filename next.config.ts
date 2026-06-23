@@ -1,6 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Pin the project root so Turbopack does not infer it from a stray
+  // package-lock.json in a parent directory (which breaks tailwindcss resolution).
+  turbopack: {
+    root: import.meta.dirname,
+  },
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'images.unsplash.com' },

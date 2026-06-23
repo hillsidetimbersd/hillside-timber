@@ -1,27 +1,52 @@
 'use client'
 
-import { ShoppingBag } from '@phosphor-icons/react'
-import type { SquareProduct } from '@/lib/square'
+import { ArrowUpRight, ChatCircle } from '@phosphor-icons/react'
+import type { Product } from '@/lib/squarespace'
 import { formatPrice } from '@/lib/square'
-import { useCart } from '@/components/cart/useCart'
+import MagnifyImage from '@/components/media/MagnifyImage'
 
-const KILN_LABELS = {
-  'solar-kiln': 'Solar Kiln Dried',
-  'air-dried': 'Air Dried',
-  'green': 'Green',
+/** Eyebrow label: the piece's primary store section. "Coming Soon" is shown as a badge, never here. */
+function primarySection(product: Product): string {
+  const named = product.sections.find((s) => s !== 'Coming Soon')
+  return named ?? (product.brand === 'sfw' ? 'Finished Piece' : 'Wood Slab')
 }
 
-export default function ProductCard({ product }: { product: SquareProduct }) {
-  const { addItem } = useCart()
+export default function ProductCard({ product }: { product: Product }) {
+  const sold = !product.inStock && !product.drying
+  const reserve = product.drying
+  const inquiryHref = `/contact?piece=${encodeURIComponent(`${product.name}${product.sku ? ` (${product.sku})` : ''}`)}`
 
-  function handleAdd() {
-    addItem({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      image: product.images[0],
-    })
-  }
+  const badges = (
+    <>
+      {reserve && (
+        <div style={{
+          position: 'absolute', top: 12, left: 12, padding: '5px 10px', pointerEvents: 'none', zIndex: 3,
+          background: 'rgba(15,15,13,0.92)', backdropFilter: 'blur(4px)',
+          fontFamily: 'var(--font-display)', fontSize: '10px', fontWeight: 700,
+          letterSpacing: '1.6px', textTransform: 'uppercase', color: 'var(--tan)',
+        }}>
+          Coming Soon
+        </div>
+      )}
+      {sold ? (
+        <div style={{
+          position: 'absolute', top: 12, right: 12, padding: '5px 10px', pointerEvents: 'none', zIndex: 3,
+          background: 'var(--black)', fontFamily: 'var(--font-display)', fontSize: '10px',
+          fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', color: '#fff',
+        }}>
+          Sold
+        </div>
+      ) : product.onSale ? (
+        <div style={{
+          position: 'absolute', top: 12, right: 12, padding: '5px 10px', pointerEvents: 'none', zIndex: 3,
+          background: 'var(--green)', fontFamily: 'var(--font-display)', fontSize: '10px',
+          fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', color: '#fff',
+        }}>
+          Sale
+        </div>
+      ) : null}
+    </>
+  )
 
   return (
     <div
@@ -32,141 +57,142 @@ export default function ProductCard({ product }: { product: SquareProduct }) {
         flexDirection: 'column',
         transition: 'box-shadow 0.2s',
       }}
-      onMouseEnter={(e) => (e.currentTarget.style.boxShadow = '0 4px 24px rgba(0,0,0,0.07)')}
+      onMouseEnter={(e) => (e.currentTarget.style.boxShadow = '0 4px 24px rgba(15,15,13,0.08)')}
       onMouseLeave={(e) => (e.currentTarget.style.boxShadow = 'none')}
     >
-      {/* Image */}
-      <div style={{
-        aspectRatio: '4/3',
-        overflow: 'hidden',
-        background: '#f0ede8',
-        position: 'relative',
-      }}>
-        {product.images[0] ? (
-          /* eslint-disable-next-line @next/next/no-img-element */
-          <img
-            src={product.images[0]}
-            alt={product.name}
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              display: 'block',
-              transition: 'transform 0.4s ease',
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.04)')}
-            onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
-          />
-        ) : (
+      {/* Image with magnifying lens to inspect the grain */}
+      {product.images[0] ? (
+        <MagnifyImage
+          src={product.images[0]}
+          alt={product.name}
+          lensSize={150}
+          zoom={2.4}
+          style={{ aspectRatio: '4/3', background: '#f0ede8' }}
+          imgStyle={{ opacity: sold ? 0.55 : 1, filter: sold ? 'grayscale(0.35)' : 'none' }}
+        >
+          {badges}
+        </MagnifyImage>
+      ) : (
+        <div style={{ aspectRatio: '4/3', overflow: 'hidden', background: '#f0ede8', position: 'relative' }}>
           <div style={{ width: '100%', height: '100%', background: '#e0dbd0' }} />
-        )}
-        {/* Kiln badge */}
-        <div style={{
-          position: 'absolute',
-          top: 12,
-          left: 12,
-          padding: '4px 8px',
-          background: 'rgba(15,15,13,0.85)',
-          backdropFilter: 'blur(4px)',
-          fontFamily: 'var(--font-display)',
-          fontSize: '8px',
-          fontWeight: 700,
-          letterSpacing: '1.5px',
-          textTransform: 'uppercase',
-          color: '#2a5c3f',
-        }}>
-          {KILN_LABELS[product.kilnStatus]}
+          {badges}
         </div>
-      </div>
+      )}
 
       {/* Info */}
-      <div style={{ padding: '16px 16px 12px', flex: 1, display: 'flex', flexDirection: 'column' }}>
-        {product.species && (
-          <div style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: '9px',
-            fontWeight: 700,
-            letterSpacing: '2px',
-            textTransform: 'uppercase',
-            color: 'var(--green)',
-            marginBottom: 4,
-          }}>
-            {product.species}
-          </div>
-        )}
+      <div style={{ padding: '16px 16px 14px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <div style={{
+          fontFamily: 'var(--font-display)', fontSize: '9px', fontWeight: 700,
+          letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--green)', marginBottom: 4,
+        }}>
+          {primarySection(product)}
+        </div>
+
         <h3 style={{
-          fontFamily: 'var(--font-display)',
-          fontSize: '15px',
-          fontWeight: 700,
-          letterSpacing: '0.3px',
-          textTransform: 'uppercase',
-          color: 'var(--black)',
-          marginBottom: 4,
-          lineHeight: 1.2,
+          fontFamily: 'var(--font-display)', fontSize: '16px', fontWeight: 700,
+          letterSpacing: '0.3px', textTransform: 'uppercase', color: 'var(--black)',
+          marginBottom: 4, lineHeight: 1.15,
         }}>
           {product.name}
         </h3>
+
         {product.dimensions && (
           <div style={{
-            fontFamily: 'var(--font-body)',
-            fontSize: '11px',
-            color: 'var(--gray)',
-            marginBottom: 8,
-            fontStyle: 'italic',
+            fontFamily: 'var(--font-body)', fontSize: '12px', color: 'var(--gray)',
+            marginBottom: 8, fontStyle: 'italic',
           }}>
             {product.dimensions}
           </div>
         )}
-        <p style={{
-          fontFamily: 'var(--font-body)',
-          fontSize: '12px',
-          color: 'var(--gray-dark)',
-          lineHeight: 1.6,
-          flex: 1,
-          marginBottom: 14,
-          display: '-webkit-box',
-          WebkitLineClamp: 2,
-          WebkitBoxOrient: 'vertical',
-          overflow: 'hidden',
-        }}>
-          {product.description}
-        </p>
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: '18px',
-            fontWeight: 800,
-            color: 'var(--black)',
+        {/* Piece No. — the customer-facing piece locator */}
+        {product.sku && (
+          <div style={{
+            fontFamily: 'var(--font-display)', fontSize: '10px', fontWeight: 700,
+            letterSpacing: '1.5px', textTransform: 'uppercase', color: 'var(--gray)', marginBottom: 12,
           }}>
-            {formatPrice(product.price)}
-          </span>
-          <button
-            onClick={handleAdd}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 6,
-              padding: '9px 14px',
-              background: 'var(--black)',
-              color: '#fff',
-              fontFamily: 'var(--font-display)',
-              fontSize: '10px',
-              fontWeight: 700,
-              letterSpacing: '1px',
-              textTransform: 'uppercase',
-              border: 'none',
-              cursor: 'pointer',
-              transition: 'background 0.15s',
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--green)')}
-            onMouseLeave={(e) => (e.currentTarget.style.background = 'var(--black)')}
-          >
-            <ShoppingBag size={14} />
-            Add
-          </button>
+            Piece No. <span style={{ color: 'var(--black)' }}>{product.sku}</span>
+          </div>
+        )}
+
+        <div style={{ flex: 1 }} />
+
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: 10 }}>
+          <PriceBlock product={product} />
+          <CardAction product={product} sold={sold} reserve={reserve} inquiryHref={inquiryHref} />
         </div>
       </div>
     </div>
+  )
+}
+
+function PriceBlock({ product }: { product: Product }) {
+  // A $0 price is never a real price to show; route the shopper to ask.
+  if (product.priceCents === 0) {
+    return (
+      <span style={{ fontFamily: 'var(--font-body)', fontSize: '13px', fontStyle: 'italic', color: 'var(--gray)' }}>
+        Inquire for price
+      </span>
+    )
+  }
+  if (product.onSale && product.salePriceCents) {
+    return (
+      <span style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+        <span style={{ fontFamily: 'var(--font-display)', fontSize: '18px', fontWeight: 800, color: 'var(--green)' }}>
+          {formatPrice(product.salePriceCents)}
+        </span>
+        <span style={{ fontFamily: 'var(--font-display)', fontSize: '13px', fontWeight: 700, color: 'var(--gray)', textDecoration: 'line-through' }}>
+          {formatPrice(product.priceCents)}
+        </span>
+      </span>
+    )
+  }
+  return (
+    <span style={{ fontFamily: 'var(--font-display)', fontSize: '18px', fontWeight: 800, color: 'var(--black)' }}>
+      {formatPrice(product.priceCents)}
+    </span>
+  )
+}
+
+const ACTION_BASE = {
+  display: 'flex', alignItems: 'center', gap: 6, padding: '9px 14px',
+  fontFamily: 'var(--font-display)', fontSize: '10px', fontWeight: 700,
+  letterSpacing: '1px', textTransform: 'uppercase' as const, textDecoration: 'none',
+  whiteSpace: 'nowrap' as const, cursor: 'pointer',
+}
+
+function CardAction({ product, sold, reserve, inquiryHref }: { product: Product; sold: boolean; reserve: boolean; inquiryHref: string }) {
+  if (sold) {
+    return (
+      <span style={{ ...ACTION_BASE, color: 'var(--gray)', border: '1px solid var(--border)', cursor: 'not-allowed' }}>
+        Sold
+      </span>
+    )
+  }
+  if (reserve) {
+    return (
+      <a
+        href={inquiryHref}
+        style={{ ...ACTION_BASE, background: 'transparent', color: 'var(--green)', border: '1.5px solid var(--green)' }}
+        onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--green)'; e.currentTarget.style.color = '#fff' }}
+        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--green)' }}
+      >
+        <ChatCircle size={14} weight="bold" />
+        Reserve
+      </a>
+    )
+  }
+  return (
+    <a
+      href={product.productUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{ ...ACTION_BASE, background: 'var(--black)', color: '#fff', border: 'none' }}
+      onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--green)')}
+      onMouseLeave={(e) => (e.currentTarget.style.background = 'var(--black)')}
+    >
+      View Piece
+      <ArrowUpRight size={14} weight="bold" />
+    </a>
   )
 }

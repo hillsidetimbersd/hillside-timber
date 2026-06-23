@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { X, ShoppingBag, Trash } from '@phosphor-icons/react'
 import { useCart } from './useCart'
 import { formatPrice } from '@/lib/square'
@@ -11,6 +12,32 @@ interface Props {
 
 export default function CartDrawer({ open, onClose }: Props) {
   const { items, subtotal, removeItem, clearCart } = useCart()
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  async function handleCheckout() {
+    setError(null)
+    setLoading(true)
+    try {
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          items: items.map((i) => ({ catalogObjectId: i.catalogObjectId, qty: i.qty })),
+        }),
+      })
+      const data = (await res.json()) as { url?: string; error?: string }
+      if (!res.ok || !data.url) {
+        setError(data.error ?? 'Checkout failed. Please try again.')
+        setLoading(false)
+        return
+      }
+      window.location.href = data.url
+    } catch {
+      setError('Checkout failed. Please try again.')
+      setLoading(false)
+    }
+  }
 
   return (
     <>
@@ -187,13 +214,31 @@ export default function CartDrawer({ open, onClose }: Props) {
             }}>
               Shipping calculated at checkout. Heavy items may require freight quote.
             </p>
-            <a
-              href="/api/checkout"
+            {error && (
+              <p style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: '12px',
+                color: '#9b2c2c',
+                marginBottom: 12,
+                lineHeight: 1.5,
+              }}>
+                {error}
+              </p>
+            )}
+            <button
+              onClick={handleCheckout}
+              disabled={loading}
               className="btn-primary"
-              style={{ width: '100%', justifyContent: 'center', marginBottom: 8 }}
+              style={{
+                width: '100%',
+                justifyContent: 'center',
+                marginBottom: 8,
+                opacity: loading ? 0.65 : 1,
+                cursor: loading ? 'wait' : 'pointer',
+              }}
             >
-              Checkout via Square
-            </a>
+              {loading ? 'Processing…' : 'Checkout via Square'}
+            </button>
             <button
               onClick={clearCart}
               style={{

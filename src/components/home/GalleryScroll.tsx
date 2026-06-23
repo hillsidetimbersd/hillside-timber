@@ -2,36 +2,17 @@
 
 import { useEffect, useRef } from 'react'
 import { useBrand } from '@/components/brand/BrandContext'
-
-const SQ = 'https://images.squarespace-cdn.com/content/v1/60007801ebc4a249bd3ce872/'
-
-const COL1 = [
-  { src: `${SQ}1697488198174-7SVF03EX4UGLZZ3I34GW/P1034392.jpg?format=1000w`, alt: 'Figured Aspen slab' },
-  { src: `${SQ}1692104173691-BIEF3Y5F8OFOHBO8DQ0Q/P1034323.jpg?format=1000w`, alt: 'Claro Walnut slab' },
-  { src: `${SQ}1708316209057-NHWRYM9BBIJRL0VQ12NS/P1034650.jpg?format=1000w`, alt: 'Claro Walnut — thicker cut' },
-  { src: `${SQ}681a7c84-6273-4630-8988-950545f190cc/P1023900.jpg?format=1000w`, alt: 'Claro Walnut — widest board' },
-]
-
-const COL2 = [
-  { src: `${SQ}1764093395121-0WQ7WW0YAVSHZPO6D52D/9B46D0B9-5BD4-42C9-8428-3BEB7F129B63.jpeg?format=1000w`, alt: 'Buckeye Burl coffee table' },
-  { src: `${SQ}1761401660020-VJ5G2D3392H7MRV1C0LZ/A93426BF-DEC6-48AB-91DE-BB03E59DEA5D.jpeg?format=1000w`, alt: 'Spalted Maple slab' },
-  { src: `${SQ}1759355251530-0O1H7JPOLOXE3B0248R6/CB61FB9D-BDB8-42E8-930E-DBB229165D6E.jpeg?format=1000w`, alt: 'Sioux Falls Woodworking workshop' },
-  { src: `${SQ}1761697039666-AO6NP43V1TJMFDDBDK9T/880BD484-10A9-499E-98BB-80566B2C2A79.jpeg?format=1000w`, alt: 'Buckeye Root Burl' },
-  { src: `${SQ}1750808621194-JX4ZOUAW9PR4AG1C9LDN/14D9FB14-4F2A-4D81-A063-50D1C1E6D7C3.jpeg?format=1000w`, alt: 'Bastogne Walnut — over 10 feet' },
-]
-
-const COL3 = [
-  { src: `${SQ}1759355687085-7AIZ7D8QCALT0C3GA1D6/9FAF763E-9726-4E27-A5F2-B0E353DFE575.jpeg?format=1000w`, alt: 'Redwood Burl slab' },
-  { src: `${SQ}1745095419568-LH71E35DTPQKHL61P6BK/9DF98A45-AB03-4795-9684-813C07F20FA3.jpeg?format=1000w`, alt: 'Black Walnut — harvested in Sioux Falls' },
-  { src: `${SQ}1742855807836-AJ4CGF9Y2TAVS8UJNKRW/28D8A477-B232-454F-A79D-27E031680231.jpeg?format=1000w`, alt: 'Silver Maple mantel' },
-  { src: `${SQ}44d1cdae-31c0-4553-a9cf-ebce83dc1871/P1034776.jpg?format=1000w`, alt: 'Workshop detail' },
-  { src: `${SQ}1701369870793-FY5EXBGCQFL1FDGB96TN/P1034450.jpg?format=1000w`, alt: 'Claro Walnut live edge' },
-]
+import MagnifyImage from '@/components/media/MagnifyImage'
+import type { Product } from '@/lib/squarespace'
 
 function lerp(a: number, b: number, t: number) { return a + (b - a) * t }
 function clamp(v: number, min: number, max: number) { return Math.max(min, Math.min(max, v)) }
 
-export default function GalleryScroll() {
+function tileLabel(product: Product): string {
+  return product.sections.find((s) => s !== 'Coming Soon') ?? 'Wood Slab'
+}
+
+export default function GalleryScroll({ products = [] }: { products?: Product[] }) {
   const brand = useBrand()
   const wrapRef = useRef<HTMLDivElement>(null)
   const gridRef = useRef<HTMLDivElement>(null)
@@ -70,25 +51,29 @@ export default function GalleryScroll() {
     window.addEventListener('scroll', onScroll, { passive: true })
     onScroll()
     return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+  }, [products.length])
 
   const isHero = brand.key === 'ht'
+  const col1 = products.filter((_, i) => i % 3 === 0)
+  const col2 = products.filter((_, i) => i % 3 === 1)
+  const col3 = products.filter((_, i) => i % 3 === 2)
+  const hasGallery = products.length >= 3
 
   return (
     <div style={{ background: 'var(--cream)' }}>
       {/* Section header — when on HT, this IS the homepage hero */}
       <div style={{
         padding: isHero
-          ? 'calc(var(--switcher-h) + var(--nav-h) + 72px) 60px 32px'
-          : '80px 60px 0',
+          ? 'calc(var(--switcher-h) + var(--nav-h) + 72px) var(--section-pad-x) 32px'
+          : '96px var(--section-pad-x) 0',
         textAlign: 'center',
       }}>
         <div className="label" style={{ marginBottom: 18, color: 'var(--green)' }}>
-          {isHero ? 'Black Hills Region · South Dakota' : 'The Work'}
+          {isHero ? 'Locally Harvested · South Dakota' : 'The Work'}
         </div>
         <h1 style={{
           fontFamily: 'var(--font-display)',
-          fontSize: isHero ? 'clamp(54px, 7vw, 104px)' : 'clamp(40px, 5vw, 64px)',
+          fontSize: isHero ? 'clamp(56px, 7vw, 118px)' : 'clamp(42px, 5vw, 72px)',
           fontWeight: 800,
           letterSpacing: '-2px',
           lineHeight: 0.9,
@@ -97,22 +82,22 @@ export default function GalleryScroll() {
           marginBottom: 20,
         }}>
           {isHero ? (
-            <>From the<br /><span style={{ color: 'var(--green)' }}>Black Hills.</span></>
+            <>Slow-Dried<br /><span style={{ color: 'var(--green)' }}>Premium Slabs.</span></>
           ) : (
             <>Every slab.<br /><span style={{ color: 'var(--green)' }}>Every story.</span></>
           )}
         </h1>
         <p style={{
           fontFamily: 'var(--font-body)',
-          fontSize: isHero ? '15px' : '14px',
+          fontSize: isHero ? '17px' : '16px',
           color: 'var(--gray-dark)',
-          maxWidth: 480,
+          maxWidth: 'var(--content-text)',
           margin: '0 auto',
           lineHeight: 1.7,
           fontStyle: 'italic',
         }}>
           {isHero
-            ? 'Twenty-four species and counting. Solar kiln dried on site. Locally harvested from the Black Hills and the surrounding region.'
+            ? 'Twenty-four species and counting. Solar kiln dried on site. Harvested locally across South Dakota, with rare and exotic species sourced from around the world.'
             : 'Locally harvested and handcrafted in South Dakota. Browse our gallery of slabs, finished pieces, and completed projects.'}
         </p>
         {isHero && (
@@ -123,138 +108,113 @@ export default function GalleryScroll() {
         )}
       </div>
 
-      {/* Scroll container */}
-      <div ref={wrapRef} style={{ position: 'relative', height: '350vh', perspective: '1000px', perspectiveOrigin: 'center top' }}>
-        <div
-          style={{
-            position: 'sticky',
-            top: 0,
-            height: '100vh',
-            overflow: 'hidden',
-            perspective: '1000px',
-            perspectiveOrigin: 'center top',
-          }}
-        >
-          {/* Top fade */}
-          <div style={{
-            position: 'absolute', top: 0, left: 0, right: 0, height: 120,
-            background: 'linear-gradient(to bottom, var(--cream), transparent)',
-            zIndex: 10, pointerEvents: 'none',
-          }} />
+      {/* Scroll-pinned gallery of live, random inventory */}
+      {hasGallery && (
+        <div ref={wrapRef} style={{ position: 'relative', height: '350vh', perspective: '1000px', perspectiveOrigin: 'center top' }}>
+          <div style={{ position: 'sticky', top: 0, height: '100vh', overflow: 'hidden', perspective: '1000px', perspectiveOrigin: 'center top' }}>
+            {/* Top fade */}
+            <div style={{
+              position: 'absolute', top: 0, left: 0, right: 0, height: 120,
+              background: 'linear-gradient(to bottom, var(--cream), transparent)',
+              zIndex: 10, pointerEvents: 'none',
+            }} />
 
-          <div
-            ref={gridRef}
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr 1fr',
-              gap: 10,
-              width: '100%',
-              height: '100%',
-              padding: '0 40px',
-              willChange: 'transform',
-            }}
-          >
-            <GalleryCol colRef={col1Ref} images={COL1} marginTop="-20px" />
-            <GalleryCol colRef={col2Ref} images={COL2} marginTop="-50%" />
-            <GalleryCol colRef={col3Ref} images={COL3} marginTop="-20px" />
+            <div
+              ref={gridRef}
+              style={{
+                display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10,
+                width: '100%', height: '100%', padding: '0 40px', willChange: 'transform',
+              }}
+            >
+              <GalleryCol colRef={col1Ref} items={col1} marginTop="-20px" />
+              <GalleryCol colRef={col2Ref} items={col2} marginTop="-50%" />
+              <GalleryCol colRef={col3Ref} items={col3} marginTop="-20px" />
+            </div>
+
+            {/* Bottom fade */}
+            <div style={{
+              position: 'absolute', bottom: 0, left: 0, right: 0, height: 160,
+              background: 'linear-gradient(to top, var(--cream), transparent)',
+              zIndex: 10, pointerEvents: 'none',
+            }} />
           </div>
-
-          {/* Bottom fade */}
-          <div style={{
-            position: 'absolute', bottom: 0, left: 0, right: 0, height: 160,
-            background: 'linear-gradient(to top, var(--cream), transparent)',
-            zIndex: 10, pointerEvents: 'none',
-          }} />
         </div>
-      </div>
+      )}
 
       {/* CTA below */}
       <div style={{
-        padding: '80px 60px',
-        background: 'var(--cream)',
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: 60,
-        alignItems: 'center',
-        borderTop: '1px solid var(--border)',
-        maxWidth: 1200,
-        margin: '0 auto',
-      }}>
+        padding: '96px var(--section-pad-x)', background: 'var(--cream)', display: 'grid',
+        gridTemplateColumns: '1fr 1fr', gap: 60, alignItems: 'center',
+        borderTop: '1px solid var(--border)', maxWidth: 'var(--content-max)', margin: '0 auto',
+      }} className="gallery-cta-grid">
         <div>
           <h2 style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: 'clamp(28px, 3vw, 40px)',
-            fontWeight: 800,
-            letterSpacing: '-0.5px',
-            textTransform: 'uppercase',
-            color: 'var(--black)',
-            lineHeight: 1.1,
-            marginBottom: 12,
+            fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 3vw, 40px)', fontWeight: 800,
+            letterSpacing: '-0.5px', textTransform: 'uppercase', color: 'var(--black)', lineHeight: 1.1, marginBottom: 12,
           }}>
             From tree to<br />finished piece.
           </h2>
           <p style={{
-            fontFamily: 'var(--font-body)',
-            fontSize: '13px',
-            color: 'var(--gray)',
-            lineHeight: 1.8,
-            maxWidth: 380,
-            fontStyle: 'italic',
+            fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--gray)', lineHeight: 1.8, maxWidth: 480, fontStyle: 'italic',
           }}>
-            Every item in our inventory is one of a kind. Browse the full catalog or start a conversation about your custom project.
+            Every photo above is a real piece in our inventory, pulled fresh each visit. Browse the full catalog or start a conversation about your custom project.
           </p>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <CtaCard title="Shop Wood Slabs" sub="Live edge, rounds, mantels — 24+ species" href="/shop" />
-          <CtaCard title="Blanks, Burls & Billets" sub="Turning stock, burl caps, figured wood" href="/shop?type=burl" />
-          <CtaCard title="Request a Custom Project" sub="Sioux Falls Woodworking — handcrafted to order" href="/custom" accent />
+          <CtaCard title="Shop Wood Slabs" sub="Live edge, rounds, mantels. 24+ species." href="/shop" />
+          <CtaCard title="Blanks, Burls & Billets" sub="Turning stock, burl caps, figured wood." href="/shop" />
+          <CtaCard title="Request a Custom Project" sub="Sioux Falls Woodworking, handcrafted to order." href="/custom" accent />
         </div>
       </div>
+
+      <style>{`
+        .gallery-tile { position: relative; display: block; border-radius: 3px; overflow: hidden; flex-shrink: 0; text-decoration: none; box-shadow: 0 2px 20px rgba(15,15,13,0.08); transition: box-shadow 0.25s ease; }
+        .gallery-tile:hover { box-shadow: 0 14px 40px rgba(15,15,13,0.22); }
+        .gallery-tile:focus-visible { outline: 3px solid var(--green); outline-offset: 3px; }
+      `}</style>
     </div>
   )
 }
 
-function GalleryCol({
-  colRef,
-  images,
-  marginTop,
-}: {
+function GalleryCol({ colRef, items, marginTop }: {
   colRef: React.RefObject<HTMLDivElement | null>
-  images: { src: string; alt: string }[]
+  items: Product[]
   marginTop: string
 }) {
   return (
-    <div
-      ref={colRef}
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 10,
-        willChange: 'transform',
-        marginTop,
-      }}
-    >
-      {images.map((img) => (
-        /* eslint-disable-next-line @next/next/no-img-element */
-        <img
-          key={img.src}
-          src={img.src}
-          alt={img.alt}
-          loading="lazy"
-          style={{
-            width: '100%',
-            aspectRatio: '16/10',
-            objectFit: 'cover',
-            display: 'block',
-            borderRadius: 3,
-            flexShrink: 0,
-            background: '#e0dbd0',
-            boxShadow: '0 2px 20px rgba(0,0,0,0.07)',
-            transition: 'box-shadow 0.3s',
-          }}
-        />
+    <div ref={colRef} style={{ display: 'flex', flexDirection: 'column', gap: 10, willChange: 'transform', marginTop }}>
+      {items.map((p) => (
+        <GalleryTile key={p.id} product={p} />
       ))}
     </div>
+  )
+}
+
+function GalleryTile({ product }: { product: Product }) {
+  return (
+    <a
+      href={product.productUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="gallery-tile"
+      aria-label={`${product.name}, view on the store`}
+    >
+      <MagnifyImage src={product.images[0]} alt={product.name} lensSize={150} zoom={2.2} hint="View Piece →" style={{ aspectRatio: '16/10' }}>
+        {/* Caption: species + name */}
+        <div style={{
+          position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
+          padding: '14px 16px', pointerEvents: 'none',
+          background: 'linear-gradient(to top, rgba(15,15,13,0.85) 0%, rgba(15,15,13,0.12) 44%, rgba(15,15,13,0) 66%)',
+        }}>
+          <div style={{ fontFamily: 'var(--font-display)', fontSize: '9px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--tan)', marginBottom: 3 }}>
+            {tileLabel(product)}
+          </div>
+          <div style={{ fontFamily: 'var(--font-display)', fontSize: '15px', fontWeight: 700, letterSpacing: '0.3px', textTransform: 'uppercase', color: '#fff', lineHeight: 1.1 }}>
+            {product.name}
+          </div>
+        </div>
+      </MagnifyImage>
+    </a>
   )
 }
 
@@ -263,53 +223,22 @@ function CtaCard({ title, sub, href, accent }: { title: string; sub: string; hre
     <a
       href={href}
       style={{
-        background: '#fff',
-        border: `1px solid ${accent ? 'var(--green)' : 'var(--border)'}`,
-        padding: '20px 24px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        cursor: 'pointer',
-        textDecoration: 'none',
-        transition: 'border-color 0.2s, box-shadow 0.2s',
+        background: '#fff', border: `1px solid ${accent ? 'var(--green)' : 'var(--border)'}`, padding: '20px 24px',
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer',
+        textDecoration: 'none', transition: 'border-color 0.2s, box-shadow 0.2s',
       }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.borderColor = 'var(--green)'
-        e.currentTarget.style.boxShadow = '0 2px 16px rgba(42,92,63,0.08)'
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.borderColor = accent ? 'var(--green)' : 'var(--border)'
-        e.currentTarget.style.boxShadow = 'none'
-      }}
+      onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--green)'; e.currentTarget.style.boxShadow = '0 2px 16px rgba(42,92,63,0.08)' }}
+      onMouseLeave={(e) => { e.currentTarget.style.borderColor = accent ? 'var(--green)' : 'var(--border)'; e.currentTarget.style.boxShadow = 'none' }}
     >
       <div>
-        <div style={{
-          fontFamily: 'var(--font-display)',
-          fontSize: '13px',
-          fontWeight: 700,
-          letterSpacing: '0.5px',
-          color: 'var(--black)',
-          marginBottom: 3,
-          textTransform: 'uppercase',
-        }}>
+        <div style={{ fontFamily: 'var(--font-display)', fontSize: '13px', fontWeight: 700, letterSpacing: '0.5px', color: 'var(--black)', marginBottom: 3, textTransform: 'uppercase' }}>
           {title}
         </div>
-        <div style={{
-          fontFamily: 'var(--font-body)',
-          fontSize: '11px',
-          color: 'var(--gray)',
-          fontStyle: 'italic',
-        }}>
+        <div style={{ fontFamily: 'var(--font-body)', fontSize: '11px', color: 'var(--gray)', fontStyle: 'italic' }}>
           {sub}
         </div>
       </div>
-      <span style={{
-        fontSize: '18px',
-        color: 'var(--green)',
-        fontWeight: 700,
-      }}>
-        →
-      </span>
+      <span style={{ fontSize: '18px', color: 'var(--green)', fontWeight: 700 }}>→</span>
     </a>
   )
 }

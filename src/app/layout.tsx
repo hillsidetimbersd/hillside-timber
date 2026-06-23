@@ -33,7 +33,7 @@ export async function generateMetadata(): Promise<Metadata> {
       default: brand.name,
       template: `%s — ${brand.name}`,
     },
-    description: `${brand.name}: ${brand.tagline} ${brand.heroSub}`,
+    description: `${brand.name}. ${brand.heroSub}`,
     metadataBase: new URL(`https://${brand.domain}`),
   }
 }

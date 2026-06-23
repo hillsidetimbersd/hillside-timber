@@ -18,12 +18,12 @@ export default function ResourcesPage() {
       }}
     >
       {/* Header */}
-      <div style={{ padding: '80px 60px 56px', borderBottom: '1px solid var(--border)' }}>
+      <div style={{ padding: '80px var(--section-pad-x) 56px', borderBottom: '1px solid var(--border)' }}>
         <div className="label" style={{ marginBottom: 14 }}>Free Resources</div>
         <h1
           style={{
             fontFamily: 'var(--font-display)',
-            fontSize: 'clamp(52px, 7vw, 88px)',
+            fontSize: 'clamp(54px, 7vw, 98px)',
             fontWeight: 800,
             letterSpacing: '-1px',
             textTransform: 'uppercase',
@@ -37,11 +37,11 @@ export default function ResourcesPage() {
         <p
           style={{
             fontFamily: 'var(--font-body)',
-            fontSize: '16px',
+            fontSize: '17px',
             fontStyle: 'italic',
             color: 'var(--gray)',
             lineHeight: 1.7,
-            maxWidth: 560,
+            maxWidth: 700,
           }}
         >
           Tools and guides to help you plan your slab, table, or custom piece before you buy. Everything here is free. No signup required.
@@ -49,7 +49,7 @@ export default function ResourcesPage() {
       </div>
 
       {/* Featured: Calculators */}
-      <section style={{ padding: '72px 60px 40px' }}>
+      <section style={{ padding: '72px var(--section-pad-x) 40px' }}>
         <div
           style={{
             display: 'flex',
@@ -131,7 +131,7 @@ export default function ResourcesPage() {
       {/* Coming soon */}
       <section
         style={{
-          padding: '40px 60px 120px',
+          padding: '40px var(--section-pad-x) 120px',
         }}
       >
         <div
@@ -173,7 +173,7 @@ export default function ResourcesPage() {
           <p
             style={{
               fontFamily: 'var(--font-body)',
-              fontSize: '15px',
+              fontSize: '17px',
               fontStyle: 'italic',
               color: 'var(--gray)',
               lineHeight: 1.7,
@@ -268,7 +268,7 @@ function CalcCard({
       <p
         style={{
           fontFamily: 'var(--font-body)',
-          fontSize: '13px',
+          fontSize: '15px',
           fontStyle: 'italic',
           color: 'var(--gray)',
           lineHeight: 1.65,

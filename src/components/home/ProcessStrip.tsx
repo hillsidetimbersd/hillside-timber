@@ -28,16 +28,16 @@ export default function ProcessStrip() {
     <section style={{
       background: 'var(--black)',
       color: '#fff',
-      padding: '120px 60px',
+      padding: '132px var(--section-pad-x)',
     }}>
-      <div style={{ maxWidth: 1280, margin: '0 auto' }}>
+      <div style={{ maxWidth: 'var(--content-max)', margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: 72 }}>
           <div className="label" style={{ marginBottom: 16, color: 'var(--tan)' }}>
             How We Work
           </div>
           <h2 style={{
             fontFamily: 'var(--font-display)',
-            fontSize: 'clamp(36px, 4.5vw, 64px)',
+            fontSize: 'clamp(38px, 4.5vw, 72px)',
             fontWeight: 800,
             letterSpacing: '-1.5px',
             lineHeight: 0.95,
@@ -48,9 +48,9 @@ export default function ProcessStrip() {
           </h2>
           <p style={{
             fontFamily: 'var(--font-body)',
-            fontSize: '15px',
+            fontSize: '17px',
             color: 'rgba(255,255,255,0.55)',
-            maxWidth: 560,
+            maxWidth: 700,
             margin: '0 auto',
             lineHeight: 1.7,
             fontStyle: 'italic',
@@ -59,14 +59,14 @@ export default function ProcessStrip() {
           </p>
         </div>
 
-        <div style={{
+        <div className="process-grid" style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(4, 1fr)',
           gap: 0,
           position: 'relative',
         }}>
           {/* horizontal connector line */}
-          <div style={{
+          <div className="process-connector" style={{
             position: 'absolute',
             top: 27,
             left: '12.5%',
@@ -113,7 +113,7 @@ export default function ProcessStrip() {
               </div>
               <p style={{
                 fontFamily: 'var(--font-body)',
-                fontSize: '13px',
+                fontSize: '15px',
                 color: 'rgba(255,255,255,0.6)',
                 lineHeight: 1.7,
                 maxWidth: 240,

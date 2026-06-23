@@ -9,8 +9,14 @@
   --border: #e8e4dc;
   --gray: #888;
   --gray-dark: #555;
-  --switcher-h: 40px;
-  --nav-h: 68px;
+  --switcher-h: 46px;
+  --nav-h: 84px;
+  --emblem-size: 94px;
+  /* Content width system (wide and framed) */
+  --content-max: 1500px;
+  --content-wide: 1640px;
+  --content-text: 720px;
+  --section-pad-x: 64px;
 }
 
 @theme inline {
@@ -50,9 +56,9 @@ body {
 /* Section label — "01 SOLAR KILN DRIED" style */
 .label {
   font-family: var(--font-display);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: 3px;
+  letter-spacing: 3.5px;
   text-transform: uppercase;
   color: var(--green);
 }
@@ -65,11 +71,11 @@ body {
   background: var(--black);
   color: #fff;
   font-family: var(--font-display);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
-  padding: 14px 32px;
+  padding: 16px 42px;
   border: none;
   cursor: pointer;
   transition: background 0.2s, transform 0.15s;
@@ -84,11 +90,11 @@ body {
   background: transparent;
   color: var(--black);
   font-family: var(--font-display);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
-  padding: 13px 32px;
+  padding: 15px 42px;
   border: 1.5px solid var(--black);
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
@@ -103,11 +109,11 @@ body {
   background: transparent;
   color: #fff;
   font-family: var(--font-display);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
-  padding: 13px 32px;
+  padding: 15px 42px;
   border: 1.5px solid rgba(255,255,255,0.6);
   cursor: pointer;
   transition: background 0.2s, border-color 0.2s;
@@ -117,10 +123,10 @@ body {
 
 /* ── SECTION WRAPPER ── */
 .section-wrap {
-  padding: 100px 60px;
+  padding: 124px var(--section-pad-x);
 }
 @media (max-width: 768px) {
-  .section-wrap { padding: 60px 24px; }
+  .section-wrap { padding: 64px 24px; }
 }
 
 /* ── GRAIN OVERLAY ── */
@@ -137,6 +143,184 @@ body {
 @keyframes ticker {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
+}
+
+/* ── MILL LINE (SolarKilnStory four-step) ── */
+.kiln-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  position: relative;
+}
+.kiln-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+/* hairline dividers only in the caption zone, never across the photos */
+.kiln-card:not(:first-child) .kiln-caption {
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.kiln-photo {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: #1a1a18;
+}
+.kiln-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* full color: unify the four shots without desaturating */
+  filter: saturate(1.04) contrast(1.02);
+  transform: scale(1);
+  transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.kiln-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(15, 15, 13, 0) 55%, rgba(15, 15, 13, 0.45) 100%);
+  pointer-events: none;
+}
+
+/* the rail: a faint track between photo and caption, with a tan fill drawn over it */
+.kiln-seam {
+  position: relative;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.12);
+}
+.kiln-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--tan);
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+.kiln-tab {
+  position: absolute;
+  top: 50%;
+  left: 26px;
+  margin-top: -18px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  background: var(--tan);
+  color: var(--black);
+  border: 1px solid var(--tan);
+  z-index: 2;
+}
+
+.kiln-caption { padding: 28px 26px 32px; }
+.kiln-title {
+  position: relative;
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  text-transform: uppercase;
+  padding-bottom: 4px;
+  margin-bottom: 10px;
+}
+.kiln-title::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--tan);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.kiln-spec {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  margin-bottom: 12px;
+}
+.kiln-body {
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.7;
+}
+
+/* hover: pointer devices only, no layout shift */
+@media (hover: hover) {
+  .kiln-card:hover .kiln-img { transform: scale(1.03); }
+  .kiln-card:hover .kiln-title::after { transform: scaleX(1); }
+}
+
+/* Draw-on-scroll. The visible end-state above is the default, so no-JS and
+   reduced-motion users see the section fully drawn. The hidden start-state
+   applies only when JS arms the section AND motion is allowed. */
+@media (prefers-reduced-motion: no-preference) {
+  .kiln-grid.kiln-armed .kiln-photo,
+  .kiln-grid.kiln-armed .kiln-caption,
+  .kiln-grid.kiln-armed .kiln-tab {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  .kiln-grid.kiln-armed .kiln-fill { transform: scaleX(0); }
+  .kiln-grid.kiln-armed .kiln-tab {
+    background: transparent;
+    color: var(--tan);
+  }
+
+  .kiln-grid.kiln-armed .kiln-photo,
+  .kiln-grid.kiln-armed .kiln-caption {
+    transition:
+      opacity 0.6s cubic-bezier(0.32, 0.72, 0, 1) var(--kiln-d),
+      transform 0.6s cubic-bezier(0.32, 0.72, 0, 1) var(--kiln-d);
+  }
+  .kiln-grid.kiln-armed .kiln-fill {
+    transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1) var(--kiln-d);
+  }
+  .kiln-grid.kiln-armed .kiln-tab {
+    transition:
+      opacity 0.6s cubic-bezier(0.32, 0.72, 0, 1) var(--kiln-d),
+      transform 0.6s cubic-bezier(0.32, 0.72, 0, 1) var(--kiln-d),
+      background 0.28s ease var(--kiln-d),
+      color 0.28s ease var(--kiln-d);
+  }
+
+  .kiln-grid.kiln-armed.in-view .kiln-photo,
+  .kiln-grid.kiln-armed.in-view .kiln-caption,
+  .kiln-grid.kiln-armed.in-view .kiln-tab {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .kiln-grid.kiln-armed.in-view .kiln-fill { transform: scaleX(1); }
+  .kiln-grid.kiln-armed.in-view .kiln-tab {
+    background: var(--tan);
+    color: var(--black);
+  }
+}
+
+/* Mill Line: 2-up on tablet, where four columns get too narrow to read */
+@media (min-width: 769px) and (max-width: 1080px) {
+  .kiln-grid {
+    grid-template-columns: 1fr 1fr;
+    row-gap: 52px;
+  }
+  .kiln-card:not(:first-child) .kiln-caption { border-left: none; }
+  .kiln-card:nth-child(even) .kiln-caption {
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+  }
 }
 
 /* ── SCROLLBAR ── */
@@ -190,6 +374,21 @@ body {
   .how-it-works-grid {
     grid-template-columns: 1fr 1fr !important;
   }
+  /* Process steps: 2-up on mobile instead of a rigid 4-col row */
+  .process-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 48px 0 !important;
+  }
+  .process-connector { display: none !important; }
+  /* Mill Line: stack to a single column; numbers 01-04 down one column
+     read as the sequence. Drop the caption hairline when stacked. */
+  .kiln-grid {
+    grid-template-columns: 1fr !important;
+    gap: 40px 0;
+  }
+  .kiln-card:not(:first-child) .kiln-caption {
+    border-left: none;
+  }
   /* Hero content padding on mobile */
   .hero-content {
     padding: 0 24px 48px !important;
@@ -197,4 +396,21 @@ body {
   /* Switcher labels abbreviate on very small screens */
   .switcher-label-full { display: none !important; }
   .switcher-label-short { display: inline !important; }
+  /* Smaller header chrome + tighter gutters on mobile */
+  :root {
+    --switcher-h: 42px;
+    --nav-h: 72px;
+    --emblem-size: 74px;
+    --section-pad-x: 24px;
+  }
+}
+
+/* ── REDUCED MOTION ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }

@@ -2,7 +2,9 @@ import type { SquareProduct } from '@/lib/square'
 
 const SQ = 'https://images.squarespace-cdn.com/content/v1/60007801ebc4a249bd3ce872/'
 
-export const FALLBACK_PRODUCTS_CLIENT: SquareProduct[] = [
+// Client-safe sample catalog. Used by the Table Planner calculator (a client
+// component that cannot import the server-side Square SDK in lib/square.ts).
+const CLIENT_BASE: Omit<SquareProduct, 'variationId'>[] = [
   {
     id: 'f-1',
     name: 'Black Walnut Slab 25"×46"×2½"',
@@ -160,3 +162,8 @@ export const FALLBACK_PRODUCTS_CLIENT: SquareProduct[] = [
     inStock: true,
   },
 ]
+
+export const FALLBACK_PRODUCTS_CLIENT: SquareProduct[] = CLIENT_BASE.map((p) => ({
+  ...p,
+  variationId: p.id,
+}))

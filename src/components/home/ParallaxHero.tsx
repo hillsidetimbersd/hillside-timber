@@ -9,7 +9,7 @@ const SQ = 'https://images.squarespace-cdn.com/content/v1/60007801ebc4a249bd3ce8
 
 const HT_CONFIG = {
   image: `${SQ}1761697039666-AO6NP43V1TJMFDDBDK9T/880BD484-10A9-499E-98BB-80566B2C2A79.jpeg?format=2500w`,
-  eyebrow: 'Black Hills Region · South Dakota',
+  eyebrow: 'Locally Harvested · South Dakota',
   ctaPrimary: 'Browse the Slab Catalog',
   ctaPrimaryHref: '/shop',
   ctaSecondary: 'Our Story',
@@ -18,7 +18,7 @@ const HT_CONFIG = {
 
 const HT_VALUE_PROPS = [
   { num: '01', label: 'Solar Kiln Dried', body: 'Custom-built solar kiln on site. Slow, even drying that protects the figure.' },
-  { num: '02', label: 'Locally Harvested', body: 'Sourced from the Black Hills and surrounding region. Twenty-four species and counting.' },
+  { num: '02', label: 'Locally Harvested', body: 'Harvested locally across South Dakota, plus rare and exotic species from around the world.' },
   { num: '03', label: 'One of a Kind', body: 'Live edges, burls, and figured grain. No two slabs in our inventory are the same.' },
 ]
 
@@ -90,7 +90,7 @@ function HTHero({ brand }: { brand: ReturnType<typeof useBrand> }) {
         </div>
         <h1 style={{
           fontFamily: 'var(--font-display)',
-          fontSize: 'clamp(54px, 7.5vw, 108px)',
+          fontSize: 'clamp(56px, 7.5vw, 122px)',
           fontWeight: 800,
           letterSpacing: '-2px',
           lineHeight: 0.9,
@@ -103,9 +103,9 @@ function HTHero({ brand }: { brand: ReturnType<typeof useBrand> }) {
         </h1>
         <p style={{
           fontFamily: 'var(--font-body)',
-          fontSize: '15px',
+          fontSize: '17px',
           color: 'var(--gray-dark)',
-          maxWidth: 520,
+          maxWidth: 'var(--content-text)',
           margin: '0 auto 28px',
           lineHeight: 1.7,
           fontStyle: 'italic',
@@ -163,7 +163,7 @@ function HTHero({ brand }: { brand: ReturnType<typeof useBrand> }) {
               </div>
               <p style={{
                 fontFamily: 'var(--font-body)',
-                fontSize: '12px',
+                fontSize: '14px',
                 color: 'var(--gray-dark)',
                 lineHeight: 1.55,
               }}>
@@ -261,7 +261,7 @@ function SFWHero({ brand }: { brand: ReturnType<typeof useBrand> }) {
       <div className="hero-content" style={{
         position: 'relative',
         zIndex: 2,
-        padding: '0 60px 60px',
+        padding: '0 var(--section-pad-x) 60px',
       }}>
         {/* Eyebrow */}
         <div style={{
@@ -279,7 +279,7 @@ function SFWHero({ brand }: { brand: ReturnType<typeof useBrand> }) {
         {/* Headline */}
         <h1 style={{
           fontFamily: 'var(--font-display)',
-          fontSize: 'clamp(56px, 8vw, 110px)',
+          fontSize: 'clamp(56px, 8vw, 124px)',
           fontWeight: 800,
           letterSpacing: '-2px',
           lineHeight: 0.92,
@@ -293,9 +293,9 @@ function SFWHero({ brand }: { brand: ReturnType<typeof useBrand> }) {
         {/* Sub */}
         <p style={{
           fontFamily: 'var(--font-body)',
-          fontSize: '15px',
+          fontSize: '17px',
           color: 'rgba(255,255,255,0.7)',
-          maxWidth: 400,
+          maxWidth: 480,
           lineHeight: 1.7,
           marginBottom: 36,
           fontStyle: 'italic',
@@ -349,7 +349,7 @@ function SFWHero({ brand }: { brand: ReturnType<typeof useBrand> }) {
               </div>
               <p style={{
                 fontFamily: 'var(--font-body)',
-                fontSize: '12px',
+                fontSize: '14px',
                 color: 'rgba(255,255,255,0.55)',
                 lineHeight: 1.6,
               }}>

@@ -1,0 +1,34 @@
+import ProductCard from '@/components/shop/ProductCard'
+import type { Product } from '@/lib/squarespace'
+
+export default function TopPicks({ products }: { products: Product[] }) {
+  if (products.length < 3) return null
+
+  return (
+    <section style={{ background: 'var(--cream)', padding: '110px var(--section-pad-x)', borderTop: '1px solid var(--border)' }}>
+      <div style={{ maxWidth: 'var(--content-wide)', margin: '0 auto' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 20, marginBottom: 40 }}>
+          <div>
+            <div className="label" style={{ marginBottom: 14 }}>Hand-Picked</div>
+            <h2 style={{
+              fontFamily: 'var(--font-display)', fontSize: 'clamp(34px, 4vw, 60px)', fontWeight: 800,
+              letterSpacing: '-1px', textTransform: 'uppercase', color: 'var(--black)', lineHeight: 0.95,
+            }}>
+              Our Top Picks
+            </h2>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: 'var(--gray)', fontStyle: 'italic', marginTop: 12, maxWidth: 520, lineHeight: 1.6 }}>
+              The most striking pieces in the yard right now. One of a kind, and they move fast.
+            </p>
+          </div>
+          <a href="/shop" className="btn-ghost">View All Inventory</a>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 20 }}>
+          {products.map((p) => (
+            <ProductCard key={p.id} product={p} />
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}

@@ -18,11 +18,11 @@ export default function InstagramFeed() {
 
   return (
     <section style={{
-      padding: '100px 60px',
+      padding: '120px var(--section-pad-x)',
       background: 'var(--cream)',
       borderTop: '1px solid var(--border)',
     }}>
-      <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+      <div style={{ maxWidth: 'var(--content-max)', margin: '0 auto' }}>
         <div style={{
           display: 'flex',
           justifyContent: 'space-between',
@@ -33,7 +33,7 @@ export default function InstagramFeed() {
             <div className="label" style={{ marginBottom: 10 }}>Follow Along</div>
             <h2 style={{
               fontFamily: 'var(--font-display)',
-              fontSize: 'clamp(32px, 3.5vw, 48px)',
+              fontSize: 'clamp(34px, 3.5vw, 54px)',
               fontWeight: 800,
               letterSpacing: '-0.5px',
               textTransform: 'uppercase',

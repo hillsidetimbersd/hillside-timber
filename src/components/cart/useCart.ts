@@ -4,6 +4,8 @@ import { useState, useEffect, useCallback } from 'react'
 
 export interface CartItem {
   id: string
+  /** Square item variation id, used to build the authoritative order at checkout. */
+  catalogObjectId: string
   name: string
   price: number
   image?: string

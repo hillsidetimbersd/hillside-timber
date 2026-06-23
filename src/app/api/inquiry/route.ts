@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { sendEmail, emailConfigured, escapeHtml, OWNER_EMAIL } from '@/lib/email'
 
 export async function POST(request: Request) {
   try {
@@ -65,6 +66,58 @@ export async function POST(request: Request) {
     if (error) {
       console.error('Supabase insert error:', error)
       return NextResponse.json({ error: 'Database error' }, { status: 500 })
+    }
+
+    // Best-effort notifications. The inquiry is already saved, so email failures
+    // never fail the request.
+    if (emailConfigured()) {
+      // The form submits dimensions as a JSON string of { l, w, h, unit }.
+      const dims = dimensions as { l?: string; w?: string; h?: string; unit?: string } | null
+      const dimsText = dims
+        ? [dims.l, dims.w, dims.h].filter(Boolean).join(' x ') + (dims.unit ? ` ${dims.unit}` : '')
+        : ''
+      const rows: [string, string][] = [
+        ['Project', projectType ?? ''],
+        ['Budget', budget ?? ''],
+        ['Timeline', timeline ?? ''],
+        ['Species', species.length > 0 ? species.join(', ') : ''],
+        ['Finish', finish ?? ''],
+        ['Dimensions', dimsText],
+        ['Delivery', deliveryMethod ?? ''],
+        ['Phone', phone ?? ''],
+        ['Zip', zip ?? ''],
+      ].filter(([, v]) => v) as [string, string][]
+
+      const detailHtml = rows
+        .map(([k, v]) => `<tr><td style="padding:2px 12px 2px 0"><strong>${k}</strong></td><td>${escapeHtml(v)}</td></tr>`)
+        .join('')
+      const photosHtml = photoUrls.length > 0
+        ? `<p><strong>Photos:</strong><br>${photoUrls.map((u) => `<a href="${u}">${escapeHtml(u)}</a>`).join('<br>')}</p>`
+        : ''
+
+      await sendEmail({
+        to: OWNER_EMAIL,
+        replyTo: email,
+        subject: `New custom project request from ${name}`,
+        html: `
+          <p><strong>${escapeHtml(name)}</strong> (${escapeHtml(email)}) submitted a custom project request.</p>
+          <table style="border-collapse:collapse;font-size:14px">${detailHtml}</table>
+          <p style="white-space:pre-wrap"><strong>Vision:</strong><br>${escapeHtml(vision)}</p>
+          ${photosHtml}
+        `,
+      })
+
+      await sendEmail({
+        to: email,
+        subject: 'We received your custom project request',
+        html: `
+          <p>Hi ${escapeHtml(name)},</p>
+          <p>Thanks for reaching out about your custom project. We have your request and Slavic
+          reviews every one personally. We will be in touch soon to talk through the details.</p>
+          <p>In the meantime, if anything comes up you can reach us at (605) 310-4846.</p>
+          <p>Sioux Falls Woodworking</p>
+        `,
+      })
     }
 
     return NextResponse.json({ success: true })

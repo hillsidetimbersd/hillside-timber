@@ -36,9 +36,9 @@ export default function ReviewsSection() {
   return (
     <section style={{
       background: '#0f0f0d',
-      padding: '100px 60px',
+      padding: '120px var(--section-pad-x)',
     }}>
-      <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+      <div style={{ maxWidth: 'var(--content-max)', margin: '0 auto' }}>
         {/* Header */}
         <div style={{ marginBottom: 60 }}>
           <div style={{
@@ -54,7 +54,7 @@ export default function ReviewsSection() {
           </div>
           <h2 style={{
             fontFamily: 'var(--font-display)',
-            fontSize: 'clamp(36px, 4vw, 56px)',
+            fontSize: 'clamp(38px, 4vw, 64px)',
             fontWeight: 800,
             letterSpacing: '-1px',
             textTransform: 'uppercase',
@@ -84,7 +84,7 @@ export default function ReviewsSection() {
               <Stars count={r.rating} />
               <p style={{
                 fontFamily: 'var(--font-body)',
-                fontSize: '14px',
+                fontSize: '16px',
                 color: 'rgba(255,255,255,0.7)',
                 lineHeight: 1.75,
                 marginBottom: 24,

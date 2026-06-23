@@ -41,12 +41,12 @@ function CustomPageInner() {
           backgroundSize: 'cover', backgroundPosition: 'center',
         }} />
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(15,15,13,0.92), rgba(15,15,13,0.1))' }} />
-        <div style={{ position: 'relative', zIndex: 1, padding: '0 60px 56px', maxWidth: 1200, width: '100%', margin: '0 auto' }}>
+        <div style={{ position: 'relative', zIndex: 1, padding: '0 var(--section-pad-x) 56px', maxWidth: 'var(--content-max)', width: '100%', margin: '0 auto' }}>
           <div className="label" style={{ marginBottom: 12, color: 'var(--green-light)' }}>Sioux Falls Woodworking</div>
-          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(44px, 6vw, 80px)', fontWeight: 800, letterSpacing: '-1px', textTransform: 'uppercase', color: '#fff', lineHeight: 0.92, marginBottom: 18 }}>
+          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(46px, 6vw, 90px)', fontWeight: 800, letterSpacing: '-1px', textTransform: 'uppercase', color: '#fff', lineHeight: 0.92, marginBottom: 18 }}>
             Custom<br />Projects
           </h1>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: 'rgba(255,255,255,0.82)', maxWidth: 520, lineHeight: 1.6, fontStyle: 'italic' }}>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: 'rgba(255,255,255,0.82)', maxWidth: 650, lineHeight: 1.6, fontStyle: 'italic' }}>
             {hasPrefill
               ? "We've pre-filled your Quote Builder selections. Add a few contact details to finish your request."
               : 'Tell us about the piece you have in mind. Slavic reviews every request personally.'
@@ -55,7 +55,7 @@ function CustomPageInner() {
         </div>
       </div>
 
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '80px 60px 40px' }}>
+      <div style={{ maxWidth: 'var(--content-max)', margin: '0 auto', padding: '80px var(--section-pad-x) 40px' }}>
         <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '28px', fontWeight: 800, textTransform: 'uppercase', color: 'var(--black)', letterSpacing: '-0.5px', marginBottom: 40, textAlign: 'center' }}>
           How it works
         </h2>
@@ -73,7 +73,7 @@ function CustomPageInner() {
               <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '14px', fontWeight: 700, textTransform: 'uppercase', color: 'var(--black)', marginBottom: 8, letterSpacing: '0.5px' }}>
                 {step.title}
               </h3>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: 'var(--gray)', lineHeight: 1.7, fontStyle: 'italic' }}>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--gray)', lineHeight: 1.7, fontStyle: 'italic' }}>
                 {step.body}
               </p>
             </div>

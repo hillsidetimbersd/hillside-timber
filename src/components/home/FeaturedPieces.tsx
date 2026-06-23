@@ -30,9 +30,9 @@ export default function FeaturedPieces() {
   return (
     <section style={{
       background: 'var(--cream)',
-      padding: '120px 60px',
+      padding: '132px var(--section-pad-x)',
     }}>
-      <div style={{ maxWidth: 1280, margin: '0 auto' }}>
+      <div style={{ maxWidth: 'var(--content-max)', margin: '0 auto' }}>
         <div style={{
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
@@ -44,7 +44,7 @@ export default function FeaturedPieces() {
             <div className="label" style={{ marginBottom: 16 }}>Recent Work</div>
             <h2 style={{
               fontFamily: 'var(--font-display)',
-              fontSize: 'clamp(36px, 4vw, 56px)',
+              fontSize: 'clamp(38px, 4vw, 64px)',
               fontWeight: 800,
               letterSpacing: '-1.5px',
               lineHeight: 0.95,
@@ -56,11 +56,11 @@ export default function FeaturedPieces() {
           </div>
           <p style={{
             fontFamily: 'var(--font-body)',
-            fontSize: '15px',
+            fontSize: '17px',
             color: 'var(--gray-dark)',
             lineHeight: 1.8,
             fontStyle: 'italic',
-            maxWidth: 460,
+            maxWidth: 580,
           }}>
             Every commission starts with the slab and ends with a finished piece you can stand on top of. No flat-pack, no veneer, no hardware-store screws. Solid wood, joinery, and a finish that lasts.
           </p>
@@ -149,7 +149,7 @@ export default function FeaturedPieces() {
                   </div>
                   <div style={{
                     fontFamily: 'var(--font-body)',
-                    fontSize: '12px',
+                    fontSize: '14px',
                     color: 'rgba(255,255,255,0.65)',
                     fontStyle: 'italic',
                   }}>

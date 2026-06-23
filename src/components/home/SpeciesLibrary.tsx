@@ -17,11 +17,11 @@ export default function SpeciesLibrary() {
   return (
     <section style={{
       background: '#fff',
-      padding: '120px 60px',
+      padding: '132px var(--section-pad-x)',
       borderTop: '1px solid var(--border)',
       borderBottom: '1px solid var(--border)',
     }}>
-      <div style={{ maxWidth: 1280, margin: '0 auto' }}>
+      <div style={{ maxWidth: 'var(--content-max)', margin: '0 auto' }}>
         <div style={{
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
@@ -33,7 +33,7 @@ export default function SpeciesLibrary() {
             <div className="label" style={{ marginBottom: 16 }}>The Species Library</div>
             <h2 style={{
               fontFamily: 'var(--font-display)',
-              fontSize: 'clamp(36px, 4vw, 56px)',
+              fontSize: 'clamp(38px, 4vw, 64px)',
               fontWeight: 800,
               letterSpacing: '-1.5px',
               lineHeight: 0.95,
@@ -45,11 +45,11 @@ export default function SpeciesLibrary() {
           </div>
           <p style={{
             fontFamily: 'var(--font-body)',
-            fontSize: '15px',
+            fontSize: '17px',
             color: 'var(--gray-dark)',
             lineHeight: 1.8,
             fontStyle: 'italic',
-            maxWidth: 460,
+            maxWidth: 580,
           }}>
             From iconic Black Walnut to rare Bastogne and figured burls. Every species is logged, scaled, photographed, and listed by the slab. Browse by what your project needs.
           </p>

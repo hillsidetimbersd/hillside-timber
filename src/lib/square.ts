@@ -1,7 +1,13 @@
+import { SquareClient, SquareEnvironment } from 'square'
+import type { Square } from 'square'
+
 export interface SquareProduct {
   id: string
+  /** First sellable variation id. Checkout references the variation, not the item. */
+  variationId: string
   name: string
   description: string
+  /** Price in cents. */
   price: number
   images: string[]
   species: string
@@ -16,63 +22,191 @@ export function formatPrice(cents: number): string {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(cents / 100)
 }
 
+/**
+ * Memoized Square SDK client. Returns null when no access token is configured,
+ * in which case callers fall back to the local sample catalog.
+ */
+let cachedClient: SquareClient | null = null
+export function getSquareClient(): SquareClient | null {
+  const token = process.env.SQUARE_ACCESS_TOKEN
+  if (!token) return null
+  if (cachedClient) return cachedClient
+  const environment =
+    process.env.SQUARE_ENVIRONMENT === 'production'
+      ? SquareEnvironment.Production
+      : SquareEnvironment.Sandbox
+  cachedClient = new SquareClient({ token, environment })
+  return cachedClient
+}
+
+/**
+ * Maps a Square Category name to a brand storefront. Johan assigns each item to a
+ * category in the Square Dashboard; unmatched items appear on both storefronts so
+ * inventory is never accidentally hidden.
+ */
+function categoryNameToBrand(name: string | undefined): SquareProduct['brand'] {
+  const n = (name ?? '').toLowerCase()
+  if (n.includes('sioux') || n.includes('sfw') || n.includes('finished') || n.includes('furniture')) {
+    return 'sfw'
+  }
+  if (n.includes('hillside') || n.includes('timber') || n.includes('slab')) {
+    return 'ht'
+  }
+  return 'both'
+}
+
+/**
+ * Reads a Square custom attribute string value by key. Tolerates the application-id
+ * prefix Square adds when the attribute is defined by another app (e.g. `abcd1234:species`).
+ */
+function customAttr(
+  values: Record<string, Square.CatalogCustomAttributeValue> | undefined,
+  name: string,
+): string {
+  if (!values) return ''
+  for (const [key, value] of Object.entries(values)) {
+    if (key === name || key.endsWith(`:${name}`) || value.name === name) {
+      return value.stringValue ?? ''
+    }
+  }
+  return ''
+}
+
+/**
+ * Returns availability keyed by variation id for the variations Square tracks at the
+ * configured location. Untracked variations are simply absent from the map. Shared by
+ * the catalog read and the checkout route, so the same source decides "is this sold".
+ */
+export async function getAvailabilityMap(
+  client: SquareClient,
+  variationIds: string[],
+): Promise<Record<string, boolean>> {
+  const locationId = process.env.SQUARE_LOCATION_ID
+  const result: Record<string, boolean> = {}
+  if (!locationId || variationIds.length === 0) return result
+
+  const page = await client.inventory.batchGetCounts({
+    catalogObjectIds: variationIds,
+    locationIds: [locationId],
+  })
+  for await (const count of page) {
+    const id = count.catalogObjectId
+    if (!id) continue
+    const qty = count.quantity != null ? Number(count.quantity) : 0
+    const inStock = count.state === 'IN_STOCK' && qty > 0
+    // A variation can report multiple states; treat it as available if any IN_STOCK qty>0.
+    result[id] = (result[id] ?? false) || inStock
+  }
+  return result
+}
+
+async function applyInventory(client: SquareClient, products: SquareProduct[]): Promise<void> {
+  const variationIds = products.map((p) => p.variationId).filter(Boolean)
+  if (variationIds.length === 0) return
+  try {
+    const availability = await getAvailabilityMap(client, variationIds)
+    for (const product of products) {
+      // Only override when Square tracks this variation; untracked items stay in stock.
+      if (product.variationId in availability) {
+        product.inStock = availability[product.variationId]
+      }
+    }
+  } catch (err) {
+    console.error('Square inventory fetch failed:', err)
+  }
+}
+
 export async function getCatalogItems(brandKey: string): Promise<SquareProduct[]> {
-  const accessToken = process.env.SQUARE_ACCESS_TOKEN
-  if (!accessToken) {
+  const client = getSquareClient()
+  if (!client) {
     return FALLBACK_PRODUCTS.filter((p) => p.brand === brandKey || p.brand === 'both')
   }
 
   try {
-    const res = await fetch('https://connect.squareup.com/v2/catalog/list?types=ITEM', {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
-        'Square-Version': '2024-01-18',
-      },
-      next: { revalidate: 300 },
-    })
-    if (!res.ok) return FALLBACK_PRODUCTS
-
-    const data = await res.json()
-    const items: SquareProduct[] = (data.objects ?? [])
-      .filter((obj: Record<string, unknown>) => {
-        const itemData = obj.item_data as Record<string, unknown> | undefined
-        const variations = itemData?.variations as unknown[] | undefined
-        return variations && variations.length > 0
+    const objects: Square.CatalogObject[] = []
+    const related: Square.CatalogObject[] = []
+    let cursor: string | undefined
+    do {
+      const res = await client.catalog.search({
+        objectTypes: ['ITEM'],
+        includeRelatedObjects: true,
+        includeDeletedObjects: false,
+        limit: 100,
+        cursor,
       })
-      .map((obj: Record<string, unknown>) => {
-        const itemData = obj.item_data as Record<string, unknown>
-        const variations = (itemData.variations as Record<string, unknown>[]) ?? []
-        const firstVar = variations[0] as Record<string, unknown>
-        const varData = firstVar?.item_variation_data as Record<string, unknown>
-        const priceMoney = varData?.price_money as Record<string, unknown>
+      if (res.objects) objects.push(...res.objects)
+      if (res.relatedObjects) related.push(...res.relatedObjects)
+      cursor = res.cursor
+    } while (cursor)
 
-        const customAttrs = (itemData.custom_attribute_values as Record<string, Record<string, string>> | undefined) ?? {}
-        return {
-          id: obj.id as string,
-          name: itemData.name as string ?? 'Untitled',
-          description: itemData.description as string ?? '',
-          price: typeof priceMoney?.amount === 'number' ? priceMoney.amount : 0,
-          images: (itemData.image_ids as string[] | undefined) ?? [],
-          species: customAttrs.species?.string_value ?? '',
-          type: customAttrs.type?.string_value ?? '',
-          dimensions: customAttrs.dimensions?.string_value ?? '',
-          kilnStatus: (customAttrs.kiln_status?.string_value ?? 'solar-kiln') as SquareProduct['kilnStatus'],
-          brand: (customAttrs.brand?.string_value ?? 'ht') as SquareProduct['brand'],
-          inStock: true,
-        }
+    // Resolve related image URLs and category names referenced by the items.
+    const imageUrlById = new Map<string, string>()
+    const categoryNameById = new Map<string, string>()
+    for (const obj of related) {
+      if (obj.type === 'IMAGE' && obj.imageData?.url) {
+        imageUrlById.set(obj.id, obj.imageData.url)
+      } else if (obj.type === 'CATEGORY' && obj.id && obj.categoryData?.name) {
+        categoryNameById.set(obj.id, obj.categoryData.name)
+      }
+    }
+
+    const products: SquareProduct[] = []
+    for (const obj of objects) {
+      if (obj.type !== 'ITEM' || !obj.itemData) continue
+      const item = obj.itemData
+
+      const firstVar = (item.variations ?? []).find(
+        (v): v is Square.CatalogObject.ItemVariation => v.type === 'ITEM_VARIATION',
+      )
+      if (!firstVar) continue
+
+      const amount = firstVar.itemVariationData?.priceMoney?.amount
+      const attrs = obj.customAttributeValues
+
+      const categoryId =
+        item.reportingCategory?.id ?? item.categories?.[0]?.id ?? item.categoryId ?? undefined
+      const categoryName = categoryId ? categoryNameById.get(categoryId) : undefined
+
+      const images = (item.imageIds ?? [])
+        .map((id) => imageUrlById.get(id))
+        .filter((url): url is string => Boolean(url))
+
+      products.push({
+        id: obj.id,
+        variationId: firstVar.id,
+        name: item.name ?? 'Untitled',
+        description: item.description ?? '',
+        // Square money amounts are bigint cents; catalog prices are well within Number range.
+        price: amount != null ? Number(amount) : 0,
+        images,
+        species: customAttr(attrs, 'species'),
+        type: customAttr(attrs, 'type'),
+        dimensions: customAttr(attrs, 'dimensions'),
+        kilnStatus: (customAttr(attrs, 'kiln_status') || 'solar-kiln') as SquareProduct['kilnStatus'],
+        brand: categoryNameToBrand(categoryName),
+        inStock: true,
       })
-      .filter((p: SquareProduct) => p.brand === brandKey || p.brand === 'both')
+    }
 
-    return items.length > 0 ? items : FALLBACK_PRODUCTS
-  } catch {
-    return FALLBACK_PRODUCTS
+    // An empty live catalog (e.g. before items are loaded) falls back to samples for dev.
+    if (products.length === 0) {
+      return FALLBACK_PRODUCTS.filter((p) => p.brand === brandKey || p.brand === 'both')
+    }
+
+    await applyInventory(client, products)
+
+    return products.filter((p) => p.brand === brandKey || p.brand === 'both')
+  } catch (err) {
+    console.error('Square catalog fetch failed:', err)
+    return FALLBACK_PRODUCTS.filter((p) => p.brand === brandKey || p.brand === 'both')
   }
 }
 
 const SQ = 'https://images.squarespace-cdn.com/content/v1/60007801ebc4a249bd3ce872/'
 
-const FALLBACK_PRODUCTS: SquareProduct[] = [
+// Local sample catalog used only when Square is unconfigured or unreachable. Each entry
+// uses its id as the variation id; real checkout always runs against the live Square catalog.
+const FALLBACK_BASE: Omit<SquareProduct, 'variationId'>[] = [
   {
     id: 'f-1',
     name: 'Black Walnut Slab 25"×46"×2½"',
@@ -230,3 +364,5 @@ const FALLBACK_PRODUCTS: SquareProduct[] = [
     inStock: true,
   },
 ]
+
+const FALLBACK_PRODUCTS: SquareProduct[] = FALLBACK_BASE.map((p) => ({ ...p, variationId: p.id }))

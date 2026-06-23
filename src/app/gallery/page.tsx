@@ -15,7 +15,7 @@ const PHOTOS = [
   { id: 8, src: 'https://images.unsplash.com/photo-1549187774-b4e9b0445b41?w=800&q=80', alt: 'Woodworking detail', cat: 'Process' },
   { id: 9, src: 'https://images.unsplash.com/photo-1584622781564-1d987f7333c1?w=800&q=80', alt: 'Finished piece', cat: 'Finished Pieces' },
   { id: 10, src: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=800&q=80', alt: 'SD forest', cat: 'Forest' },
-  { id: 11, src: 'https://images.unsplash.com/photo-1472552944129-b035e9ea3744?w=800&q=80', alt: 'Black Hills', cat: 'Forest' },
+  { id: 11, src: 'https://images.unsplash.com/photo-1472552944129-b035e9ea3744?w=800&q=80', alt: 'Standing timber', cat: 'Forest' },
   { id: 12, src: 'https://images.unsplash.com/photo-1511497584788-876760111969?w=800&q=80', alt: 'Ponderosa pines', cat: 'Forest' },
 ]
 

@@ -4,9 +4,9 @@ import { useState } from 'react'
 import { Plus, Minus } from '@phosphor-icons/react'
 
 const FAQS = [
-  { q: 'How do I know the wood is properly dried?', a: 'All slabs at Hillside Timber are dried in our custom solar kiln on-site in Canistota, SD. We monitor moisture content throughout the drying process. Each slab is only released once it reaches the target moisture level for its intended use.' },
-  { q: 'Do you ship slabs?', a: 'Yes. Smaller pieces can ship standard carrier. Large and heavy slabs ship via LTL freight. Use the freight estimator on our shop page to get a rough quote for your area. Final shipping cost is calculated at checkout.' },
-  { q: 'Can I visit the slab yard?', a: 'Absolutely. We welcome visitors to the yard in Canistota. Call ahead at (605) 310-4846 so we can make sure someone is around to show you everything. Many of our best customers have come to pick their own slabs in person.' },
+  { q: 'How do I know the wood is properly dried?', a: 'All slabs at Hillside Timber are dried in our custom solar kiln on-site here in South Dakota. We monitor moisture content throughout the drying process. Each slab is only released once it reaches the target moisture level for its intended use.' },
+  { q: 'Do you ship slabs?', a: 'Yes. Small pieces ship via standard carrier. Large, heavy slabs ship via LTL freight, and international orders are quoted with customs included. For oversized pieces, reach out with the item and your zip and we will confirm a freight quote.' },
+  { q: 'Can I visit the slab yard?', a: 'Yes, by appointment. We are 15 miles west of Sioux Falls on Highway 42. Call ahead at (605) 310-4846 to set up a time, and we will make sure someone is around to show you everything. Many of our best customers have come to pick their own slabs in person.' },
   { q: 'What species do you carry?', a: 'We carry 24+ species including white oak, black walnut, cherry, maple, elm, ash, cottonwood, bur oak, ponderosa pine, and cedar. Species availability changes with our harvest schedule. Contact us if you are looking for something specific.' },
   { q: 'What is the difference between solar kiln dried and air dried?', a: 'Solar kiln drying uses the sun to gently heat a kiln chamber, reducing drying time significantly while maintaining the integrity of the wood. Air drying is the traditional method, which takes years. Both produce excellent results; kiln drying allows us to release slabs faster and with more predictable moisture content.' },
   { q: 'Do you do custom projects at Sioux Falls Woodworking?', a: 'Yes. Sioux Falls Woodworking builds custom furniture and pieces to order. Use the custom project form on our site or call to discuss your project. We will follow up with a quote and timeline.' },
@@ -19,10 +19,10 @@ export default function FaqPage() {
 
   return (
     <div style={{ paddingTop: 'calc(var(--switcher-h) + var(--nav-h))' }}>
-      <div style={{ maxWidth: 800, margin: '0 auto', padding: '80px 60px' }}>
+      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '80px var(--section-pad-x)' }}>
         <div className="label" style={{ marginBottom: 16 }}>Help</div>
         <h1 style={{
-          fontFamily: 'var(--font-display)', fontSize: 'clamp(40px, 5vw, 60px)', fontWeight: 800,
+          fontFamily: 'var(--font-display)', fontSize: 'clamp(42px, 5vw, 68px)', fontWeight: 800,
           letterSpacing: '-1px', textTransform: 'uppercase', color: 'var(--black)',
           lineHeight: 0.95, marginBottom: 48,
         }}>
@@ -44,7 +44,7 @@ export default function FaqPage() {
                 }}
               >
                 <span style={{
-                  fontFamily: 'var(--font-display)', fontSize: '16px', fontWeight: 700,
+                  fontFamily: 'var(--font-display)', fontSize: '17px', fontWeight: 700,
                   letterSpacing: '0.2px', color: 'var(--black)',
                 }}>
                   {faq.q}
@@ -55,7 +55,7 @@ export default function FaqPage() {
               </button>
               {open === i && (
                 <div style={{ paddingBottom: 20 }}>
-                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: 'var(--gray-dark)', lineHeight: 1.8 }}>
+                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: 'var(--gray-dark)', lineHeight: 1.8 }}>
                     {faq.a}
                   </p>
                 </div>
@@ -68,7 +68,7 @@ export default function FaqPage() {
           <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '20px', fontWeight: 800, textTransform: 'uppercase', color: 'var(--black)', marginBottom: 8 }}>
             Still have questions?
           </h3>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: 'var(--gray)', marginBottom: 20, fontStyle: 'italic' }}>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--gray)', marginBottom: 20, fontStyle: 'italic' }}>
             Call or email Slavic directly. We are a small operation and we love talking wood.
           </p>
           <div style={{ display: 'flex', gap: 12 }}>

@@ -34,15 +34,15 @@ export default function CustomCtaStrip() {
         position: 'relative',
         zIndex: 2,
         textAlign: 'center',
-        padding: '80px 32px',
-        maxWidth: 760,
+        padding: '96px var(--section-pad-x)',
+        maxWidth: 960,
       }}>
         <div className="label" style={{ marginBottom: 18, color: 'var(--tan)' }}>
           Custom Project Inquiries
         </div>
         <h2 style={{
           fontFamily: 'var(--font-display)',
-          fontSize: 'clamp(40px, 5.5vw, 80px)',
+          fontSize: 'clamp(42px, 5.5vw, 90px)',
           fontWeight: 800,
           letterSpacing: '-1.5px',
           lineHeight: 0.95,
@@ -55,7 +55,7 @@ export default function CustomCtaStrip() {
         </h2>
         <p style={{
           fontFamily: 'var(--font-body)',
-          fontSize: '15px',
+          fontSize: '17px',
           color: 'rgba(255,255,255,0.7)',
           maxWidth: 480,
           margin: '0 auto 32px',
