@@ -20,8 +20,10 @@ export default function BrandEmblem() {
       className="brand-emblem"
       style={{
         position: 'relative',
-        height: 'var(--emblem-size)',
+        // The Sioux Falls piece is a bit smaller and dropped lower so it clears the top edge.
+        height: isHt ? 'var(--emblem-size)' : 'calc(var(--emblem-size) * 0.8)',
         width: isHt ? 'var(--emblem-size)' : 'auto',
+        marginTop: isHt ? 0 : 'calc(var(--emblem-size) * 0.16)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
