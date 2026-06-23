@@ -44,3 +44,6 @@ scroll-demo/
 
 # screenshots
 temporary screenshots/
+
+# Supabase CLI local temp state
+supabase/.temp/
