@@ -25,7 +25,8 @@ export default function BrandSwitcher() {
         top: 0,
         left: 0,
         right: 0,
-        height: 'var(--switcher-h)',
+        // 1px taller than the token so it overlaps the nav's top edge, sealing the seam.
+        height: 'calc(var(--switcher-h) + 1px)',
         zIndex: 60,
         display: 'flex',
         borderBottom: '1px solid rgba(0,0,0,0.1)',

@@ -167,7 +167,7 @@ export default function StepTwo({ form, set }: Props) {
           })}
           <div style={{
             display: 'flex', border: '1px solid var(--border)',
-            borderRadius: 2, overflow: 'hidden', height: 38,
+            borderRadius: 'var(--radius-sm)', overflow: 'hidden', height: 38,
           }}>
             {(['in', 'cm'] as const).map(unit => {
               const active = form.dimensionsUnit === unit

@@ -29,7 +29,7 @@ export default function EcoPoxySection() {
 
         {/* Resin-pour panel: an editorial stand-in for the product, built in CSS. */}
         <div style={{
-          position: 'relative', aspectRatio: '4 / 3', borderRadius: 4, overflow: 'hidden',
+          position: 'relative', aspectRatio: '4 / 3', borderRadius: 'var(--radius)', overflow: 'hidden',
           border: '1px solid rgba(255,255,255,0.1)',
           background:
             'radial-gradient(130% 100% at 28% 18%, rgba(58,122,85,0.55), transparent 58%),' +

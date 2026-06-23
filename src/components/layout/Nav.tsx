@@ -42,7 +42,7 @@ export default function Nav() {
 
   const transparent = isHome && !scrolled
   const lightHero = brand.key === 'ht'
-  const navBg = transparent ? 'transparent' : 'rgba(15,15,13,0.96)'
+  const navBg = transparent ? 'transparent' : '#0f0f0d'
   const navBorder = transparent ? '1px solid transparent' : '1px solid rgba(255,255,255,0.08)'
   const textColor = transparent && lightHero ? 'var(--black)' : '#fff'
 

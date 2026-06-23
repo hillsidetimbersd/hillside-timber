@@ -92,6 +92,7 @@ export default function InstagramFeed() {
                 aspectRatio: '1',
                 overflow: 'hidden',
                 position: 'relative',
+                borderRadius: 'var(--radius)',
               }}
               onMouseEnter={(e) => {
                 const img = e.currentTarget.querySelector('img')

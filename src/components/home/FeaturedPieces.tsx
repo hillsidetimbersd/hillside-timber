@@ -85,6 +85,7 @@ export default function FeaturedPieces() {
                 textDecoration: 'none',
                 cursor: 'pointer',
                 display: 'block',
+                borderRadius: 'var(--radius)',
               }}
               onMouseEnter={(e) => {
                 const img = e.currentTarget.querySelector('img')

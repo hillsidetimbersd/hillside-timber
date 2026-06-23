@@ -1,6 +1,6 @@
 'use client'
 
-import { ArrowUpRight, ChatCircle } from '@phosphor-icons/react'
+import { ArrowUpRight, ChatCircle, Tag } from '@phosphor-icons/react'
 import type { Product } from '@/lib/squarespace'
 import { formatPrice } from '@/lib/square'
 import MagnifyImage from '@/components/media/MagnifyImage'
@@ -53,12 +53,15 @@ export default function ProductCard({ product }: { product: Product }) {
       style={{
         background: '#fff',
         border: '1px solid var(--border)',
+        borderRadius: 'var(--radius)',
+        overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
-        transition: 'box-shadow 0.2s',
+        boxShadow: 'var(--shadow-sm)',
+        transition: 'box-shadow 0.25s ease, transform 0.25s ease',
       }}
-      onMouseEnter={(e) => (e.currentTarget.style.boxShadow = '0 4px 24px rgba(15,15,13,0.08)')}
-      onMouseLeave={(e) => (e.currentTarget.style.boxShadow = 'none')}
+      onMouseEnter={(e) => { e.currentTarget.style.boxShadow = 'var(--shadow)'; e.currentTarget.style.transform = 'translateY(-2px)' }}
+      onMouseLeave={(e) => { e.currentTarget.style.boxShadow = 'var(--shadow-sm)'; e.currentTarget.style.transform = 'none' }}
     >
       {/* Image with magnifying lens to inspect the grain */}
       {product.images[0] ? (
@@ -105,13 +108,20 @@ export default function ProductCard({ product }: { product: Product }) {
           </div>
         )}
 
-        {/* Piece No. — the customer-facing piece locator */}
+        {/* Piece No. — a tag-style locator chip */}
         {product.sku && (
           <div style={{
-            fontFamily: 'var(--font-display)', fontSize: '10px', fontWeight: 700,
-            letterSpacing: '1.5px', textTransform: 'uppercase', color: 'var(--gray)', marginBottom: 12,
+            display: 'inline-flex', alignItems: 'center', gap: 6, alignSelf: 'flex-start',
+            padding: '4px 9px 4px 8px', marginBottom: 12, borderRadius: 'var(--radius-sm)',
+            background: 'var(--cream)', border: '1px solid var(--border)',
           }}>
-            Piece No. <span style={{ color: 'var(--black)' }}>{product.sku}</span>
+            <Tag size={12} weight="fill" style={{ color: 'var(--green)' }} />
+            <span style={{ fontFamily: 'var(--font-display)', fontSize: '9px', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', color: 'var(--gray)' }}>
+              Piece No.
+            </span>
+            <span style={{ fontFamily: 'var(--font-display)', fontSize: '11px', fontWeight: 800, letterSpacing: '0.5px', color: 'var(--black)' }}>
+              {product.sku}
+            </span>
           </div>
         )}
 
@@ -158,7 +168,7 @@ const ACTION_BASE = {
   display: 'flex', alignItems: 'center', gap: 6, padding: '9px 14px',
   fontFamily: 'var(--font-display)', fontSize: '10px', fontWeight: 700,
   letterSpacing: '1px', textTransform: 'uppercase' as const, textDecoration: 'none',
-  whiteSpace: 'nowrap' as const, cursor: 'pointer',
+  whiteSpace: 'nowrap' as const, cursor: 'pointer', borderRadius: 'var(--radius-sm)',
 }
 
 function CardAction({ product, sold, reserve, inquiryHref }: { product: Product; sold: boolean; reserve: boolean; inquiryHref: string }) {

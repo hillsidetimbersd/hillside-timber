@@ -70,7 +70,7 @@ export default function SpeciesLibrary() {
                 color: 'inherit',
                 position: 'relative',
                 overflow: 'hidden',
-                borderRadius: 2,
+                borderRadius: 'var(--radius)',
                 aspectRatio: '4/5',
                 background: '#e8e4dc',
                 cursor: 'pointer',

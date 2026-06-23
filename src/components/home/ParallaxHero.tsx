@@ -130,7 +130,7 @@ function HTHero({ brand }: { brand: ReturnType<typeof useBrand> }) {
           gap: 1,
           background: 'rgba(15,15,13,0.18)',
           border: '1px solid rgba(255,255,255,0.18)',
-          borderRadius: 2,
+          borderRadius: 'var(--radius)',
           overflow: 'hidden',
           backdropFilter: 'blur(10px)',
         }}>

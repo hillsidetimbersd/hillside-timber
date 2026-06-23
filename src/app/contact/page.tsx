@@ -100,15 +100,15 @@ export default function ContactPage() {
               </div>
               <div>
                 <label htmlFor="contact-name" style={{ display: 'block', fontFamily: 'var(--font-display)', fontSize: '9px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--gray)', marginBottom: 6 }}>Name *</label>
-                <input id="contact-name" required type="text" value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} placeholder="Your name" {...focusable} style={{ width: '100%', padding: '12px 14px', fontFamily: 'var(--font-body)', fontSize: '14px', border: '1px solid var(--border)', outline: 'none', background: '#fff', transition: 'border-color 0.15s' }} />
+                <input id="contact-name" required type="text" value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} placeholder="Your name" {...focusable} style={{ width: '100%', padding: '12px 14px', fontFamily: 'var(--font-body)', fontSize: '14px', border: '1px solid var(--border)', outline: 'none', background: '#fff', transition: 'border-color 0.15s', borderRadius: 'var(--radius)' }} />
               </div>
               <div>
                 <label htmlFor="contact-email" style={{ display: 'block', fontFamily: 'var(--font-display)', fontSize: '9px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--gray)', marginBottom: 6 }}>Email *</label>
-                <input id="contact-email" required type="email" value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} placeholder="you@example.com" {...focusable} style={{ width: '100%', padding: '12px 14px', fontFamily: 'var(--font-body)', fontSize: '14px', border: '1px solid var(--border)', outline: 'none', background: '#fff', transition: 'border-color 0.15s' }} />
+                <input id="contact-email" required type="email" value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} placeholder="you@example.com" {...focusable} style={{ width: '100%', padding: '12px 14px', fontFamily: 'var(--font-body)', fontSize: '14px', border: '1px solid var(--border)', outline: 'none', background: '#fff', transition: 'border-color 0.15s', borderRadius: 'var(--radius)' }} />
               </div>
               <div>
                 <label htmlFor="contact-message" style={{ display: 'block', fontFamily: 'var(--font-display)', fontSize: '9px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--gray)', marginBottom: 6 }}>Message *</label>
-                <textarea id="contact-message" required rows={6} value={form.message} onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))} placeholder="What can we help you with?" {...focusable} style={{ width: '100%', padding: '12px 14px', fontFamily: 'var(--font-body)', fontSize: '14px', border: '1px solid var(--border)', outline: 'none', background: '#fff', resize: 'vertical', transition: 'border-color 0.15s' }} />
+                <textarea id="contact-message" required rows={6} value={form.message} onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))} placeholder="What can we help you with?" {...focusable} style={{ width: '100%', padding: '12px 14px', fontFamily: 'var(--font-body)', fontSize: '14px', border: '1px solid var(--border)', outline: 'none', background: '#fff', resize: 'vertical', transition: 'border-color 0.15s', borderRadius: 'var(--radius)' }} />
               </div>
               {error && (
                 <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#9b2c2c', lineHeight: 1.5, margin: 0 }}>

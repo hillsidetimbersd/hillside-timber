@@ -21,7 +21,7 @@ export default function LineArtCard({ selected, onClick, label, sublabel, svg, s
       style={{
         background: selected ? 'rgba(74,124,89,0.06)' : '#fff',
         border: selected ? '2px solid var(--green)' : '1px solid var(--border)',
-        borderRadius: 3,
+        borderRadius: 'var(--radius-sm)',
         padding,
         textAlign: 'center',
         cursor: 'pointer',

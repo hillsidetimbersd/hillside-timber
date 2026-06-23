@@ -98,7 +98,9 @@ export default function CustomProjectForm({ initialForm, startStep = 1 }: Props 
       border: '1px solid var(--border)',
       maxWidth: 640,
       margin: '0 auto',
-      boxShadow: '0 4px 24px rgba(15,15,13,0.06)',
+      borderRadius: 'var(--radius)',
+      overflow: 'hidden',
+      boxShadow: 'var(--shadow-sm)',
     }}>
       <div style={{ padding: '36px 40px 24px', borderBottom: '1px solid var(--border)' }}>
         <div className="label" style={{ marginBottom: 8 }}>Sioux Falls Woodworking</div>
@@ -184,7 +186,7 @@ export default function CustomProjectForm({ initialForm, startStep = 1 }: Props 
           color: var(--black);
           outline: none;
           transition: border-color 0.15s;
-          border-radius: 0;
+          border-radius: var(--radius);
           appearance: none;
           box-sizing: border-box;
         }

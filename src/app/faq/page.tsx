@@ -64,7 +64,7 @@ export default function FaqPage() {
           ))}
         </div>
 
-        <div style={{ marginTop: 60, padding: '32px', background: 'var(--cream)', border: '1px solid var(--border)' }}>
+        <div style={{ marginTop: 60, padding: '32px', background: 'var(--cream)', border: '1px solid var(--border)', borderRadius: 'var(--radius)' }}>
           <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '20px', fontWeight: 800, textTransform: 'uppercase', color: 'var(--black)', marginBottom: 8 }}>
             Still have questions?
           </h3>

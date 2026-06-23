@@ -55,6 +55,7 @@ export default function GalleryPage() {
                 color: active === cat ? '#fff' : 'var(--gray-dark)',
                 cursor: 'pointer',
                 transition: 'all 0.15s',
+                borderRadius: 'var(--radius-sm)',
               }}
             >
               {cat}
@@ -73,7 +74,7 @@ export default function GalleryPage() {
           <div
             key={photo.id}
             onClick={() => setLightbox(photo.src)}
-            style={{ marginBottom: 16, breakInside: 'avoid', cursor: 'pointer', position: 'relative', overflow: 'hidden' }}
+            style={{ marginBottom: 16, breakInside: 'avoid', cursor: 'pointer', position: 'relative', overflow: 'hidden', borderRadius: 'var(--radius)' }}
             onMouseEnter={(e) => {
               const img = e.currentTarget.querySelector('img')
               if (img) img.style.transform = 'scale(1.04)'
@@ -109,7 +110,7 @@ export default function GalleryPage() {
           <img
             src={lightbox.replace('w=800', 'w=1600')}
             alt="Gallery"
-            style={{ maxWidth: '90vw', maxHeight: '90vh', objectFit: 'contain' }}
+            style={{ maxWidth: '90vw', maxHeight: '90vh', objectFit: 'contain', borderRadius: 'var(--radius)' }}
             onClick={(e) => e.stopPropagation()}
           />
         </div>

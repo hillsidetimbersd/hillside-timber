@@ -58,7 +58,7 @@ export default function DropZone({ files, onChange, maxFiles = 5, maxSizeMB = 10
           onClick={() => inputRef.current?.click()}
           style={{
             border: `1.5px dashed ${dragging ? 'var(--green)' : 'var(--border)'}`,
-            borderRadius: 4,
+            borderRadius: 'var(--radius)',
             padding: hasFiles ? '14px 16px' : '32px 16px',
             textAlign: 'center',
             background: dragging ? 'rgba(74,124,89,0.04)' : '#fff',
@@ -112,7 +112,7 @@ export default function DropZone({ files, onChange, maxFiles = 5, maxSizeMB = 10
       {hasFiles && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
           {files.map((file, i) => (
-            <div key={i} style={{ position: 'relative', aspectRatio: '1', borderRadius: 3, overflow: 'hidden', background: 'var(--border)' }}>
+            <div key={i} style={{ position: 'relative', aspectRatio: '1', borderRadius: 'var(--radius-sm)', overflow: 'hidden', background: 'var(--border)' }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={URL.createObjectURL(file)}

@@ -49,7 +49,7 @@ export default function ChipSelector({ options, value, onChange, mode, exclusive
               letterSpacing: soft ? '0' : '1.5px',
               textTransform: soft ? ('none' as const) : ('uppercase' as const),
               padding: '8px 14px',
-              borderRadius: 2,
+              borderRadius: 'var(--radius-sm)',
               border: isSelected(opt) ? '2px solid var(--green)' : '1px solid var(--border)',
               background: isSelected(opt) ? 'rgba(74,124,89,0.06)' : '#fff',
               color: isSelected(opt) ? 'var(--green)' : 'var(--gray)',

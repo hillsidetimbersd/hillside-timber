@@ -168,8 +168,8 @@ export default function GalleryScroll({ products = [] }: { products?: Product[] 
       </div>
 
       <style>{`
-        .gallery-tile { position: relative; display: block; border-radius: 3px; overflow: hidden; flex-shrink: 0; text-decoration: none; box-shadow: 0 2px 20px rgba(15,15,13,0.08); transition: box-shadow 0.25s ease; }
-        .gallery-tile:hover { box-shadow: 0 14px 40px rgba(15,15,13,0.22); }
+        .gallery-tile { position: relative; display: block; border-radius: var(--radius); overflow: hidden; flex-shrink: 0; text-decoration: none; box-shadow: var(--shadow-sm); transition: box-shadow 0.25s ease; }
+        .gallery-tile:hover { box-shadow: var(--shadow); }
         .gallery-tile:focus-visible { outline: 3px solid var(--green); outline-offset: 3px; }
       `}</style>
     </div>
@@ -223,7 +223,7 @@ function CtaCard({ title, sub, href, accent }: { title: string; sub: string; hre
     <a
       href={href}
       style={{
-        background: '#fff', border: `1px solid ${accent ? 'var(--green)' : 'var(--border)'}`, padding: '20px 24px',
+        background: '#fff', border: `1px solid ${accent ? 'var(--green)' : 'var(--border)'}`, borderRadius: 'var(--radius)', padding: '20px 24px',
         display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer',
         textDecoration: 'none', transition: 'border-color 0.2s, box-shadow 0.2s',
       }}

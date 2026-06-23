@@ -17,6 +17,13 @@
   --content-wide: 1640px;
   --content-text: 720px;
   --section-pad-x: 64px;
+  /* Softening: moderate corner radius + warm, layered shadows */
+  --radius-lg: 14px;
+  --radius: 10px;
+  --radius-sm: 7px;
+  --shadow-sm: 0 2px 12px rgba(15, 15, 13, 0.05);
+  --shadow: 0 12px 32px rgba(15, 15, 13, 0.09);
+  --shadow-lg: 0 22px 55px rgba(15, 15, 13, 0.15);
 }
 
 @theme inline {
@@ -120,6 +127,8 @@ body {
   text-decoration: none;
 }
 .btn-ghost-white:hover { background: rgba(255,255,255,0.15); border-color: #fff; }
+
+.btn-primary, .btn-ghost, .btn-ghost-white { border-radius: var(--radius-sm); }
 
 /* ── SECTION WRAPPER ── */
 .section-wrap {
@@ -326,7 +335,7 @@ body {
 /* ── SCROLLBAR ── */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--cream); }
-::-webkit-scrollbar-thumb { background: var(--tan); }
+::-webkit-scrollbar-thumb { background: var(--tan); border-radius: 3px; }
 
 /* ── MOBILE RESPONSIVE ── */
 @media (max-width: 768px) {
