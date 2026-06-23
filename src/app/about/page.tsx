@@ -1,95 +1,103 @@
 import { cookies } from 'next/headers'
 import { getBrand } from '@/lib/brand'
 
+const STEPS = ['Sourced', 'Milled', 'Kiln-Dried', 'Inspected']
+
+const STATS = [
+  { num: '24+', label: 'Wood Species' },
+  { num: '100%', label: 'Locally Harvested' },
+  { num: '10+', label: 'Years Milling' },
+  { num: '1', label: 'Solar Kiln On-Site' },
+]
+
 export default async function AboutPage() {
   const cookieStore = await cookies()
   const brand = getBrand(cookieStore.get('ww-brand')?.value ?? 'ht')
+  const phoneDigits = brand.contact.phone.replace(/\D/g, '')
 
   return (
     <div style={{ paddingTop: 'calc(var(--switcher-h) + var(--nav-h))' }}>
-      {/* Hero */}
-      <div style={{
-        position: 'relative',
-        height: '60vh',
-        overflow: 'hidden',
-        display: 'flex',
-        alignItems: 'flex-end',
-      }}>
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          backgroundImage: 'url(https://images.unsplash.com/photo-1472552944129-b035e9ea3744?w=1920&q=80)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }} />
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(15,15,13,0.9), rgba(15,15,13,0.2))' }} />
-        <div style={{ position: 'relative', zIndex: 1, padding: '0 var(--section-pad-x) 60px' }}>
-          <div style={{
-            fontFamily: 'var(--font-display)', fontSize: '10px', fontWeight: 700,
-            letterSpacing: '4px', textTransform: 'uppercase', color: 'var(--green)', marginBottom: 12,
-          }}>
-            Our Story
-          </div>
-          <h1 style={{
-            fontFamily: 'var(--font-display)', fontSize: 'clamp(42px, 6vw, 80px)',
-            fontWeight: 800, letterSpacing: '-1px', textTransform: 'uppercase',
-            color: '#fff', lineHeight: 0.92,
-          }}>
-            About {brand.name}
-          </h1>
-        </div>
-      </div>
+      {/* Intro — the real story, beside the real yard */}
+      <section style={{ maxWidth: 'var(--content-max)', margin: '0 auto', padding: '64px var(--section-pad-x) 76px' }}>
+        <div className="about-intro" style={{ display: 'grid', gridTemplateColumns: '1fr 1.04fr', gap: 64, alignItems: 'center' }}>
+          {/* Left: story */}
+          <div>
+            <div className="label" style={{ marginBottom: 16 }}>About Hillside Timber</div>
+            <h1 style={{
+              fontFamily: 'var(--font-display)', fontSize: 'clamp(40px, 5vw, 66px)', fontWeight: 800,
+              letterSpacing: '-1.5px', textTransform: 'uppercase', color: 'var(--black)', lineHeight: 0.93, marginBottom: 24,
+            }}>
+              Heirloom starts<br />with the slab.
+            </h1>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: 'var(--gray-dark)', lineHeight: 1.8, marginBottom: 18 }}>
+              Hillside Timber is a premium supplier of live edge and distinctive wood, 15 miles west of Sioux Falls on Highway 42. Every slab is one of a kind, harvested locally and dried slowly in our own solar kiln. Before a piece earns its number, we grade it by hand for figure, soundness, and moisture, so the wood you build on is the wood we would build on ourselves.
+            </p>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: 'var(--gray-dark)', lineHeight: 1.8, marginBottom: 30 }}>
+              Nothing we sell is meant to be replaced. Our sister company, Sioux Falls Woodworking, turns those slabs into heirloom furniture and custom pieces, made to order and built to be handed down.
+            </p>
 
-      {/* Content */}
-      <div style={{ maxWidth: 'var(--content-max)', margin: '0 auto', padding: '80px var(--section-pad-x)', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 80 }}>
-        <div>
-          <h2 style={{
-            fontFamily: 'var(--font-display)', fontSize: '36px', fontWeight: 800,
-            letterSpacing: '-0.5px', textTransform: 'uppercase', color: 'var(--black)',
-            lineHeight: 1.05, marginBottom: 24,
-          }}>
-            Preserving history,<br />one slab at a time.
-          </h2>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: 'var(--gray-dark)', lineHeight: 1.8, marginBottom: 20 }}>
-            Hillside Timber was born out of a deep respect for the land and the trees that have shaped South Dakota for generations. Slavic started with a simple idea: source local timber responsibly, dry it right, and offer it to the people who can transform it into something lasting. Sustainability guides the work, so we only harvest trees that are already coming down, never standing healthy timber.
-          </p>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: 'var(--gray-dark)', lineHeight: 1.8, marginBottom: 20 }}>
-            Today, we run a custom solar kiln on-site, 15 miles west of Sioux Falls on Highway 42. Every slab in our yard is harvested locally and dried in-house. We carry 24+ species including white oak, black walnut, elm, cherry, cottonwood, and ponderosa pine, and we also bring in rare and exotic species from around the country and the world.
-          </p>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: 'var(--gray-dark)', lineHeight: 1.8 }}>
-            Sioux Falls Woodworking is the sister company, where Slavic and his team turn those raw slabs into heirloom-quality furniture and custom pieces built to order.
-          </p>
-        </div>
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=800&q=80"
-            alt="Workshop"
-            style={{ width: '100%', aspectRatio: '4/3', objectFit: 'cover' }}
-          />
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
-            {[
-              { num: '24+', label: 'Wood Species' },
-              { num: '100%', label: 'Locally Harvested' },
-              { num: '10+', label: 'Years Experience' },
-              { num: '1', label: 'Solar Kiln On-Site' },
-            ].map((stat) => (
-              <div key={stat.label} style={{ padding: '20px', background: 'var(--cream)', border: '1px solid var(--border)' }}>
-                <div style={{ fontFamily: 'var(--font-display)', fontSize: '36px', fontWeight: 800, color: 'var(--green)', letterSpacing: '-1px' }}>
-                  {stat.num}
-                </div>
-                <div style={{ fontFamily: 'var(--font-display)', fontSize: '11px', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', color: 'var(--gray)' }}>
-                  {stat.label}
-                </div>
+            {/* The journey each slab takes, ending in inspection, as it earns its Piece No. */}
+            <div style={{ marginBottom: 32 }}>
+              <div className="label" style={{ marginBottom: 12 }}>Every slab earns its number</div>
+              <div style={{ display: 'flex', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}>
+                {STEPS.map((s, i) => (
+                  <div key={s} style={{ flex: 1, textAlign: 'center', padding: '14px 4px', borderLeft: i > 0 ? '1px solid var(--border)' : 'none' }}>
+                    <div style={{ fontFamily: 'var(--font-display)', fontSize: '10px', fontWeight: 700, letterSpacing: '1px', color: 'var(--tan)', marginBottom: 4 }}>0{i + 1}</div>
+                    <span style={{ fontFamily: 'var(--font-display)', fontSize: '12px', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', color: 'var(--black)' }}>{s}</span>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+              <span style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--gray)', fontStyle: 'italic' }}>Questions about a piece?</span>
+              <a href={`tel:${phoneDigits}`} className="btn-primary">{brand.contact.phone}</a>
+            </div>
           </div>
+
+          {/* Right: the real yard */}
+          <figure style={{ position: 'relative', margin: 0, borderRadius: 'var(--radius-lg)', overflow: 'hidden', boxShadow: 'var(--shadow-lg)' }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/assets/photos/founder.jpg"
+              alt="Hillside Timber's founder with live-edge black walnut slabs in the shop"
+              style={{ width: '100%', display: 'block', aspectRatio: '4/3', objectFit: 'cover' }}
+            />
+            <figcaption style={{
+              position: 'absolute', left: 16, bottom: 16, display: 'inline-flex', alignItems: 'center', gap: 8,
+              padding: '8px 13px', borderRadius: 'var(--radius-sm)', background: 'rgba(15,15,13,0.82)', backdropFilter: 'blur(4px)',
+              fontFamily: 'var(--font-display)', fontSize: '11px', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', color: '#fff',
+            }}>
+              Inspected &amp; numbered <span style={{ color: 'var(--tan)' }}>·</span> by hand
+            </figcaption>
+          </figure>
         </div>
-      </div>
+      </section>
+
+      {/* Sustainability ethos — the signature statement */}
+      <section className="grain" style={{ background: 'var(--green)', padding: '92px var(--section-pad-x)', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ maxWidth: 'var(--content-text)', margin: '0 auto', textAlign: 'center', position: 'relative', zIndex: 2 }}>
+          <div className="label" style={{ color: 'rgba(255,255,255,0.72)', marginBottom: 22 }}>The way it should be</div>
+          <p style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 3.6vw, 46px)', fontWeight: 800, letterSpacing: '-0.5px', textTransform: 'uppercase', color: '#fff', lineHeight: 1.06, marginBottom: 0 }}>
+            We only harvest wood from trees that are already coming down. Never standing, healthy timber.
+          </p>
+        </div>
+      </section>
+
+      {/* Stats */}
+      <section style={{ background: 'var(--cream)', borderBottom: '1px solid var(--border)' }}>
+        <div className="about-stats" style={{ maxWidth: 'var(--content-max)', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)' }}>
+          {STATS.map((stat, i) => (
+            <div key={stat.label} style={{ padding: '46px 28px', textAlign: 'center', borderLeft: i > 0 ? '1px solid var(--border)' : 'none' }}>
+              <div style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(38px, 4vw, 52px)', fontWeight: 800, color: 'var(--green)', letterSpacing: '-1.5px', lineHeight: 1 }}>{stat.num}</div>
+              <div style={{ fontFamily: 'var(--font-display)', fontSize: '11px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--gray)', marginTop: 10 }}>{stat.label}</div>
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* Services */}
-      <div style={{ background: 'var(--cream)', padding: '90px var(--section-pad-x)', borderTop: '1px solid var(--border)' }}>
+      <div style={{ background: '#fff', padding: '90px var(--section-pad-x)' }}>
         <div style={{ maxWidth: 'var(--content-max)', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
             <div className="label" style={{ marginBottom: 14 }}>What We Do</div>
@@ -129,17 +137,27 @@ export default async function AboutPage() {
         <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: 'rgba(255,255,255,0.5)', marginBottom: 32, fontStyle: 'italic' }}>
           We are 15 miles west of Sioux Falls on Highway 42. Reach out to set up a time, we would love to show you the yard in person.
         </p>
-        <a href={`tel:${brand.contact.phone.replace(/\D/g,'')}`} className="btn-primary">
+        <a href={`tel:${phoneDigits}`} className="btn-primary">
           {brand.contact.phone}
         </a>
       </div>
+
+      <style>{`
+        @media (max-width: 860px) {
+          .about-intro { grid-template-columns: 1fr !important; gap: 38px !important; }
+        }
+        @media (max-width: 640px) {
+          .about-stats { grid-template-columns: 1fr 1fr !important; }
+          .about-stats > div:nth-child(3) { border-left: none !important; }
+        }
+      `}</style>
     </div>
   )
 }
 
 function ServiceCard({ title, body, price, note }: { title: string; body: string; price: string; note: string }) {
   return (
-    <div style={{ background: '#fff', border: '1px solid var(--border)', padding: '36px 32px', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ background: 'var(--cream)', border: '1px solid var(--border)', padding: '36px 32px', display: 'flex', flexDirection: 'column', borderRadius: 'var(--radius)' }}>
       <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '22px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.3px', color: 'var(--black)', marginBottom: 12 }}>
         {title}
       </h3>
