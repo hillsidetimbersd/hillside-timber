@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { X, ShoppingBag, Trash } from '@phosphor-icons/react'
 import { useCart } from './useCart'
 import { formatPrice } from '@/lib/square'
@@ -112,7 +113,7 @@ export default function CartDrawer({ open, onClose }: Props) {
               <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-13)', fontStyle: 'italic' }}>
                 Your cart is empty.
               </p>
-              <a href="/shop" className="btn-ghost" style={{ fontSize: 'var(--fs-10)' }}>Browse Products</a>
+              <Link href="/shop" className="btn-ghost" style={{ fontSize: 'var(--fs-10)' }}>Browse Products</Link>
             </div>
           ) : (
             items.map((item) => (

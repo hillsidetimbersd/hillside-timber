@@ -1,7 +1,9 @@
 import { cookies } from 'next/headers'
+import Link from 'next/link'
 import { getBrand } from '@/lib/brand'
 import { SOLAR_KILN, KILN_PHOTOS, sizeKilnImage } from '@/lib/solar-kiln'
 import FaqPro from '@/components/faq/FaqPro'
+import KilnProcess from '@/components/solar-kiln/KilnProcess'
 
 export const metadata = {
   title: 'Solar Kiln Drying',
@@ -69,26 +71,8 @@ export default async function SolarKilnPage() {
         </div>
       </section>
 
-      {/* The drying process — a real sequence, numbered */}
-      <section style={{ background: 'var(--cream)', padding: '72px var(--section-pad-x)' }}>
-        <div style={{ maxWidth: 'var(--content-max)', margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: 44 }}>
-            <div className="label" style={{ marginBottom: 12 }}>Inside the kiln</div>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(30px, 3.6vw, 50px)', fontWeight: 800, letterSpacing: '-1px', textTransform: 'uppercase', color: 'var(--black)', lineHeight: 0.96 }}>
-              The drying process
-            </h2>
-          </div>
-          <div className="kiln-steps" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
-            {SOLAR_KILN.steps.map((s) => (
-              <div key={s.n} style={{ background: '#fff', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '28px 26px' }}>
-                <div style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--fs-12)', fontWeight: 700, letterSpacing: '2px', color: 'var(--tan)', marginBottom: 10 }}>{s.n}</div>
-                <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '22px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.3px', color: 'var(--black)', marginBottom: 10 }}>{s.title}</h3>
-                <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-15)', color: 'var(--gray-dark)', lineHeight: 1.7 }}>{s.body}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* How it works — custom cutaway diagram, the drying steps narrate it, plus a brief build read */}
+      <KilnProcess howItWorks={SOLAR_KILN.howItWorks} built={SOLAR_KILN.built} steps={SOLAR_KILN.steps} />
 
       {/* FAQ — faq-pro style */}
       <section style={{ background: '#fff', padding: '72px var(--section-pad-x)' }}>
@@ -116,7 +100,7 @@ export default async function SolarKilnPage() {
           Stable, ready to build, and dried the way wood should be. Come find yours.
         </p>
         <div style={{ display: 'inline-flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
-          <a href="/shop" className="btn-primary" style={{ background: 'var(--tan)', color: 'var(--black)' }}>Browse the Yard</a>
+          <Link href="/shop" className="btn-primary" style={{ background: 'var(--tan)', color: 'var(--black)' }}>Browse the Yard</Link>
           <a href={`tel:${phoneDigits}`} className="btn-ghost-white">{brand.contact.phone}</a>
         </div>
       </section>
@@ -124,7 +108,6 @@ export default async function SolarKilnPage() {
       <style>{`
         @media (max-width: 860px) {
           .kiln-row { grid-template-columns: 1fr !important; gap: 32px !important; }
-          .kiln-steps { grid-template-columns: 1fr !important; }
         }
       `}</style>
     </div>

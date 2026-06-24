@@ -1,5 +1,7 @@
 'use client'
 
+import Link from 'next/link'
+
 const SQ = 'https://images.squarespace-cdn.com/content/v1/60007801ebc4a249bd3ce872/'
 
 const SPECIES = [
@@ -135,7 +137,7 @@ export default function SpeciesLibrary() {
         </div>
 
         <div style={{ textAlign: 'center', marginTop: 48 }}>
-          <a href="/shop" className="btn-ghost">See All 24+ Species</a>
+          <Link href="/shop" className="btn-ghost">See All 24+ Species</Link>
         </div>
       </div>
     </section>

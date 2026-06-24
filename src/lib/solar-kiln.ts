@@ -2,6 +2,34 @@
 // original Squarespace /solar-kiln page (the explainer, the 3-step process, and
 // the FAQ), cleaned up. Same pattern as services.ts / reviews.ts.
 
+// Icon keys the KilnProcess client island maps to Phosphor components. Kept as
+// strings (not components) because this file is imported by the server page and
+// React components are not serializable across the server/client boundary.
+export type KilnIconKey =
+  | 'Sun'
+  | 'SolarRoof'
+  | 'Fan'
+  | 'ArrowsClockwise'
+  | 'StackSimple'
+  | 'ThermometerSimple'
+  | 'Drop'
+  | 'SolarPanel'
+  | 'Snowflake'
+  | 'Truck'
+
+export interface KilnPoint {
+  n: string
+  icon: KilnIconKey
+  title: string
+  body: string
+}
+
+export interface KilnSpec {
+  icon: KilnIconKey
+  title: string
+  body: string
+}
+
 export const SOLAR_KILN = {
   eyebrow: 'Solar Kiln Drying',
   heading: ['Dried slow,', 'by the sun.'],
@@ -46,6 +74,37 @@ export const SOLAR_KILN = {
       a: 'Yes. The wood dries evenly and thoroughly, so the quality matches a traditional kiln while using far less energy.',
     },
   ],
+
+  // The seven mechanisms the custom cutaway diagram annotates. The order is the
+  // narrative the diagram reads in: sun in, gathered, moved, looped, through the
+  // stack, collected, vented out. `n` matches the numbered pin on the SVG.
+  howItWorks: {
+    eyebrow: 'How it works',
+    heading: 'Sun in, moisture out',
+    sub: 'Hover a point to find it on the kiln. The whole thing runs on sunshine, no fossil fuels and no grid power.',
+    points: [
+      { n: '1', icon: 'Sun', title: 'Sunlight in', body: 'Free heat the kiln gathers all day long.' },
+      { n: '2', icon: 'SolarRoof', title: 'Clear collector roof', body: 'A clear, sun-facing roof traps warmth inside.' },
+      { n: '3', icon: 'Fan', title: 'Solar-powered fans', body: 'Fans run on the sun and keep the air moving.' },
+      { n: '4', icon: 'ArrowsClockwise', title: 'A circulating loop', body: 'Warm air sweeps across the top, then down through the stack.' },
+      { n: '5', icon: 'StackSimple', title: 'Stickered stack', body: 'Boards are spaced so air flows between every plank.' },
+      { n: '6', icon: 'ThermometerSimple', title: 'Black collector panel', body: 'A dark panel soaks up heat and shields the wood from direct sun.' },
+      { n: '7', icon: 'Drop', title: 'Vents', body: 'Vents open to release heat and moisture as the wood dries.' },
+    ] as KilnPoint[],
+  },
+
+  // A short, buyer-friendly read on the build. Not a construction manual.
+  built: {
+    eyebrow: "How it's built",
+    dims: '60" × 132" × 105.5"',
+    dimsLabel: 'Width × length × height',
+    specs: [
+      { icon: 'SolarRoof', title: 'Solar collector roof', body: 'Greenhouse-rated panels, pitched near 45° to the sun.' },
+      { icon: 'SolarPanel', title: 'Runs on sunshine', body: 'A solar panel powers the fans, so the kiln runs on the sun.' },
+      { icon: 'Snowflake', title: 'Insulated walls', body: "R-13 walls hold the day's heat through cool nights." },
+      { icon: 'Truck', title: 'Built to move', body: 'Mounted on timber skids, so it can be relocated.' },
+    ] as KilnSpec[],
+  },
 }
 
 const SS_CONTENT = 'https://images.squarespace-cdn.com/content/v1/60007801ebc4a249bd3ce872'
