@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import Link from 'next/link'
 import { Tag } from '@phosphor-icons/react'
 import { useBrand } from '@/components/brand/BrandContext'
 import HoverImage from '@/components/media/HoverImage'
@@ -122,7 +123,7 @@ export default function GalleryScroll({ products = [] }: { products?: Product[] 
                 Twenty-four species and counting. Solar kiln dried on site. Harvested locally across South Dakota, with rare and exotic species sourced from around the world.
               </p>
               <div style={{ marginTop: 28, display: 'inline-flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center', pointerEvents: 'auto' }}>
-                <a href="/shop" className="btn-primary">Browse the Slab Catalog</a>
+                <Link href="/shop" className="btn-primary">Browse the Slab Catalog</Link>
                 <a href="/about" className="btn-ghost">Our Story</a>
               </div>
             </div>
@@ -171,7 +172,7 @@ export default function GalleryScroll({ products = [] }: { products?: Product[] 
             </p>
             {isHero && (
               <div style={{ marginTop: 28, display: 'inline-flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
-                <a href="/shop" className="btn-primary">Browse the Slab Catalog</a>
+                <Link href="/shop" className="btn-primary">Browse the Slab Catalog</Link>
                 <a href="/about" className="btn-ghost">Our Story</a>
               </div>
             )}

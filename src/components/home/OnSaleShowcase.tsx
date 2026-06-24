@@ -1,6 +1,7 @@
 import ProductCard from '@/components/shop/ProductCard'
 import type { Product } from '@/lib/squarespace'
 import SaleDisplaceText from '@/components/home/SaleDisplaceText'
+import Link from 'next/link'
 
 export default function OnSaleShowcase({ products }: { products: Product[] }) {
   if (products.length < 3) return null
@@ -40,7 +41,7 @@ export default function OnSaleShowcase({ products }: { products: Product[] }) {
             here speaks to you, claim it before it is spoken for.
           </p>
           <div style={{ marginTop: 24 }}>
-            <a href="/shop" className="btn-ghost-white">Shop All Pieces</a>
+            <Link href="/shop" className="btn-ghost-white">Shop All Pieces</Link>
           </div>
         </div>
 

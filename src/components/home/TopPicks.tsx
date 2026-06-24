@@ -1,4 +1,5 @@
 import ProductCard from '@/components/shop/ProductCard'
+import Link from 'next/link'
 import type { Product } from '@/lib/squarespace'
 
 export default function TopPicks({ products }: { products: Product[] }) {
@@ -20,7 +21,7 @@ export default function TopPicks({ products }: { products: Product[] }) {
               The most striking pieces in the yard right now. One of a kind, and they move fast.
             </p>
           </div>
-          <a href="/shop" className="btn-ghost">View All Inventory</a>
+          <Link href="/shop" className="btn-ghost">View All Inventory</Link>
         </div>
 
         <div className="picks-grid">

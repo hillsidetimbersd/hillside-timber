@@ -2,6 +2,8 @@
  *  (/assets/photos/ecopoxy-result.webp) with the EcoPoxy FlowCast kit framed as an
  *  inset (/assets/photos/ecopoxy-product.webp). A CSS gradient fallback keeps each
  *  panel looking intentional if a photo is ever missing (no broken image). */
+import Link from 'next/link'
+
 export default function EcoPoxySection() {
   return (
     <section style={{
@@ -42,7 +44,7 @@ export default function EcoPoxySection() {
             Stop by the yard by appointment to see the full selection.
           </p>
           <div style={{ display: 'inline-flex', gap: 12, flexWrap: 'wrap' }}>
-            <a href="/shop" className="btn-primary">Find Your Slab</a>
+            <Link href="/shop" className="btn-primary">Find Your Slab</Link>
             <a href="/contact" className="btn-ghost-white">Ask Us About a Pour</a>
           </div>
         </div>
