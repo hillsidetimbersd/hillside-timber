@@ -37,7 +37,7 @@ export default function ResourcesPage() {
         <p
           style={{
             fontFamily: 'var(--font-body)',
-            fontSize: '17px',
+            fontSize: 'var(--fs-17)',
             fontStyle: 'italic',
             color: 'var(--gray)',
             lineHeight: 1.7,
@@ -64,7 +64,7 @@ export default function ResourcesPage() {
             <div
               style={{
                 fontFamily: 'var(--font-display)',
-                fontSize: '10px',
+                fontSize: 'var(--fs-10)',
                 fontWeight: 700,
                 letterSpacing: '3px',
                 textTransform: 'uppercase',
@@ -147,7 +147,7 @@ export default function ResourcesPage() {
           <div
             style={{
               fontFamily: 'var(--font-display)',
-              fontSize: '10px',
+              fontSize: 'var(--fs-10)',
               fontWeight: 700,
               letterSpacing: '3px',
               textTransform: 'uppercase',
@@ -173,7 +173,7 @@ export default function ResourcesPage() {
           <p
             style={{
               fontFamily: 'var(--font-body)',
-              fontSize: '17px',
+              fontSize: 'var(--fs-17)',
               fontStyle: 'italic',
               color: 'var(--gray)',
               lineHeight: 1.7,
@@ -237,7 +237,7 @@ function CalcCard({
         <span
           style={{
             fontFamily: 'var(--font-display)',
-            fontSize: '10px',
+            fontSize: 'var(--fs-10)',
             fontWeight: 700,
             letterSpacing: '2px',
             textTransform: 'uppercase',
@@ -268,7 +268,7 @@ function CalcCard({
       <p
         style={{
           fontFamily: 'var(--font-body)',
-          fontSize: '15px',
+          fontSize: 'var(--fs-15)',
           fontStyle: 'italic',
           color: 'var(--gray)',
           lineHeight: 1.65,
@@ -291,7 +291,7 @@ function CalcCard({
         <span
           style={{
             fontFamily: 'var(--font-display)',
-            fontSize: '9px',
+            fontSize: 'var(--fs-9)',
             fontWeight: 700,
             letterSpacing: '1.5px',
             textTransform: 'uppercase',
@@ -305,7 +305,7 @@ function CalcCard({
         <span
           style={{
             fontFamily: 'var(--font-display)',
-            fontSize: '10px',
+            fontSize: 'var(--fs-10)',
             fontWeight: 700,
             letterSpacing: '2px',
             textTransform: 'uppercase',

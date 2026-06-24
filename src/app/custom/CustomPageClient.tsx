@@ -46,7 +46,7 @@ function CustomPageInner() {
           <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(46px, 6vw, 90px)', fontWeight: 800, letterSpacing: '-1px', textTransform: 'uppercase', color: '#fff', lineHeight: 0.92, marginBottom: 18 }}>
             Custom<br />Projects
           </h1>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: 'rgba(255,255,255,0.82)', maxWidth: 650, lineHeight: 1.6, fontStyle: 'italic' }}>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-16)', color: 'rgba(255,255,255,0.82)', maxWidth: 650, lineHeight: 1.6, fontStyle: 'italic' }}>
             {hasPrefill
               ? "We've pre-filled your Quote Builder selections. Add a few contact details to finish your request."
               : 'Tell us about the piece you have in mind. Slavic reviews every request personally.'
@@ -70,10 +70,10 @@ function CustomPageInner() {
               <div style={{ fontFamily: 'var(--font-display)', fontSize: '40px', fontWeight: 800, color: 'var(--green)', lineHeight: 1, marginBottom: 10, opacity: 0.3 }}>
                 {step.num}
               </div>
-              <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '14px', fontWeight: 700, textTransform: 'uppercase', color: 'var(--black)', marginBottom: 8, letterSpacing: '0.5px' }}>
+              <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--fs-14)', fontWeight: 700, textTransform: 'uppercase', color: 'var(--black)', marginBottom: 8, letterSpacing: '0.5px' }}>
                 {step.title}
               </h3>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--gray)', lineHeight: 1.7, fontStyle: 'italic' }}>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-15)', color: 'var(--gray)', lineHeight: 1.7, fontStyle: 'italic' }}>
                 {step.body}
               </p>
             </div>

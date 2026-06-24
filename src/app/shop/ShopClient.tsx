@@ -31,7 +31,7 @@ export default function ShopClient({ products, sections }: { products: Product[]
   ]
   if (brand.key === 'ht') stats.push({ n: '24+', label: 'Species' })
   if (onSale > 0) stats.push({ n: String(onSale), label: 'On Sale' })
-  else if (comingSoon > 0) stats.push({ n: String(comingSoon), label: 'Coming Soon' })
+  else if (comingSoon > 0) stats.push({ n: String(comingSoon), label: 'Still Drying' })
 
   return (
     <div style={{ paddingTop: 'calc(var(--switcher-h) + var(--nav-h))' }}>
@@ -51,7 +51,7 @@ export default function ShopClient({ products, sections }: { products: Product[]
             }}>
               {brand.key === 'ht' ? 'Shop the Slab Yard' : 'Finished Pieces'}
             </h1>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--gray-dark)', maxWidth: 580, lineHeight: 1.65, fontStyle: 'italic' }}>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-15)', color: 'var(--gray-dark)', maxWidth: 580, lineHeight: 1.65, fontStyle: 'italic' }}>
               {brand.key === 'ht'
                 ? 'Every piece is one of a kind, locally harvested and solar kiln dried in-house. Every photo is a real piece in our current inventory; when one sells, we take it down.'
                 : 'Handcrafted furniture built to last a lifetime. Every photo is a real piece; once it sells, we take it down.'}
@@ -68,7 +68,7 @@ export default function ShopClient({ products, sections }: { products: Product[]
                 <span style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 3vw, 42px)', fontWeight: 800, color: 'var(--green)', letterSpacing: '-1px', lineHeight: 1 }}>
                   {st.n}
                 </span>
-                <span style={{ fontFamily: 'var(--font-display)', fontSize: '10px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--gray)', marginTop: 7 }}>
+                <span style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--fs-10)', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--gray)', marginTop: 7 }}>
                   {st.label}
                 </span>
               </div>
@@ -77,32 +77,34 @@ export default function ShopClient({ products, sections }: { products: Product[]
         </div>
       </div>
 
-      {/* Shop layout */}
-      <div className="shop-layout" style={{
-        display: 'flex', padding: '38px var(--section-pad-x) 64px', gap: 40,
-        maxWidth: 'var(--content-wide)', margin: '0 auto', alignItems: 'flex-start',
-      }}>
+      {/* Shop layout — outer padding + inner max-width mirrors the header so
+          the sidebar/grid edges align exactly with the title and stats above. */}
+      <div style={{ padding: '38px var(--section-pad-x) 64px' }}>
+        <div className="shop-layout" style={{
+          display: 'flex', gap: 40,
+          maxWidth: 'var(--content-wide)', margin: '0 auto', alignItems: 'flex-start',
+        }}>
         {/* Sidebar: search + sections */}
         <aside className="shop-sidebar" style={{ width: 240, flexShrink: 0, paddingRight: 32 }}>
           <div style={{ position: 'relative', marginBottom: 28 }}>
             <MagnifyingGlass size={16} weight="bold" style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'var(--green)', pointerEvents: 'none' }} />
             <input
               type="text"
-              placeholder="Search species, piece no…"
+              placeholder="Species, piece no…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--green)'; e.currentTarget.style.background = '#fff' }}
               onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.background = 'var(--cream)' }}
               style={{
                 width: '100%', padding: '12px 14px 12px 40px', fontFamily: 'var(--font-body)',
-                fontSize: '14px', border: '1.5px solid var(--border)', background: 'var(--cream)',
+                fontSize: 'var(--fs-14)', border: '1.5px solid var(--border)', background: 'var(--cream)',
                 color: 'var(--black)', outline: 'none', borderRadius: 'var(--radius)',
                 transition: 'border-color 0.15s, background 0.15s',
               }}
             />
           </div>
 
-          <div style={{ fontFamily: 'var(--font-display)', fontSize: '9px', fontWeight: 700, letterSpacing: '3px', textTransform: 'uppercase', color: 'var(--gray)', marginBottom: 12, paddingLeft: 12 }}>
+          <div style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--fs-9)', fontWeight: 700, letterSpacing: '3px', textTransform: 'uppercase', color: 'var(--gray)', marginBottom: 12, paddingLeft: 12 }}>
             Browse
           </div>
           <nav style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -120,7 +122,7 @@ export default function ShopClient({ products, sections }: { products: Product[]
                     padding: '11px 12px', borderRadius: 'var(--radius-sm)',
                     background: active ? 'var(--green)' : 'transparent',
                     color: active ? '#fff' : 'var(--gray-dark)',
-                    fontFamily: 'var(--font-display)', fontSize: '13px', fontWeight: 700,
+                    fontFamily: 'var(--font-display)', fontSize: 'var(--fs-13)', fontWeight: 700,
                     letterSpacing: '0.5px', textTransform: 'uppercase',
                     transition: 'background 0.18s ease, color 0.18s ease',
                   }}
@@ -128,7 +130,7 @@ export default function ShopClient({ products, sections }: { products: Product[]
                   onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = 'transparent' }}
                 >
                   <span>{s}</span>
-                  <span style={{ fontSize: '11px', fontWeight: 700, color: active ? 'rgba(255,255,255,0.78)' : 'var(--gray)' }}>{countFor(s)}</span>
+                  <span style={{ fontSize: 'var(--fs-11)', fontWeight: 700, color: active ? 'rgba(255,255,255,0.78)' : 'var(--gray)' }}>{countFor(s)}</span>
                 </button>
               )
             })}
@@ -138,14 +140,14 @@ export default function ShopClient({ products, sections }: { products: Product[]
         {/* Grid */}
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 22 }}>
-            <span style={{ fontFamily: 'var(--font-display)', fontSize: '11px', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', color: 'var(--gray)' }}>
+            <span style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--fs-11)', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', color: 'var(--gray)' }}>
               {section === 'All' ? 'All Pieces' : section} · {filtered.length} {filtered.length === 1 ? 'piece' : 'pieces'}
             </span>
           </div>
 
           {filtered.length === 0 ? (
             <div style={{ padding: '80px 40px', textAlign: 'center', color: 'var(--gray)', border: '1px solid var(--border)', borderRadius: 'var(--radius)' }}>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', fontStyle: 'italic' }}>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-16)', fontStyle: 'italic' }}>
                 {products.length === 0 ? 'Inventory is loading. Check back in a moment.' : 'No pieces match. Try another section or search.'}
               </p>
             </div>
@@ -156,6 +158,7 @@ export default function ShopClient({ products, sections }: { products: Product[]
               ))}
             </div>
           )}
+        </div>
         </div>
       </div>
 

@@ -14,7 +14,7 @@ export default function OnSaleShowcase({ products }: { products: Product[] }) {
               {Array.from({ length: 9 }).map((_, i) => (
                 <span key={i} style={{
                   display: 'inline-flex', alignItems: 'center', gap: 18, padding: '0 18px',
-                  fontFamily: 'var(--font-display)', fontSize: '15px', fontWeight: 800,
+                  fontFamily: 'var(--font-display)', fontSize: 'var(--fs-15)', fontWeight: 800,
                   letterSpacing: '3px', textTransform: 'uppercase', color: '#fff',
                 }}>
                   On Sale <span style={{ color: 'var(--tan)' }}>·</span>
@@ -36,7 +36,7 @@ export default function OnSaleShowcase({ products }: { products: Product[] }) {
               }}>
                 On Sale Now
               </h2>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: 'var(--gray)', fontStyle: 'italic', marginTop: 12, maxWidth: 520, lineHeight: 1.6 }}>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-16)', color: 'var(--gray)', fontStyle: 'italic', marginTop: 12, maxWidth: 520, lineHeight: 1.6 }}>
                 A rotating selection of pieces at a special price. When they sell, they are gone.
               </p>
             </div>

@@ -45,7 +45,7 @@ export default function CheckoutSuccessPage() {
 
         <p style={{
           fontFamily: 'var(--font-body)',
-          fontSize: '16px',
+          fontSize: 'var(--fs-16)',
           color: 'var(--gray-dark)',
           lineHeight: 1.8,
           fontStyle: 'italic',

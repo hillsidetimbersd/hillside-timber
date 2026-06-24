@@ -45,7 +45,7 @@ export default function SpeciesLibrary() {
           </div>
           <p style={{
             fontFamily: 'var(--font-body)',
-            fontSize: '17px',
+            fontSize: 'var(--fs-17)',
             color: 'var(--gray-dark)',
             lineHeight: 1.8,
             fontStyle: 'italic',
@@ -110,7 +110,7 @@ export default function SpeciesLibrary() {
               }}>
                 <div style={{
                   fontFamily: 'var(--font-display)',
-                  fontSize: '9px',
+                  fontSize: 'var(--fs-9)',
                   fontWeight: 700,
                   letterSpacing: '2.5px',
                   textTransform: 'uppercase',

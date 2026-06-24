@@ -39,7 +39,7 @@ export default function LineArtCard({ selected, onClick, label, sublabel, svg, s
       <div>
         <div style={{
           fontFamily: 'var(--font-display)',
-          fontSize: '9px',
+          fontSize: 'var(--fs-9)',
           fontWeight: 700,
           letterSpacing: '1.5px',
           textTransform: 'uppercase' as const,
@@ -51,7 +51,7 @@ export default function LineArtCard({ selected, onClick, label, sublabel, svg, s
         {sublabel && (
           <div style={{
             fontFamily: 'var(--font-body)',
-            fontSize: '10px',
+            fontSize: 'var(--fs-10)',
             color: 'var(--gray)',
             fontStyle: 'italic',
           }}>

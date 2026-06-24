@@ -46,7 +46,7 @@ export default function BrandSwitcher() {
               background: isActive ? 'var(--green)' : '#f0ede8',
               color: isActive ? '#fff' : '#888',
               fontFamily: 'var(--font-display)',
-              fontSize: '14px',
+              fontSize: 'var(--fs-14)',
               fontWeight: 700,
               letterSpacing: '2.5px',
               textTransform: 'uppercase',

@@ -89,7 +89,7 @@ export default function SolarKilnStory() {
           </h2>
           <p style={{
             fontFamily: 'var(--font-body)',
-            fontSize: '17px',
+            fontSize: 'var(--fs-17)',
             color: 'rgba(255,255,255,0.55)',
             maxWidth: 700,
             margin: '0 auto',

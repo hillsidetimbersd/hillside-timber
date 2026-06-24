@@ -102,7 +102,7 @@ const PROJECT_TYPES: { value: string; Svg: React.ComponentType }[] = [
 export default function StepTwo({ form, set }: Props) {
   return (
     <div>
-      <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: 'var(--gray)', marginBottom: 28, fontStyle: 'italic' }}>
+      <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-13)', color: 'var(--gray)', marginBottom: 28, fontStyle: 'italic' }}>
         Tell us about the piece you have in mind.
       </p>
 
@@ -177,7 +177,7 @@ export default function StepTwo({ form, set }: Props) {
                   type="button"
                   onClick={() => set('dimensionsUnit', unit)}
                   style={{
-                    fontFamily: 'var(--font-display)', fontSize: '9px', fontWeight: 700,
+                    fontFamily: 'var(--font-display)', fontSize: 'var(--fs-9)', fontWeight: 700,
                     letterSpacing: '1.5px', textTransform: 'uppercase' as const,
                     padding: '0 12px', border: 'none',
                     background: active ? 'var(--black)' : '#fff',
@@ -202,7 +202,7 @@ function FormRow({ label, children }: { label: string; children: React.ReactNode
     <div style={{ marginBottom: 22 }}>
       <label style={{
         display: 'block', fontFamily: 'var(--font-display)',
-        fontSize: '9px', fontWeight: 700, letterSpacing: '2px',
+        fontSize: 'var(--fs-9)', fontWeight: 700, letterSpacing: '2px',
         textTransform: 'uppercase' as const, color: 'var(--gray)', marginBottom: 10,
       }}>
         {label}

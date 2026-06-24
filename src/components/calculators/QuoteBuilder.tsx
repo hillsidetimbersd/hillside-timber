@@ -126,7 +126,7 @@ Estimated range: $${price?.min.toLocaleString()}–$${price?.max.toLocaleString(
             >
               <div style={{
                 fontFamily: 'var(--font-display)',
-                fontSize: '11px',
+                fontSize: 'var(--fs-11)',
                 fontWeight: 700,
                 width: 24,
                 height: 24,
@@ -143,7 +143,7 @@ Estimated range: $${price?.min.toLocaleString()}–$${price?.max.toLocaleString(
               <div>
                 <div style={{
                   fontFamily: 'var(--font-display)',
-                  fontSize: '11px',
+                  fontSize: 'var(--fs-11)',
                   fontWeight: 700,
                   letterSpacing: '1.5px',
                   textTransform: 'uppercase',
@@ -154,7 +154,7 @@ Estimated range: $${price?.min.toLocaleString()}–$${price?.max.toLocaleString(
                 {done && (
                   <div style={{
                     fontFamily: 'var(--font-body)',
-                    fontSize: '11px',
+                    fontSize: 'var(--fs-11)',
                     fontStyle: 'italic',
                     color: 'var(--green)',
                     marginTop: 2,
@@ -208,7 +208,7 @@ Estimated range: $${price?.min.toLocaleString()}–$${price?.max.toLocaleString(
         <div>
           <div style={{
             fontFamily: 'var(--font-display)',
-            fontSize: '9px',
+            fontSize: 'var(--fs-9)',
             fontWeight: 700,
             letterSpacing: '3px',
             textTransform: 'uppercase',
@@ -259,7 +259,7 @@ Estimated range: $${price?.min.toLocaleString()}–$${price?.max.toLocaleString(
             <div style={{ position: 'relative', zIndex: 1 }}>
               <div style={{
                 fontFamily: 'var(--font-display)',
-                fontSize: '9px',
+                fontSize: 'var(--fs-9)',
                 fontWeight: 700,
                 letterSpacing: '3px',
                 textTransform: 'uppercase',
@@ -282,7 +282,7 @@ Estimated range: $${price?.min.toLocaleString()}–$${price?.max.toLocaleString(
               </div>
               <div style={{
                 fontFamily: 'var(--font-body)',
-                fontSize: '11px',
+                fontSize: 'var(--fs-11)',
                 fontStyle: 'italic',
                 color: 'rgba(255,255,255,0.4)',
                 marginTop: 8,
@@ -317,7 +317,7 @@ Estimated range: $${price?.min.toLocaleString()}–$${price?.max.toLocaleString(
                   border: '1.5px solid var(--black)',
                   padding: '15px 20px',
                   fontFamily: 'var(--font-display)',
-                  fontSize: '11px',
+                  fontSize: 'var(--fs-11)',
                   fontWeight: 700,
                   letterSpacing: '2px',
                   textTransform: 'uppercase',
@@ -338,7 +338,7 @@ Estimated range: $${price?.min.toLocaleString()}–$${price?.max.toLocaleString(
                 border: 'none',
                 padding: 16,
                 fontFamily: 'var(--font-display)',
-                fontSize: '11px',
+                fontSize: 'var(--fs-11)',
                 fontWeight: 700,
                 letterSpacing: '2px',
                 textTransform: 'uppercase',
@@ -351,7 +351,7 @@ Estimated range: $${price?.min.toLocaleString()}–$${price?.max.toLocaleString(
           </div>
           <div style={{
             fontFamily: 'var(--font-body)',
-            fontSize: '12px',
+            fontSize: 'var(--fs-12)',
             fontStyle: 'italic',
             color: 'var(--gray)',
             marginTop: 10,
@@ -406,7 +406,7 @@ function StepHeader({ step, title, children }: { step: number; title: string; ch
       </div>
       <div style={{
         fontFamily: 'var(--font-body)',
-        fontSize: '14px',
+        fontSize: 'var(--fs-14)',
         fontStyle: 'italic',
         color: 'var(--gray)',
         lineHeight: 1.6,
@@ -431,7 +431,7 @@ function SummaryRow({ label, value }: { label: string; value: string | undefined
     }}>
       <span style={{
         fontFamily: 'var(--font-display)',
-        fontSize: '10px',
+        fontSize: 'var(--fs-10)',
         fontWeight: 700,
         letterSpacing: '1.5px',
         textTransform: 'uppercase',
@@ -475,7 +475,7 @@ function StepPieceType({ state, update }: { state: QuoteState; update: <K extend
             </div>
             <div style={{
               fontFamily: 'var(--font-display)',
-              fontSize: '15px',
+              fontSize: 'var(--fs-15)',
               fontWeight: 700,
               textTransform: 'uppercase',
               letterSpacing: '0.5px',
@@ -485,7 +485,7 @@ function StepPieceType({ state, update }: { state: QuoteState; update: <K extend
             </div>
             <div style={{
               fontFamily: 'var(--font-body)',
-              fontSize: '11px',
+              fontSize: 'var(--fs-11)',
               fontStyle: 'italic',
               color: active ? 'rgba(255,255,255,0.45)' : 'var(--gray)',
               marginTop: 3,
@@ -523,7 +523,7 @@ function StepSpecies({ state, update }: { state: QuoteState; update: <K extends 
             <div style={{ padding: '14px 16px' }}>
               <div style={{
                 fontFamily: 'var(--font-display)',
-                fontSize: '14px',
+                fontSize: 'var(--fs-14)',
                 fontWeight: 700,
                 textTransform: 'uppercase',
                 letterSpacing: '0.5px',
@@ -533,7 +533,7 @@ function StepSpecies({ state, update }: { state: QuoteState; update: <K extends 
               </div>
               <div style={{
                 fontFamily: 'var(--font-body)',
-                fontSize: '11px',
+                fontSize: 'var(--fs-11)',
                 fontStyle: 'italic',
                 color: 'var(--gray)',
                 marginTop: 3,
@@ -567,7 +567,7 @@ function DimField({ label, value, onChange }: { label: string; value: string; on
     }}>
       <div style={{
         fontFamily: 'var(--font-display)',
-        fontSize: '9px',
+        fontSize: 'var(--fs-9)',
         fontWeight: 700,
         letterSpacing: '3px',
         textTransform: 'uppercase',
@@ -600,7 +600,7 @@ function DimField({ label, value, onChange }: { label: string; value: string; on
       />
       <div style={{
         fontFamily: 'var(--font-body)',
-        fontSize: '12px',
+        fontSize: 'var(--fs-12)',
         fontStyle: 'italic',
         color: 'var(--gray)',
         marginTop: 6,
@@ -617,7 +617,7 @@ function StepBaseFinish({ state, update }: { state: QuoteState; update: <K exten
       <div>
         <div style={{
           fontFamily: 'var(--font-display)',
-          fontSize: '10px',
+          fontSize: 'var(--fs-10)',
           fontWeight: 700,
           letterSpacing: '2px',
           textTransform: 'uppercase',
@@ -636,7 +636,7 @@ function StepBaseFinish({ state, update }: { state: QuoteState; update: <K exten
                 style={{
                   padding: '14px 16px',
                   fontFamily: 'var(--font-display)',
-                  fontSize: '12px',
+                  fontSize: 'var(--fs-12)',
                   fontWeight: 700,
                   letterSpacing: '1px',
                   textTransform: 'uppercase',
@@ -657,7 +657,7 @@ function StepBaseFinish({ state, update }: { state: QuoteState; update: <K exten
       <div>
         <div style={{
           fontFamily: 'var(--font-display)',
-          fontSize: '10px',
+          fontSize: 'var(--fs-10)',
           fontWeight: 700,
           letterSpacing: '2px',
           textTransform: 'uppercase',
@@ -676,7 +676,7 @@ function StepBaseFinish({ state, update }: { state: QuoteState; update: <K exten
                 style={{
                   padding: '14px 16px',
                   fontFamily: 'var(--font-display)',
-                  fontSize: '12px',
+                  fontSize: 'var(--fs-12)',
                   fontWeight: 700,
                   letterSpacing: '1px',
                   textTransform: 'uppercase',

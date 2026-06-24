@@ -37,7 +37,7 @@ export default function Footer() {
           </div>
           <p style={{
             fontFamily: 'var(--font-body)',
-            fontSize: '13px',
+            fontSize: 'var(--fs-13)',
             color: 'rgba(255,255,255,0.5)',
             lineHeight: 1.8,
             marginBottom: 24,
@@ -56,7 +56,7 @@ export default function Footer() {
               color: 'rgba(255,255,255,0.6)',
               textDecoration: 'none',
               fontFamily: 'var(--font-display)',
-              fontSize: '10px',
+              fontSize: 'var(--fs-10)',
               letterSpacing: '2px',
               textTransform: 'uppercase',
               transition: 'color 0.2s',
@@ -73,7 +73,7 @@ export default function Footer() {
         <div>
           <div style={{
             fontFamily: 'var(--font-display)',
-            fontSize: '10px',
+            fontSize: 'var(--fs-10)',
             fontWeight: 700,
             letterSpacing: '3px',
             textTransform: 'uppercase',
@@ -103,7 +103,7 @@ export default function Footer() {
         <div>
           <div style={{
             fontFamily: 'var(--font-display)',
-            fontSize: '10px',
+            fontSize: 'var(--fs-10)',
             fontWeight: 700,
             letterSpacing: '3px',
             textTransform: 'uppercase',
@@ -122,7 +122,7 @@ export default function Footer() {
         <div>
           <div style={{
             fontFamily: 'var(--font-display)',
-            fontSize: '10px',
+            fontSize: 'var(--fs-10)',
             fontWeight: 700,
             letterSpacing: '3px',
             textTransform: 'uppercase',
@@ -155,7 +155,7 @@ export default function Footer() {
       }}>
         <span style={{
           fontFamily: 'var(--font-display)',
-          fontSize: '10px',
+          fontSize: 'var(--fs-10)',
           letterSpacing: '1px',
           color: 'rgba(255,255,255,0.3)',
         }}>
@@ -177,7 +177,7 @@ function FooterLink({ href, children }: { href: string; children: React.ReactNod
       style={{
         display: 'block',
         fontFamily: 'var(--font-body)',
-        fontSize: '13px',
+        fontSize: 'var(--fs-13)',
         color: 'rgba(255,255,255,0.55)',
         textDecoration: 'none',
         marginBottom: 12,
@@ -197,7 +197,7 @@ function FooterLinkSm({ href, children }: { href: string; children: React.ReactN
       href={href}
       style={{
         fontFamily: 'var(--font-display)',
-        fontSize: '10px',
+        fontSize: 'var(--fs-10)',
         letterSpacing: '1px',
         textTransform: 'uppercase',
         color: 'rgba(255,255,255,0.3)',
@@ -216,7 +216,7 @@ function ContactItem({ icon, href, children }: { icon: React.ReactNode; href?: s
   const inner = (
     <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start', marginBottom: 14 }}>
       <span style={{ color: '#2a5c3f', marginTop: 2, flexShrink: 0 }}>{icon}</span>
-      <span style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: 'rgba(255,255,255,0.55)', lineHeight: 1.6 }}>
+      <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-13)', color: 'rgba(255,255,255,0.55)', lineHeight: 1.6 }}>
         {children}
       </span>
     </div>

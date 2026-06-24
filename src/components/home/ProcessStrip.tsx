@@ -48,7 +48,7 @@ export default function ProcessStrip() {
           </h2>
           <p style={{
             fontFamily: 'var(--font-body)',
-            fontSize: '17px',
+            fontSize: 'var(--fs-17)',
             color: 'rgba(255,255,255,0.55)',
             maxWidth: 700,
             margin: '0 auto',
@@ -94,7 +94,7 @@ export default function ProcessStrip() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontFamily: 'var(--font-display)',
-                fontSize: '14px',
+                fontSize: 'var(--fs-14)',
                 fontWeight: 700,
                 letterSpacing: '1.5px',
                 color: 'var(--tan)',
@@ -113,7 +113,7 @@ export default function ProcessStrip() {
               </div>
               <p style={{
                 fontFamily: 'var(--font-body)',
-                fontSize: '15px',
+                fontSize: 'var(--fs-15)',
                 color: 'rgba(255,255,255,0.6)',
                 lineHeight: 1.7,
                 maxWidth: 240,

@@ -7,8 +7,14 @@
   --green-light: #3a7a55;
   --tan: #c8a882;
   --border: #e8e4dc;
-  --gray: #888;
-  --gray-dark: #555;
+  /* Muted text — darkened for legibility. The old #888 failed AA on cream
+     (~3.3:1); #54544e reads ~7:1 while staying clearly below --black. */
+  --gray: #54544e;
+  --gray-dark: #3a3a35;
+  /* Type scale — bumped up one step for legibility ("Large"). Each var is named
+     by the ORIGINAL px value it replaced, so a 13px label now reads var(--fs-13). */
+  --fs-9: 12px;  --fs-10: 13px; --fs-11: 14px; --fs-12: 14px; --fs-13: 15px;
+  --fs-14: 16px; --fs-15: 17px; --fs-16: 18px; --fs-17: 19px; --fs-18: 20px;
   --switcher-h: 46px;
   --nav-h: 84px;
   --emblem-size: 94px;
@@ -51,7 +57,7 @@ body {
   background: var(--cream);
   color: var(--black);
   font-family: var(--font-body);
-  font-size: 16px;
+  font-size: var(--fs-16);
   line-height: 1.6;
   overflow-x: hidden;
 }
@@ -63,7 +69,7 @@ body {
 /* Section label — "01 SOLAR KILN DRIED" style */
 .label {
   font-family: var(--font-display);
-  font-size: 12px;
+  font-size: var(--fs-12);
   font-weight: 700;
   letter-spacing: 3.5px;
   text-transform: uppercase;
@@ -78,7 +84,7 @@ body {
   background: var(--black);
   color: #fff;
   font-family: var(--font-display);
-  font-size: 13px;
+  font-size: var(--fs-13);
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -97,7 +103,7 @@ body {
   background: transparent;
   color: var(--black);
   font-family: var(--font-display);
-  font-size: 13px;
+  font-size: var(--fs-13);
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -116,7 +122,7 @@ body {
   background: transparent;
   color: #fff;
   font-family: var(--font-display);
-  font-size: 13px;
+  font-size: var(--fs-13);
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -219,7 +225,7 @@ body {
   align-items: center;
   justify-content: center;
   font-family: var(--font-display);
-  font-size: 14px;
+  font-size: var(--fs-14);
   font-weight: 700;
   letter-spacing: 0.5px;
   background: var(--tan);
@@ -254,7 +260,7 @@ body {
 }
 .kiln-spec {
   font-family: var(--font-display);
-  font-size: 11px;
+  font-size: var(--fs-11);
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -263,7 +269,7 @@ body {
 }
 .kiln-body {
   font-family: var(--font-body);
-  font-size: 15px;
+  font-size: var(--fs-15);
   color: rgba(255, 255, 255, 0.6);
   line-height: 1.7;
 }

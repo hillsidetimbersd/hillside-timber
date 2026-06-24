@@ -52,7 +52,7 @@ export default function InstagramFeed() {
               alignItems: 'center',
               gap: 8,
               fontFamily: 'var(--font-display)',
-              fontSize: '11px',
+              fontSize: 'var(--fs-11)',
               fontWeight: 700,
               letterSpacing: '2px',
               textTransform: 'uppercase',

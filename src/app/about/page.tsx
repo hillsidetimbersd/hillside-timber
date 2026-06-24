@@ -29,10 +29,10 @@ export default async function AboutPage() {
             }}>
               Heirloom starts<br />with the slab.
             </h1>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: 'var(--gray-dark)', lineHeight: 1.8, marginBottom: 18 }}>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-17)', color: 'var(--gray-dark)', lineHeight: 1.8, marginBottom: 18 }}>
               Hillside Timber is a premium supplier of live edge and distinctive wood, 15 miles west of Sioux Falls on Highway 42. Every slab is one of a kind, harvested locally and dried slowly in our own solar kiln. Before a piece earns its number, we grade it by hand for figure, soundness, and moisture, so the wood you build on is the wood we would build on ourselves.
             </p>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: 'var(--gray-dark)', lineHeight: 1.8, marginBottom: 30 }}>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-17)', color: 'var(--gray-dark)', lineHeight: 1.8, marginBottom: 30 }}>
               Nothing we sell is meant to be replaced. Our sister company, Sioux Falls Woodworking, turns those slabs into heirloom furniture and custom pieces, made to order and built to be handed down.
             </p>
 
@@ -42,15 +42,15 @@ export default async function AboutPage() {
               <div style={{ display: 'flex', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}>
                 {STEPS.map((s, i) => (
                   <div key={s} style={{ flex: 1, textAlign: 'center', padding: '14px 4px', borderLeft: i > 0 ? '1px solid var(--border)' : 'none' }}>
-                    <div style={{ fontFamily: 'var(--font-display)', fontSize: '10px', fontWeight: 700, letterSpacing: '1px', color: 'var(--tan)', marginBottom: 4 }}>0{i + 1}</div>
-                    <span style={{ fontFamily: 'var(--font-display)', fontSize: '12px', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', color: 'var(--black)' }}>{s}</span>
+                    <div style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--fs-10)', fontWeight: 700, letterSpacing: '1px', color: 'var(--tan)', marginBottom: 4 }}>0{i + 1}</div>
+                    <span style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--fs-12)', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', color: 'var(--black)' }}>{s}</span>
                   </div>
                 ))}
               </div>
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
-              <span style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--gray)', fontStyle: 'italic' }}>Questions about a piece?</span>
+              <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-15)', color: 'var(--gray)', fontStyle: 'italic' }}>Questions about a piece?</span>
               <a href={`tel:${phoneDigits}`} className="btn-primary">{brand.contact.phone}</a>
             </div>
           </div>
@@ -66,7 +66,7 @@ export default async function AboutPage() {
             <figcaption style={{
               position: 'absolute', left: 16, bottom: 16, display: 'inline-flex', alignItems: 'center', gap: 8,
               padding: '8px 13px', borderRadius: 'var(--radius-sm)', background: 'rgba(15,15,13,0.82)', backdropFilter: 'blur(4px)',
-              fontFamily: 'var(--font-display)', fontSize: '11px', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', color: '#fff',
+              fontFamily: 'var(--font-display)', fontSize: 'var(--fs-11)', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', color: '#fff',
             }}>
               Inspected &amp; numbered <span style={{ color: 'var(--tan)' }}>·</span> by hand
             </figcaption>
@@ -90,7 +90,7 @@ export default async function AboutPage() {
           {STATS.map((stat, i) => (
             <div key={stat.label} style={{ padding: '46px 28px', textAlign: 'center', borderLeft: i > 0 ? '1px solid var(--border)' : 'none' }}>
               <div style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(38px, 4vw, 52px)', fontWeight: 800, color: 'var(--green)', letterSpacing: '-1.5px', lineHeight: 1 }}>{stat.num}</div>
-              <div style={{ fontFamily: 'var(--font-display)', fontSize: '11px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--gray)', marginTop: 10 }}>{stat.label}</div>
+              <div style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--fs-11)', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--gray)', marginTop: 10 }}>{stat.label}</div>
             </div>
           ))}
         </div>
@@ -104,7 +104,7 @@ export default async function AboutPage() {
             <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(34px, 4vw, 56px)', fontWeight: 800, letterSpacing: '-1px', textTransform: 'uppercase', color: 'var(--black)', lineHeight: 0.95, marginBottom: 14 }}>
               Our Services
             </h2>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: 'var(--gray)', fontStyle: 'italic', maxWidth: 600, margin: '0 auto', lineHeight: 1.6 }}>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-16)', color: 'var(--gray)', fontStyle: 'italic', maxWidth: 600, margin: '0 auto', lineHeight: 1.6 }}>
               Beyond the slab yard, we mill and flatten wood to order. Bring us your logs or your rough slabs.
             </p>
           </div>
@@ -134,7 +134,7 @@ export default async function AboutPage() {
         <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '40px', fontWeight: 800, textTransform: 'uppercase', color: '#fff', marginBottom: 12 }}>
           Visits by<br />appointment.
         </h2>
-        <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: 'rgba(255,255,255,0.5)', marginBottom: 32, fontStyle: 'italic' }}>
+        <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-16)', color: 'rgba(255,255,255,0.5)', marginBottom: 32, fontStyle: 'italic' }}>
           We are 15 miles west of Sioux Falls on Highway 42. Reach out to set up a time, we would love to show you the yard in person.
         </p>
         <a href={`tel:${phoneDigits}`} className="btn-primary">
@@ -161,13 +161,13 @@ function ServiceCard({ title, body, price, note }: { title: string; body: string
       <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '22px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.3px', color: 'var(--black)', marginBottom: 12 }}>
         {title}
       </h3>
-      <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--gray-dark)', lineHeight: 1.75, marginBottom: 20, flex: 1 }}>
+      <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-15)', color: 'var(--gray-dark)', lineHeight: 1.75, marginBottom: 20, flex: 1 }}>
         {body}
       </p>
       <div style={{ fontFamily: 'var(--font-display)', fontSize: '26px', fontWeight: 800, color: 'var(--green)', letterSpacing: '-0.5px' }}>
         {price}
       </div>
-      <div style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: 'var(--gray)', fontStyle: 'italic', marginTop: 4 }}>
+      <div style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-13)', color: 'var(--gray)', fontStyle: 'italic', marginTop: 4 }}>
         {note}
       </div>
     </div>

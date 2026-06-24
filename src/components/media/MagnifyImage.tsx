@@ -112,7 +112,7 @@ export default function MagnifyImage({
           position: 'absolute', top: 0, left: 0, pointerEvents: 'none', display: lensOn ? 'inline-flex' : 'none',
           alignItems: 'center', gap: 5, padding: '6px 11px', whiteSpace: 'nowrap', willChange: 'transform',
           background: 'rgba(15,15,13,0.92)', color: '#fff',
-          fontFamily: 'var(--font-display)', fontSize: '10px', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase',
+          fontFamily: 'var(--font-display)', fontSize: 'var(--fs-10)', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase',
           boxShadow: '0 6px 18px rgba(15,15,13,0.32)',
         }}>
           {hint}

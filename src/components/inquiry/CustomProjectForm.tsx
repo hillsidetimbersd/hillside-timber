@@ -133,7 +133,7 @@ export default function CustomProjectForm({ initialForm, startStep = 1 }: Props 
           display: 'flex', flexDirection: 'column', gap: 10,
         }}>
           {error && (
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: '12px', color: '#c0392b' }}>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-12)', color: '#c0392b' }}>
               {error}
             </p>
           )}

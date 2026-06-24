@@ -63,7 +63,7 @@ export default function CalculatorShell({ activeTool, onChange, children }: Prop
         </h1>
         <p style={{
           fontFamily: 'var(--font-body)',
-          fontSize: '15px',
+          fontSize: 'var(--fs-15)',
           fontStyle: 'italic',
           color: 'var(--gray)',
           lineHeight: 1.7,
@@ -104,7 +104,7 @@ export default function CalculatorShell({ activeTool, onChange, children }: Prop
             >
               <div style={{
                 fontFamily: 'var(--font-display)',
-                fontSize: '10px',
+                fontSize: 'var(--fs-10)',
                 fontWeight: 700,
                 letterSpacing: '2px',
                 textTransform: 'uppercase',
@@ -136,7 +136,7 @@ export default function CalculatorShell({ activeTool, onChange, children }: Prop
               </div>
               <div style={{
                 fontFamily: 'var(--font-body)',
-                fontSize: '12px',
+                fontSize: 'var(--fs-12)',
                 fontStyle: 'italic',
                 color: active ? 'rgba(255,255,255,0.45)' : 'var(--gray)',
                 lineHeight: 1.5,

@@ -82,7 +82,7 @@ export default function CartDrawer({ open, onClose }: Props) {
             <ShoppingBag size={20} color="var(--green)" />
             <span style={{
               fontFamily: 'var(--font-display)',
-              fontSize: '14px',
+              fontSize: 'var(--fs-14)',
               fontWeight: 700,
               letterSpacing: '1.5px',
               textTransform: 'uppercase',
@@ -109,10 +109,10 @@ export default function CartDrawer({ open, onClose }: Props) {
               color: 'var(--gray)',
             }}>
               <ShoppingBag size={48} opacity={0.25} />
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', fontStyle: 'italic' }}>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-13)', fontStyle: 'italic' }}>
                 Your cart is empty.
               </p>
-              <a href="/shop" className="btn-ghost" style={{ fontSize: '10px' }}>Browse Products</a>
+              <a href="/shop" className="btn-ghost" style={{ fontSize: 'var(--fs-10)' }}>Browse Products</a>
             </div>
           ) : (
             items.map((item) => (
@@ -133,7 +133,7 @@ export default function CartDrawer({ open, onClose }: Props) {
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{
                     fontFamily: 'var(--font-display)',
-                    fontSize: '12px',
+                    fontSize: 'var(--fs-12)',
                     fontWeight: 700,
                     letterSpacing: '0.5px',
                     textTransform: 'uppercase',
@@ -147,7 +147,7 @@ export default function CartDrawer({ open, onClose }: Props) {
                   </div>
                   <div style={{
                     fontFamily: 'var(--font-display)',
-                    fontSize: '14px',
+                    fontSize: 'var(--fs-14)',
                     fontWeight: 800,
                     color: 'var(--black)',
                   }}>
@@ -155,7 +155,7 @@ export default function CartDrawer({ open, onClose }: Props) {
                   </div>
                   <div style={{
                     fontFamily: 'var(--font-body)',
-                    fontSize: '11px',
+                    fontSize: 'var(--fs-11)',
                     color: 'var(--gray)',
                     marginTop: 2,
                     fontStyle: 'italic',
@@ -188,7 +188,7 @@ export default function CartDrawer({ open, onClose }: Props) {
             }}>
               <span style={{
                 fontFamily: 'var(--font-display)',
-                fontSize: '11px',
+                fontSize: 'var(--fs-11)',
                 fontWeight: 700,
                 letterSpacing: '1.5px',
                 textTransform: 'uppercase',
@@ -207,7 +207,7 @@ export default function CartDrawer({ open, onClose }: Props) {
             </div>
             <p style={{
               fontFamily: 'var(--font-body)',
-              fontSize: '11px',
+              fontSize: 'var(--fs-11)',
               color: 'var(--gray)',
               marginBottom: 16,
               fontStyle: 'italic',
@@ -217,7 +217,7 @@ export default function CartDrawer({ open, onClose }: Props) {
             {error && (
               <p style={{
                 fontFamily: 'var(--font-body)',
-                fontSize: '12px',
+                fontSize: 'var(--fs-12)',
                 color: '#9b2c2c',
                 marginBottom: 12,
                 lineHeight: 1.5,
@@ -246,7 +246,7 @@ export default function CartDrawer({ open, onClose }: Props) {
                 background: 'none',
                 border: 'none',
                 fontFamily: 'var(--font-display)',
-                fontSize: '10px',
+                fontSize: 'var(--fs-10)',
                 letterSpacing: '1px',
                 textTransform: 'uppercase',
                 color: 'var(--gray)',

@@ -102,7 +102,7 @@ export default function TablePlanner() {
         </div>
 
         <SectionLabel>
-          Room dimensions <span style={{ fontStyle: 'italic', textTransform: 'none', letterSpacing: 0, fontSize: '11px', color: 'var(--gray)' }}>(optional)</span>
+          Room dimensions <span style={{ fontStyle: 'italic', textTransform: 'none', letterSpacing: 0, fontSize: 'var(--fs-11)', color: 'var(--gray)' }}>(optional)</span>
         </SectionLabel>
         <div style={{
           display: 'grid',
@@ -114,7 +114,7 @@ export default function TablePlanner() {
           <RoomInput label="Length" value={roomL} onChange={setRoomL} placeholder="14" />
           <div style={{
             fontFamily: 'var(--font-display)',
-            fontSize: '16px',
+            fontSize: 'var(--fs-16)',
             color: 'var(--gray)',
             textAlign: 'center',
             paddingTop: 24,
@@ -128,7 +128,7 @@ export default function TablePlanner() {
             border: '1px solid var(--border)',
             padding: '16px 20px',
             fontFamily: 'var(--font-body)',
-            fontSize: '12px',
+            fontSize: 'var(--fs-12)',
             color: 'var(--gray)',
             lineHeight: 1.7,
             fontStyle: 'italic',
@@ -154,7 +154,7 @@ export default function TablePlanner() {
         <div>
           <div style={{
             fontFamily: 'var(--font-display)',
-            fontSize: '10px',
+            fontSize: 'var(--fs-10)',
             fontWeight: 700,
             letterSpacing: '3px',
             textTransform: 'uppercase',
@@ -183,7 +183,7 @@ export default function TablePlanner() {
           </div>
           <div style={{
             fontFamily: 'var(--font-body)',
-            fontSize: '13px',
+            fontSize: 'var(--fs-13)',
             color: 'rgba(255,255,255,0.45)',
             fontStyle: 'italic',
             marginTop: 8,
@@ -222,7 +222,7 @@ export default function TablePlanner() {
             border: '1px solid rgba(200, 168, 130, 0.25)',
             padding: '16px 20px',
             fontFamily: 'var(--font-body)',
-            fontSize: '12px',
+            fontSize: 'var(--fs-12)',
             color: 'rgba(200, 168, 130, 0.9)',
             lineHeight: 1.6,
           }}>
@@ -250,7 +250,7 @@ export default function TablePlanner() {
             }} />
             <span style={{
               fontFamily: 'var(--font-body)',
-              fontSize: '12px',
+              fontSize: 'var(--fs-12)',
               color: recommendation.roomFits ? '#a8c898' : '#e8a08a',
             }}>
               {recommendation.roomFits
@@ -266,7 +266,7 @@ export default function TablePlanner() {
       <div style={{ gridColumn: '1 / -1', marginTop: 32, borderTop: '1px solid var(--border)', paddingTop: 28 }}>
         <div style={{
           fontFamily: 'var(--font-display)',
-          fontSize: '11px',
+          fontSize: 'var(--fs-11)',
           fontWeight: 700,
           letterSpacing: '2px',
           textTransform: 'uppercase',
@@ -302,7 +302,7 @@ export default function TablePlanner() {
           >
             <div style={{
               fontFamily: 'var(--font-body)',
-              fontSize: '13px',
+              fontSize: 'var(--fs-13)',
               fontStyle: 'italic',
               color: 'var(--gray)',
               lineHeight: 1.6,
@@ -314,7 +314,7 @@ export default function TablePlanner() {
             </div>
             <span style={{
               fontFamily: 'var(--font-display)',
-              fontSize: '10px',
+              fontSize: 'var(--fs-10)',
               fontWeight: 700,
               letterSpacing: '2px',
               textTransform: 'uppercase',
@@ -346,7 +346,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
     <div style={{
       fontFamily: 'var(--font-display)',
-      fontSize: '11px',
+      fontSize: 'var(--fs-11)',
       fontWeight: 700,
       letterSpacing: '1.5px',
       textTransform: 'uppercase',
@@ -384,7 +384,7 @@ function ToggleCard({ active, title, desc, onClick }: {
       }}>
         <span style={{
           fontFamily: 'var(--font-display)',
-          fontSize: '12px',
+          fontSize: 'var(--fs-12)',
           fontWeight: 700,
           letterSpacing: '1px',
           textTransform: 'uppercase',
@@ -409,7 +409,7 @@ function ToggleCard({ active, title, desc, onClick }: {
       </div>
       <div style={{
         fontFamily: 'var(--font-body)',
-        fontSize: '11px',
+        fontSize: 'var(--fs-11)',
         fontStyle: 'italic',
         color: active ? 'rgba(255,255,255,0.55)' : 'var(--gray)',
         lineHeight: 1.5,
@@ -430,7 +430,7 @@ function RoomInput({ label, value, onChange, placeholder }: {
     <div>
       <div style={{
         fontFamily: 'var(--font-display)',
-        fontSize: '10px',
+        fontSize: 'var(--fs-10)',
         fontWeight: 700,
         letterSpacing: '1px',
         textTransform: 'uppercase',
@@ -459,7 +459,7 @@ function RoomInput({ label, value, onChange, placeholder }: {
       />
       <div style={{
         fontFamily: 'var(--font-body)',
-        fontSize: '12px',
+        fontSize: 'var(--fs-12)',
         fontStyle: 'italic',
         color: 'var(--gray)',
         marginTop: 6,
@@ -479,7 +479,7 @@ function StatRow({ label, value }: { label: string; value: string }) {
     }}>
       <span style={{
         fontFamily: 'var(--font-display)',
-        fontSize: '10px',
+        fontSize: 'var(--fs-10)',
         fontWeight: 700,
         letterSpacing: '2px',
         textTransform: 'uppercase',
@@ -489,7 +489,7 @@ function StatRow({ label, value }: { label: string; value: string }) {
       </span>
       <span style={{
         fontFamily: 'var(--font-display)',
-        fontSize: '18px',
+        fontSize: 'var(--fs-18)',
         fontWeight: 700,
         color: 'var(--tan)',
       }}>
@@ -517,7 +517,7 @@ function InventoryCard({ product }: { product: { id: string; name: string; dimen
     >
       <div style={{
         fontFamily: 'var(--font-display)',
-        fontSize: '13px',
+        fontSize: 'var(--fs-13)',
         fontWeight: 700,
         textTransform: 'uppercase',
         letterSpacing: '0.5px',
@@ -527,7 +527,7 @@ function InventoryCard({ product }: { product: { id: string; name: string; dimen
       </div>
       <div style={{
         fontFamily: 'var(--font-body)',
-        fontSize: '11px',
+        fontSize: 'var(--fs-11)',
         fontStyle: 'italic',
         color: 'var(--gray)',
       }}>
@@ -535,7 +535,7 @@ function InventoryCard({ product }: { product: { id: string; name: string; dimen
       </div>
       <div style={{
         fontFamily: 'var(--font-display)',
-        fontSize: '18px',
+        fontSize: 'var(--fs-18)',
         fontWeight: 700,
         color: 'var(--black)',
         marginTop: 4,
@@ -544,7 +544,7 @@ function InventoryCard({ product }: { product: { id: string; name: string; dimen
       </div>
       <div style={{
         fontFamily: 'var(--font-display)',
-        fontSize: '9px',
+        fontSize: 'var(--fs-9)',
         fontWeight: 700,
         letterSpacing: '1.5px',
         textTransform: 'uppercase',

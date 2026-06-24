@@ -70,10 +70,10 @@ export default function DropZone({ files, onChange, maxFiles = 5, maxSizeMB = 10
           {hasFiles ? (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, color: 'var(--green)' }}>
               <AddMoreSvg />
-              <span style={{ fontFamily: 'var(--font-display)', fontSize: '9px', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', color: 'var(--green)' }}>
+              <span style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--fs-9)', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', color: 'var(--green)' }}>
                 Add More
               </span>
-              <span style={{ fontFamily: 'var(--font-body)', fontSize: '11px', color: 'var(--gray)' }}>
+              <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-11)', color: 'var(--gray)' }}>
                 ({files.length}/{maxFiles})
               </span>
             </div>
@@ -82,14 +82,14 @@ export default function DropZone({ files, onChange, maxFiles = 5, maxSizeMB = 10
               <div style={{ color: 'var(--gray)', marginBottom: 12, lineHeight: 0, display: 'inline-block' }}>
                 <UploadTraySvg />
               </div>
-              <div style={{ fontFamily: 'var(--font-display)', fontSize: '10px', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', color: 'var(--black)', marginBottom: 6 }}>
+              <div style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--fs-10)', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', color: 'var(--black)', marginBottom: 6 }}>
                 Drop photos here
               </div>
-              <div style={{ fontFamily: 'var(--font-body)', fontSize: '12px', color: 'var(--gray)' }}>
+              <div style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-12)', color: 'var(--gray)' }}>
                 or{' '}
                 <span style={{ color: 'var(--green)', textDecoration: 'underline' }}>browse files</span>
               </div>
-              <div style={{ fontFamily: 'var(--font-body)', fontSize: '11px', color: 'var(--gray)', marginTop: 8, opacity: 0.7 }}>
+              <div style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-11)', color: 'var(--gray)', marginTop: 8, opacity: 0.7 }}>
                 JPG or PNG · Up to {maxFiles} photos · {maxSizeMB}MB each
               </div>
             </>

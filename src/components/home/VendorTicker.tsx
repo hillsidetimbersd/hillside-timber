@@ -25,7 +25,7 @@ export default function VendorTicker() {
       <div style={{ marginBottom: 22, textAlign: 'center' }}>
         <span style={{
           fontFamily: 'var(--font-display)',
-          fontSize: '10px',
+          fontSize: 'var(--fs-10)',
           fontWeight: 700,
           letterSpacing: '3px',
           textTransform: 'uppercase',
@@ -45,7 +45,7 @@ export default function VendorTicker() {
           {doubled.map((name, i) => (
             <span key={i} style={{
               fontFamily: 'var(--font-display)',
-              fontSize: '18px',
+              fontSize: 'var(--fs-18)',
               fontWeight: 700,
               letterSpacing: '2.5px',
               textTransform: 'uppercase',

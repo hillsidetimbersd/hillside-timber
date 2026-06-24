@@ -26,7 +26,7 @@ function Stars({ count }: { count: number }) {
   return (
     <div style={{ display: 'flex', gap: 3, marginBottom: 12 }}>
       {Array.from({ length: count }).map((_, i) => (
-        <span key={i} style={{ color: '#2a5c3f', fontSize: '14px' }}>&#9733;</span>
+        <span key={i} style={{ color: '#2a5c3f', fontSize: 'var(--fs-14)' }}>&#9733;</span>
       ))}
     </div>
   )
@@ -43,7 +43,7 @@ export default function ReviewsSection() {
         <div style={{ marginBottom: 60 }}>
           <div style={{
             fontFamily: 'var(--font-display)',
-            fontSize: '9px',
+            fontSize: 'var(--fs-9)',
             fontWeight: 700,
             letterSpacing: '4px',
             textTransform: 'uppercase',
@@ -85,7 +85,7 @@ export default function ReviewsSection() {
               <Stars count={r.rating} />
               <p style={{
                 fontFamily: 'var(--font-body)',
-                fontSize: '16px',
+                fontSize: 'var(--fs-16)',
                 color: 'rgba(255,255,255,0.7)',
                 lineHeight: 1.75,
                 marginBottom: 24,
@@ -96,7 +96,7 @@ export default function ReviewsSection() {
               <div>
                 <div style={{
                   fontFamily: 'var(--font-display)',
-                  fontSize: '12px',
+                  fontSize: 'var(--fs-12)',
                   fontWeight: 700,
                   letterSpacing: '1px',
                   textTransform: 'uppercase',
@@ -107,14 +107,14 @@ export default function ReviewsSection() {
                 </div>
                 <div style={{
                   fontFamily: 'var(--font-body)',
-                  fontSize: '11px',
+                  fontSize: 'var(--fs-11)',
                   color: 'rgba(255,255,255,0.3)',
                 }}>
                   {r.location}
                 </div>
                 <div style={{
                   fontFamily: 'var(--font-display)',
-                  fontSize: '10px',
+                  fontSize: 'var(--fs-10)',
                   letterSpacing: '1px',
                   color: 'var(--green)',
                   marginTop: 8,

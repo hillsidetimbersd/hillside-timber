@@ -8,6 +8,7 @@ export async function POST(request: Request) {
       email?: string
       message?: string
       company?: string
+      piece?: { sku?: string; name?: string; dimensions?: string; price?: string; url?: string }
     }
 
     // Honeypot: a real person never fills the hidden "company" field. Quietly accept and drop.
@@ -16,6 +17,7 @@ export async function POST(request: Request) {
     const name = body.name?.trim() ?? ''
     const email = body.email?.trim() ?? ''
     const message = body.message?.trim() ?? ''
+    const piece = body.piece?.sku ? body.piece : null
 
     if (!name || !email || !message) {
       return NextResponse.json({ error: 'Please add your name, email, and a message.' }, { status: 400 })
@@ -30,15 +32,25 @@ export async function POST(request: Request) {
       )
     }
 
+    const pieceHtml = piece
+      ? `
+        <p style="margin-top:16px;padding:12px 16px;background:#f6f4ef;border-left:3px solid #2a5c3f">
+          <strong>Inquiring about:</strong> ${escapeHtml(piece.name ?? '')} (Piece No. ${escapeHtml(piece.sku ?? '')})
+          ${piece.dimensions ? `<br>${escapeHtml(piece.dimensions)}` : ''}${piece.price ? ` &middot; ${escapeHtml(piece.price)}` : ''}
+          ${piece.url ? `<br><a href="${escapeHtml(piece.url)}">${escapeHtml(piece.url)}</a>` : ''}
+        </p>`
+      : ''
+
     const sent = await sendEmail({
       to: OWNER_EMAIL,
       replyTo: email,
-      subject: `New website message from ${name}`,
+      subject: `New website message from ${name}${piece ? ` · ${piece.sku}` : ''}`,
       html: `
         <p>New message from the contact form:</p>
         <p><strong>Name:</strong> ${escapeHtml(name)}<br>
         <strong>Email:</strong> ${escapeHtml(email)}</p>
         <p style="white-space:pre-wrap">${escapeHtml(message)}</p>
+        ${pieceHtml}
       `,
     })
     if (!sent) {

@@ -21,9 +21,9 @@ export interface Product {
   sku: string
   /** Parsed dimension string, e.g. `28" × 35" × 2"`. Empty when the title has none. */
   dimensions: string
-  /** Store sections this piece belongs to (e.g. "Live Edge Slabs", "Coming Soon"). */
+  /** Store sections this piece belongs to (e.g. "Live Edge Slabs", "Still Drying"). */
   sections: string[]
-  /** True when the piece sits in the Squarespace "Coming Soon" category (green / drying). */
+  /** True when the piece is in Johan's Squarespace "Coming Soon" collection (shown on-site as "Still Drying" / green). */
   drying: boolean
   priceCents: number
   salePriceCents: number | null
@@ -51,7 +51,7 @@ interface Source {
 
 /**
  * The wood-slabs store maps to Hillside Timber, its categories become shop
- * sections, and "Coming Soon" is Johan's green/drying bucket. Finished Items
+ * sections, and the "Coming Soon" collection is his green / still drying bucket. Finished Items
  * maps to Sioux Falls Woodworking.
  */
 const SOURCES: Source[] = [
@@ -59,7 +59,7 @@ const SOURCES: Source[] = [
   { path: '/wood-slabs/live-edge-slabs', brand: 'ht', section: 'Live Edge Slabs' },
   { path: '/wood-slabs/rounds', brand: 'ht', section: 'Rounds' },
   { path: '/wood-slabs/mantels', brand: 'ht', section: 'Mantels' },
-  { path: '/wood-slabs/coming-soon', brand: 'ht', section: 'Coming Soon', drying: true },
+  { path: '/wood-slabs/coming-soon', brand: 'ht', section: 'Still Drying', drying: true },
   { path: '/blanks-burls-billets', brand: 'ht', section: 'Blanks, Burls & Billets' },
   { path: '/finished-items-store', brand: 'sfw' },
 ]
@@ -258,7 +258,7 @@ export async function getProductsByBrand(brand: BrandKey): Promise<Product[]> {
 
 /** Distinct section tabs present for a brand, in store order, with "All" first. */
 export function sectionsForBrand(products: Product[]): string[] {
-  const order = ['Live Edge Slabs', 'Rounds', 'Mantels', 'Blanks, Burls & Billets', 'Coming Soon']
+  const order = ['Live Edge Slabs', 'Rounds', 'Mantels', 'Blanks, Burls & Billets', 'Still Drying']
   const present = new Set(products.flatMap((p) => p.sections))
   return ['All', ...order.filter((s) => present.has(s))]
 }
@@ -291,4 +291,33 @@ export function pickTopPicks(products: Product[], count: number): Product[] {
 /** On-sale, photographed pieces for the "On Sale" showcase. */
 export function pickOnSale(products: Product[], count: number): Product[] {
   return shuffle(products.filter((p) => p.onSale && p.salePriceCents != null && p.images.length > 0)).slice(0, count)
+}
+
+/** A trimmed product shape for the contact-form piece picker (keeps the client payload small). */
+export interface PiecePreview {
+  id: string
+  sku: string
+  name: string
+  dimensions: string
+  image: string
+  section: string
+  priceLabel: string
+  drying: boolean
+  productUrl: string
+}
+
+export function toPiecePreview(p: Product): PiecePreview {
+  const cents = p.onSale && p.salePriceCents ? p.salePriceCents : p.priceCents
+  const section = p.sections.find((s) => s !== 'Still Drying') ?? (p.brand === 'sfw' ? 'Finished Piece' : 'Wood Slab')
+  return {
+    id: p.id,
+    sku: p.sku,
+    name: p.name,
+    dimensions: p.dimensions,
+    image: p.images[0] ?? '',
+    section,
+    priceLabel: cents > 0 ? `$${Math.round(cents / 100).toLocaleString()}` : 'Inquire for price',
+    drying: p.drying,
+    productUrl: p.productUrl,
+  }
 }

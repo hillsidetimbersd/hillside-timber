@@ -1,12 +1,18 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, type CSSProperties } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
-import { List, X } from '@phosphor-icons/react'
+import { List, X, CaretDown } from '@phosphor-icons/react'
 import { useBrand } from '@/components/brand/BrandContext'
 
-const HT_LINKS = [
+type NavLink = {
+  href: string
+  label: string
+  children?: { href: string; label: string }[]
+}
+
+const HT_LINKS: NavLink[] = [
   { href: '/', label: 'Home' },
   { href: '/gallery', label: 'Gallery' },
   { href: '/shop', label: 'Shop' },
@@ -15,13 +21,12 @@ const HT_LINKS = [
   { href: '/contact', label: 'Contact' },
 ]
 
-const SFW_LINKS = [
+const SFW_LINKS: NavLink[] = [
   { href: '/', label: 'Home' },
   { href: '/gallery', label: 'Gallery' },
   { href: '/shop', label: 'Shop' },
   { href: '/custom', label: 'Custom' },
-  { href: '/about', label: 'About' },
-  { href: '/faq', label: 'FAQ' },
+  { href: '/about', label: 'About', children: [{ href: '/faq', label: 'FAQ' }] },
   { href: '/contact', label: 'Contact' },
 ]
 
@@ -41,26 +46,27 @@ export default function Nav() {
   }, [])
 
   const transparent = isHome && !scrolled
+  // When the nav has a backdrop (scrolled past a hero, or any non-home page) it becomes
+  // a frosted, floating, rounded bar rather than a flat full-width black box.
+  const solid = !transparent
   const lightHero = brand.key === 'ht'
-  const navBg = transparent ? 'transparent' : '#0f0f0d'
-  const navBorder = transparent ? '1px solid transparent' : '1px solid rgba(255,255,255,0.08)'
   const textColor = transparent && lightHero ? 'var(--black)' : '#fff'
 
   const half = Math.ceil(links.length / 2)
   const leftLinks = links.slice(0, half)
   const rightLinks = links.slice(half)
 
-  const linkStyle = {
+  const linkStyle: CSSProperties = {
     fontFamily: 'var(--font-display)',
-    fontSize: '13px',
+    fontSize: 'var(--fs-13)',
     fontWeight: 700,
     letterSpacing: '2.5px',
-    textTransform: 'uppercase' as const,
+    textTransform: 'uppercase',
     color: textColor,
     textDecoration: 'none',
     opacity: 0.9,
     transition: 'opacity 0.15s, color 0.35s',
-    whiteSpace: 'nowrap' as const,
+    whiteSpace: 'nowrap',
   }
 
   return (
@@ -72,53 +78,51 @@ export default function Nav() {
           left: 0,
           right: 0,
           height: 'var(--nav-h)',
-          background: navBg,
-          borderBottom: navBorder,
-          backdropFilter: transparent ? 'none' : 'blur(12px)',
           zIndex: 50,
-          transition: 'background 0.35s, border-color 0.35s, backdrop-filter 0.35s',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: '0 40px',
+          padding: '0 28px',
         }}
       >
-        {/* Centered links, split into two groups flanking the center emblem */}
-        <div className="nav-links" style={{ display: 'flex', alignItems: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 34, justifyContent: 'flex-end' }}>
+        {/* Frosted floating pill — sized to the menu (not the full viewport), fades in once a hero is scrolled past.
+            The two link groups are forced to equal width so the centered emblem stays dead-center no matter how
+            long the labels are. */}
+        <div
+          className="nav-links"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            position: 'relative',
+            zIndex: 1,
+            padding: '11px 26px',
+            borderRadius: 999,
+            border: solid ? '1px solid rgba(255,255,255,0.16)' : '1px solid transparent',
+            background: solid ? 'rgba(18,18,16,0.55)' : 'transparent',
+            backdropFilter: solid ? 'blur(22px) saturate(150%)' : 'none',
+            WebkitBackdropFilter: solid ? 'blur(22px) saturate(150%)' : 'none',
+            boxShadow: solid ? '0 18px 48px rgba(0,0,0,0.32)' : 'none',
+            transition: 'background 0.35s ease, backdrop-filter 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 30, justifyContent: 'flex-end', minWidth: 244 }}>
             {leftLinks.map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                style={linkStyle}
-                onMouseEnter={(e) => (e.currentTarget.style.opacity = '1')}
-                onMouseLeave={(e) => (e.currentTarget.style.opacity = '0.85')}
-              >
-                {l.label}
-              </Link>
+              <NavItem key={l.href} item={l} linkStyle={linkStyle} />
             ))}
           </div>
 
           {/* Center gap that clears the overhanging emblem */}
           <div aria-hidden style={{ width: 'calc(var(--emblem-size) + 56px)', flexShrink: 0 }} />
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: 34, justifyContent: 'flex-start' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 30, justifyContent: 'flex-start', minWidth: 244 }}>
             {rightLinks.map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                style={linkStyle}
-                onMouseEnter={(e) => (e.currentTarget.style.opacity = '1')}
-                onMouseLeave={(e) => (e.currentTarget.style.opacity = '0.85')}
-              >
-                {l.label}
-              </Link>
+              <NavItem key={l.href} item={l} linkStyle={linkStyle} />
             ))}
           </div>
         </div>
 
-        {/* Right cluster: cart + mobile toggle, pinned right so the links stay centered */}
-        <div style={{ position: 'absolute', right: 40, top: 0, bottom: 0, display: 'flex', alignItems: 'center', gap: 18 }}>
+        {/* Right cluster: mobile toggle, pinned right so the links stay centered */}
+        <div style={{ position: 'absolute', right: 40, top: 0, bottom: 0, display: 'flex', alignItems: 'center', gap: 18, zIndex: 1 }}>
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
@@ -150,25 +154,46 @@ export default function Nav() {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: 40,
+          gap: 30,
+          overflowY: 'auto',
+          padding: '40px 0',
         }}>
           {links.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              onClick={() => setMobileOpen(false)}
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: '32px',
-                fontWeight: 800,
-                letterSpacing: '4px',
-                textTransform: 'uppercase',
-                color: '#fff',
-                textDecoration: 'none',
-              }}
-            >
-              {l.label}
-            </Link>
+            <div key={l.href} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
+              <Link
+                href={l.href}
+                onClick={() => setMobileOpen(false)}
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: '30px',
+                  fontWeight: 800,
+                  letterSpacing: '4px',
+                  textTransform: 'uppercase',
+                  color: '#fff',
+                  textDecoration: 'none',
+                }}
+              >
+                {l.label}
+              </Link>
+              {l.children?.map((c) => (
+                <Link
+                  key={c.href}
+                  href={c.href}
+                  onClick={() => setMobileOpen(false)}
+                  style={{
+                    fontFamily: 'var(--font-display)',
+                    fontSize: 'var(--fs-18)',
+                    fontWeight: 700,
+                    letterSpacing: '3px',
+                    textTransform: 'uppercase',
+                    color: 'var(--tan)',
+                    textDecoration: 'none',
+                  }}
+                >
+                  {c.label}
+                </Link>
+              ))}
+            </div>
           ))}
         </div>
       )}
@@ -180,5 +205,105 @@ export default function Nav() {
         }
       `}</style>
     </>
+  )
+}
+
+/** A single top-level nav entry. Renders a plain link, or a hover/focus dropdown when it has children. */
+function NavItem({ item, linkStyle }: { item: NavLink; linkStyle: CSSProperties }) {
+  const [open, setOpen] = useState(false)
+
+  if (!item.children || item.children.length === 0) {
+    return (
+      <Link
+        href={item.href}
+        style={linkStyle}
+        onMouseEnter={(e) => (e.currentTarget.style.opacity = '1')}
+        onMouseLeave={(e) => (e.currentTarget.style.opacity = '0.85')}
+      >
+        {item.label}
+      </Link>
+    )
+  }
+
+  return (
+    <div
+      style={{ position: 'relative', display: 'flex', alignItems: 'center' }}
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+      onFocus={() => setOpen(true)}
+      onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setOpen(false) }}
+    >
+      <Link
+        href={item.href}
+        aria-haspopup="true"
+        aria-expanded={open}
+        style={{ ...linkStyle, opacity: open ? 1 : 0.9, display: 'inline-flex', alignItems: 'center', gap: 5 }}
+      >
+        {item.label}
+        <CaretDown
+          size={11}
+          weight="bold"
+          style={{ opacity: 0.65, transition: 'transform 0.2s', transform: open ? 'rotate(180deg)' : 'none' }}
+        />
+      </Link>
+
+      <div
+        style={{
+          position: 'absolute',
+          top: '100%',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          paddingTop: 22,
+          opacity: open ? 1 : 0,
+          visibility: open ? 'visible' : 'hidden',
+          pointerEvents: open ? 'auto' : 'none',
+          transition: 'opacity 0.18s ease',
+          zIndex: 60,
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2,
+            minWidth: 150,
+            background: 'rgba(15,15,13,0.98)',
+            border: '1px solid rgba(255,255,255,0.1)',
+            boxShadow: '0 18px 44px rgba(0,0,0,0.45)',
+            padding: 8,
+            transform: open ? 'translateY(0)' : 'translateY(-6px)',
+            transition: 'transform 0.18s ease',
+          }}
+        >
+          {item.children.map((c) => (
+            <DropdownLink key={c.href} href={c.href} label={c.label} />
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function DropdownLink({ href, label }: { href: string; label: string }) {
+  return (
+    <Link
+      href={href}
+      style={{
+        fontFamily: 'var(--font-display)',
+        fontSize: 'var(--fs-12)',
+        fontWeight: 700,
+        letterSpacing: '2px',
+        textTransform: 'uppercase',
+        color: '#fff',
+        textDecoration: 'none',
+        padding: '10px 16px',
+        whiteSpace: 'nowrap',
+        transition: 'background 0.15s, color 0.15s',
+      }}
+      onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = 'var(--tan)' }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#fff' }}
+    >
+      {label}
+    </Link>
   )
 }

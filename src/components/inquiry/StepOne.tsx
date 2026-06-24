@@ -45,7 +45,7 @@ const DELIVERY: { value: DeliveryMethod; label: string; sublabel: string; Svg: R
 export default function StepOne({ form, set }: Props) {
   return (
     <div>
-      <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: 'var(--gray)', marginBottom: 28, fontStyle: 'italic' }}>
+      <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-13)', color: 'var(--gray)', marginBottom: 28, fontStyle: 'italic' }}>
         Tell us a little about yourself so we can reach you with a quote.
       </p>
 
@@ -95,7 +95,7 @@ function FormRow({ label, children }: { label: string; children: React.ReactNode
     <div style={{ marginBottom: 22 }}>
       <label style={{
         display: 'block', fontFamily: 'var(--font-display)',
-        fontSize: '9px', fontWeight: 700, letterSpacing: '2px',
+        fontSize: 'var(--fs-9)', fontWeight: 700, letterSpacing: '2px',
         textTransform: 'uppercase' as const, color: 'var(--gray)', marginBottom: 6,
       }}>
         {label}

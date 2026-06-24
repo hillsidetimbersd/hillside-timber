@@ -1,7 +1,18 @@
+/** EcoPoxy retail partner feature. Two real photos: the finished epoxy piece
+ *  (/assets/photos/ecopoxy-result.webp) with the EcoPoxy FlowCast kit framed as an
+ *  inset (/assets/photos/ecopoxy-product.webp). A CSS gradient fallback keeps each
+ *  panel looking intentional if a photo is ever missing (no broken image). */
 export default function EcoPoxySection() {
   return (
     <section className="grain" style={{ background: 'var(--black)', color: '#fff', padding: '120px var(--section-pad-x)', position: 'relative', overflow: 'hidden' }}>
-      <div className="ecopoxy-grid" style={{ maxWidth: 'var(--content-max)', margin: '0 auto', display: 'grid', gridTemplateColumns: '1.05fr 0.95fr', gap: 72, alignItems: 'center', position: 'relative', zIndex: 2 }}>
+      {/* Ambient green wash for depth */}
+      <div aria-hidden="true" style={{
+        position: 'absolute', top: '-30%', right: '-12%', width: '62%', height: '160%',
+        background: 'radial-gradient(closest-side, rgba(42,92,63,0.30), transparent 72%)',
+        filter: 'blur(24px)', zIndex: 1, pointerEvents: 'none',
+      }} />
+
+      <div className="ecopoxy-grid" style={{ maxWidth: 'var(--content-max)', margin: '0 auto', display: 'grid', gridTemplateColumns: '1.02fr 0.98fr', gap: 72, alignItems: 'center', position: 'relative', zIndex: 2 }}>
         <div>
           <div className="label" style={{ marginBottom: 16, color: 'var(--tan)' }}>
             Now Available · At the Yard
@@ -12,12 +23,12 @@ export default function EcoPoxySection() {
           }}>
             EcoPoxy <span style={{ color: 'var(--tan)' }}>Epoxy Systems</span>
           </h2>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: 'rgba(255,255,255,0.62)', lineHeight: 1.8, maxWidth: 520, marginBottom: 18 }}>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-16)', color: 'rgba(255,255,255,0.62)', lineHeight: 1.8, maxWidth: 520, marginBottom: 18 }}>
             We have partnered with EcoPoxy, a leader in bio-based epoxy resins made with natural,
             plant-based ingredients. Built for live edge river tables, art, and woodworking, they cure
             crystal clear and hold up beautifully, with a fraction of the environmental footprint.
           </p>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: 'rgba(255,255,255,0.62)', lineHeight: 1.8, maxWidth: 520, marginBottom: 30 }}>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-16)', color: 'rgba(255,255,255,0.62)', lineHeight: 1.8, maxWidth: 520, marginBottom: 30 }}>
             Pick up UVPOXY and FlowCast in store, and pair it with the right slab for your next pour.
             Stop by the yard by appointment to see the full selection.
           </p>
@@ -27,29 +38,56 @@ export default function EcoPoxySection() {
           </div>
         </div>
 
-        {/* Resin-pour panel: an editorial stand-in for the product, built in CSS. */}
-        <div style={{
-          position: 'relative', aspectRatio: '4 / 3', borderRadius: 'var(--radius)', overflow: 'hidden',
-          border: '1px solid rgba(255,255,255,0.1)',
-          background:
-            'radial-gradient(130% 100% at 28% 18%, rgba(58,122,85,0.55), transparent 58%),' +
-            'radial-gradient(110% 90% at 78% 72%, rgba(200,168,130,0.42), transparent 55%),' +
-            'radial-gradient(80% 70% at 60% 45%, rgba(42,92,63,0.35), transparent 60%),' +
-            'linear-gradient(135deg, #1b1b18 0%, #0f0f0d 100%)',
-        }}>
-          {/* Glossy resin highlight */}
+        {/* The finished epoxy piece, with the EcoPoxy product kit framed as an inset */}
+        <div style={{ position: 'relative' }}>
+          {/* glow behind the frame */}
           <div aria-hidden="true" style={{
-            position: 'absolute', inset: 0,
-            background: 'linear-gradient(115deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0) 38%)',
+            position: 'absolute', inset: '-10% -7%', borderRadius: 28,
+            background: 'radial-gradient(58% 58% at 38% 28%, rgba(58,122,85,0.5), transparent 72%)',
+            filter: 'blur(34px)', zIndex: 0,
           }} />
-          <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: 24 }}>
-            <div style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(34px, 4vw, 52px)', fontWeight: 800, letterSpacing: '1px', textTransform: 'uppercase', color: '#fff' }}>
-              EcoPoxy
-            </div>
-            <div style={{ fontFamily: 'var(--font-display)', fontSize: '11px', fontWeight: 700, letterSpacing: '3.5px', textTransform: 'uppercase', color: 'var(--tan)', marginTop: 8 }}>
-              Bio-Based Epoxy Resin
+
+          {/* main: finished epoxy piece */}
+          <div
+            role="img"
+            aria-label="Walnut and blue epoxy coasters handmade with EcoPoxy resin"
+            style={{
+              position: 'relative', zIndex: 1, aspectRatio: '4 / 3', borderRadius: 'var(--radius-lg)', overflow: 'hidden',
+              border: '1px solid rgba(255,255,255,0.12)',
+              boxShadow: '0 34px 80px rgba(0,0,0,0.55)',
+              // Real photo on top, premium gradient underneath as a graceful fallback.
+              background:
+                "url('/assets/photos/ecopoxy-result.webp') center/cover no-repeat," +
+                'linear-gradient(135deg, #243a2c 0%, #12100d 100%)',
+            }}
+          >
+            {/* in-stock tag */}
+            <div style={{
+              position: 'absolute', top: 14, left: 14, display: 'inline-flex', alignItems: 'center', gap: 7,
+              padding: '7px 12px', borderRadius: 999, background: 'rgba(12,12,10,0.5)',
+              backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.2)',
+            }}>
+              <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--green-light)' }} />
+              <span style={{ fontFamily: 'var(--font-display)', fontSize: 10, fontWeight: 700, letterSpacing: '1.8px', textTransform: 'uppercase', color: '#fff' }}>
+                In stock · At the yard
+              </span>
             </div>
           </div>
+
+          {/* inset: the EcoPoxy FlowCast product kit, framed like a photo */}
+          <div
+            role="img"
+            aria-label="EcoPoxy FlowCast kit, stocked at Hillside Timber"
+            style={{
+              position: 'absolute', right: 14, bottom: 14, width: '43%', zIndex: 2,
+              aspectRatio: '4 / 3', borderRadius: 'var(--radius)', overflow: 'hidden',
+              border: '4px solid var(--cream)',
+              boxShadow: '0 22px 48px rgba(0,0,0,0.62)',
+              background:
+                "url('/assets/photos/ecopoxy-product.webp') center/cover no-repeat," +
+                'linear-gradient(135deg, #2a2a26 0%, #12100d 100%)',
+            }}
+          />
         </div>
       </div>
 

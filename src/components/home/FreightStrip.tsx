@@ -24,7 +24,7 @@ export default function FreightStrip() {
           <div
             style={{
               fontFamily: 'var(--font-display)',
-              fontSize: '10px',
+              fontSize: 'var(--fs-10)',
               fontWeight: 700,
               letterSpacing: '3px',
               textTransform: 'uppercase',
@@ -61,7 +61,7 @@ export default function FreightStrip() {
             margin: 0,
             maxWidth: 560,
             fontFamily: 'var(--font-body)',
-            fontSize: '15px',
+            fontSize: 'var(--fs-15)',
             lineHeight: 1.7,
             color: 'rgba(255,255,255,0.78)',
           }}

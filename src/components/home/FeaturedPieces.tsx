@@ -56,7 +56,7 @@ export default function FeaturedPieces() {
           </div>
           <p style={{
             fontFamily: 'var(--font-body)',
-            fontSize: '17px',
+            fontSize: 'var(--fs-17)',
             color: 'var(--gray-dark)',
             lineHeight: 1.8,
             fontStyle: 'italic',
@@ -128,7 +128,7 @@ export default function FeaturedPieces() {
                 <div>
                   <div style={{
                     fontFamily: 'var(--font-display)',
-                    fontSize: '9px',
+                    fontSize: 'var(--fs-9)',
                     fontWeight: 700,
                     letterSpacing: '2.5px',
                     textTransform: 'uppercase',
@@ -150,7 +150,7 @@ export default function FeaturedPieces() {
                   </div>
                   <div style={{
                     fontFamily: 'var(--font-body)',
-                    fontSize: '14px',
+                    fontSize: 'var(--fs-14)',
                     color: 'rgba(255,255,255,0.65)',
                     fontStyle: 'italic',
                   }}>

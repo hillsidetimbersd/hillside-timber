@@ -16,7 +16,7 @@ export default function TopPicks({ products }: { products: Product[] }) {
             }}>
               Our Top Picks
             </h2>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: 'var(--gray)', fontStyle: 'italic', marginTop: 12, maxWidth: 520, lineHeight: 1.6 }}>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-16)', color: 'var(--gray)', fontStyle: 'italic', marginTop: 12, maxWidth: 520, lineHeight: 1.6 }}>
               The most striking pieces in the yard right now. One of a kind, and they move fast.
             </p>
           </div>

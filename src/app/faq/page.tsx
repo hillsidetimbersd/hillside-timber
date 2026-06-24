@@ -15,13 +15,13 @@ const FAQS = [
 ]
 
 const INPUT_STYLE: React.CSSProperties = {
-  width: '100%', padding: '12px 14px', fontFamily: 'var(--font-body)', fontSize: '14px',
+  width: '100%', padding: '12px 14px', fontFamily: 'var(--font-body)', fontSize: 'var(--fs-14)',
   border: '1px solid var(--border)', outline: 'none', background: '#fff',
   transition: 'border-color 0.15s', borderRadius: 'var(--radius)',
 }
 
 const FIELD_LABEL: React.CSSProperties = {
-  display: 'block', fontFamily: 'var(--font-display)', fontSize: '9px', fontWeight: 700,
+  display: 'block', fontFamily: 'var(--font-display)', fontSize: 'var(--fs-9)', fontWeight: 700,
   letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--gray)', marginBottom: 6,
 }
 
@@ -88,7 +88,7 @@ export default function FaqPage() {
                 }}
               >
                 <span style={{
-                  fontFamily: 'var(--font-display)', fontSize: '17px', fontWeight: 700,
+                  fontFamily: 'var(--font-display)', fontSize: 'var(--fs-17)', fontWeight: 700,
                   letterSpacing: '0.2px', color: 'var(--black)',
                 }}>
                   {faq.q}
@@ -99,7 +99,7 @@ export default function FaqPage() {
               </button>
               {open === i && (
                 <div style={{ paddingBottom: 20 }}>
-                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: 'var(--gray-dark)', lineHeight: 1.8 }}>
+                  <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-16)', color: 'var(--gray-dark)', lineHeight: 1.8 }}>
                     {faq.a}
                   </p>
                 </div>
@@ -115,7 +115,7 @@ export default function FaqPage() {
               <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '28px', fontWeight: 800, textTransform: 'uppercase', color: 'var(--black)', marginBottom: 10 }}>
                 Message Sent
               </h3>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: 'var(--gray)', fontStyle: 'italic' }}>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-16)', color: 'var(--gray)', fontStyle: 'italic' }}>
                 Thanks for reaching out. We will reply within 1-2 business days, often sooner.
               </p>
             </div>
@@ -127,13 +127,13 @@ export default function FaqPage() {
                 <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(26px, 3vw, 36px)', fontWeight: 800, letterSpacing: '-0.5px', textTransform: 'uppercase', color: 'var(--black)', lineHeight: 0.98, marginBottom: 14 }}>
                   Ask us<br />anything.
                 </h3>
-                <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--gray-dark)', lineHeight: 1.7, marginBottom: 24 }}>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-15)', color: 'var(--gray-dark)', lineHeight: 1.7, marginBottom: 24 }}>
                   A question about a slab, a custom build, or a shipping quote, send it over and we will get back to you fast.
                 </p>
                 <div style={{ borderTop: '1px solid var(--border)', paddingTop: 20, display: 'flex', flexDirection: 'column', gap: 6 }}>
-                  <span style={{ fontFamily: 'var(--font-display)', fontSize: '9px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--gray)' }}>Prefer to talk?</span>
-                  <a href="tel:6053104846" style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: 'var(--black)', textDecoration: 'none' }}>(605) 310-4846</a>
-                  <a href="mailto:hillsidetimbersd@gmail.com" style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--green)', textDecoration: 'none' }}>hillsidetimbersd@gmail.com</a>
+                  <span style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--fs-9)', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--gray)' }}>Prefer to talk?</span>
+                  <a href="tel:6053104846" style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-17)', color: 'var(--black)', textDecoration: 'none' }}>(605) 310-4846</a>
+                  <a href="mailto:hillsidetimbersd@gmail.com" style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-15)', color: 'var(--green)', textDecoration: 'none' }}>hillsidetimbersd@gmail.com</a>
                 </div>
               </div>
 
@@ -158,7 +158,7 @@ export default function FaqPage() {
                   <textarea id="faq-message" required rows={5} value={form.message} onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))} placeholder="Pieces you'd like a shipping quote on (with your zip), a question about a slab, or a custom project…" {...focusable} style={{ ...INPUT_STYLE, resize: 'vertical' }} />
                 </div>
                 {error && (
-                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#9b2c2c', lineHeight: 1.5, margin: 0 }}>{error}</p>
+                  <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-15)', color: '#9b2c2c', lineHeight: 1.5, margin: 0 }}>{error}</p>
                 )}
                 <button type="submit" disabled={sending} className="btn-primary" style={{ alignSelf: 'flex-start', opacity: sending ? 0.65 : 1, cursor: sending ? 'wait' : 'pointer' }}>
                   {sending ? 'Sending…' : 'Send Message'}

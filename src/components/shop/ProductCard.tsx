@@ -5,16 +5,16 @@ import type { Product } from '@/lib/squarespace'
 import { formatPrice } from '@/lib/square'
 import MagnifyImage from '@/components/media/MagnifyImage'
 
-/** Eyebrow label: the piece's primary store section. "Coming Soon" is shown as a badge, never here. */
+/** Eyebrow label: the piece's primary store section. "Still Drying" is shown as a badge, never here. */
 function primarySection(product: Product): string {
-  const named = product.sections.find((s) => s !== 'Coming Soon')
+  const named = product.sections.find((s) => s !== 'Still Drying')
   return named ?? (product.brand === 'sfw' ? 'Finished Piece' : 'Wood Slab')
 }
 
 export default function ProductCard({ product }: { product: Product }) {
   const sold = !product.inStock && !product.drying
   const reserve = product.drying
-  const inquiryHref = `/contact?piece=${encodeURIComponent(`${product.name}${product.sku ? ` (${product.sku})` : ''}`)}`
+  const inquiryHref = `/contact?piece=${encodeURIComponent(product.sku)}`
 
   const badges = (
     <>
@@ -22,16 +22,16 @@ export default function ProductCard({ product }: { product: Product }) {
         <div style={{
           position: 'absolute', top: 12, left: 12, padding: '5px 10px', pointerEvents: 'none', zIndex: 3,
           background: 'rgba(15,15,13,0.92)', backdropFilter: 'blur(4px)',
-          fontFamily: 'var(--font-display)', fontSize: '10px', fontWeight: 700,
+          fontFamily: 'var(--font-display)', fontSize: 'var(--fs-10)', fontWeight: 700,
           letterSpacing: '1.6px', textTransform: 'uppercase', color: 'var(--tan)',
         }}>
-          Coming Soon
+          Still Drying
         </div>
       )}
       {sold ? (
         <div style={{
           position: 'absolute', top: 12, right: 12, padding: '5px 10px', pointerEvents: 'none', zIndex: 3,
-          background: 'var(--black)', fontFamily: 'var(--font-display)', fontSize: '10px',
+          background: 'var(--black)', fontFamily: 'var(--font-display)', fontSize: 'var(--fs-10)',
           fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', color: '#fff',
         }}>
           Sold
@@ -39,7 +39,7 @@ export default function ProductCard({ product }: { product: Product }) {
       ) : product.onSale ? (
         <div style={{
           position: 'absolute', top: 12, right: 12, padding: '5px 10px', pointerEvents: 'none', zIndex: 3,
-          background: 'var(--green)', fontFamily: 'var(--font-display)', fontSize: '10px',
+          background: 'var(--green)', fontFamily: 'var(--font-display)', fontSize: 'var(--fs-10)',
           fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', color: '#fff',
         }}>
           Sale
@@ -85,14 +85,14 @@ export default function ProductCard({ product }: { product: Product }) {
       {/* Info */}
       <div style={{ padding: '16px 16px 14px', flex: 1, display: 'flex', flexDirection: 'column' }}>
         <div style={{
-          fontFamily: 'var(--font-display)', fontSize: '9px', fontWeight: 700,
+          fontFamily: 'var(--font-display)', fontSize: 'var(--fs-9)', fontWeight: 700,
           letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--green)', marginBottom: 4,
         }}>
           {primarySection(product)}
         </div>
 
         <h3 style={{
-          fontFamily: 'var(--font-display)', fontSize: '16px', fontWeight: 700,
+          fontFamily: 'var(--font-display)', fontSize: 'var(--fs-16)', fontWeight: 700,
           letterSpacing: '0.3px', textTransform: 'uppercase', color: 'var(--black)',
           marginBottom: 4, lineHeight: 1.15,
         }}>
@@ -101,7 +101,7 @@ export default function ProductCard({ product }: { product: Product }) {
 
         {product.dimensions && (
           <div style={{
-            fontFamily: 'var(--font-body)', fontSize: '12px', color: 'var(--gray)',
+            fontFamily: 'var(--font-body)', fontSize: 'var(--fs-12)', color: 'var(--gray)',
             marginBottom: 8, fontStyle: 'italic',
           }}>
             {product.dimensions}
@@ -116,16 +116,25 @@ export default function ProductCard({ product }: { product: Product }) {
             background: 'var(--cream)', border: '1px solid var(--border)',
           }}>
             <Tag size={12} weight="fill" style={{ color: 'var(--green)' }} />
-            <span style={{ fontFamily: 'var(--font-display)', fontSize: '9px', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', color: 'var(--gray)' }}>
+            <span style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--fs-9)', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', color: 'var(--gray)' }}>
               Piece No.
             </span>
-            <span style={{ fontFamily: 'var(--font-display)', fontSize: '11px', fontWeight: 800, letterSpacing: '0.5px', color: 'var(--black)' }}>
+            <span style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--fs-11)', fontWeight: 800, letterSpacing: '0.5px', color: 'var(--black)' }}>
               {product.sku}
             </span>
           </div>
         )}
 
         <div style={{ flex: 1 }} />
+
+        {product.drying && (
+          <p style={{
+            fontFamily: 'var(--font-body)', fontSize: 'var(--fs-12)', fontStyle: 'italic',
+            color: 'var(--green)', lineHeight: 1.45, marginBottom: 10,
+          }}>
+            Still drying in our solar kiln. Inquire to claim it for when it&apos;s ready.
+          </p>
+        )}
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: 10 }}>
           <PriceBlock product={product} />
@@ -140,7 +149,7 @@ function PriceBlock({ product }: { product: Product }) {
   // A $0 price is never a real price to show; route the shopper to ask.
   if (product.priceCents === 0) {
     return (
-      <span style={{ fontFamily: 'var(--font-body)', fontSize: '13px', fontStyle: 'italic', color: 'var(--gray)' }}>
+      <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-13)', fontStyle: 'italic', color: 'var(--gray)' }}>
         Inquire for price
       </span>
     )
@@ -148,17 +157,17 @@ function PriceBlock({ product }: { product: Product }) {
   if (product.onSale && product.salePriceCents) {
     return (
       <span style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
-        <span style={{ fontFamily: 'var(--font-display)', fontSize: '18px', fontWeight: 800, color: 'var(--green)' }}>
+        <span style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--fs-18)', fontWeight: 800, color: 'var(--green)' }}>
           {formatPrice(product.salePriceCents)}
         </span>
-        <span style={{ fontFamily: 'var(--font-display)', fontSize: '13px', fontWeight: 700, color: 'var(--gray)', textDecoration: 'line-through' }}>
+        <span style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--fs-13)', fontWeight: 700, color: 'var(--gray)', textDecoration: 'line-through' }}>
           {formatPrice(product.priceCents)}
         </span>
       </span>
     )
   }
   return (
-    <span style={{ fontFamily: 'var(--font-display)', fontSize: '18px', fontWeight: 800, color: 'var(--black)' }}>
+    <span style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--fs-18)', fontWeight: 800, color: 'var(--black)' }}>
       {formatPrice(product.priceCents)}
     </span>
   )
@@ -166,7 +175,7 @@ function PriceBlock({ product }: { product: Product }) {
 
 const ACTION_BASE = {
   display: 'flex', alignItems: 'center', gap: 6, padding: '9px 14px',
-  fontFamily: 'var(--font-display)', fontSize: '10px', fontWeight: 700,
+  fontFamily: 'var(--font-display)', fontSize: 'var(--fs-10)', fontWeight: 700,
   letterSpacing: '1px', textTransform: 'uppercase' as const, textDecoration: 'none',
   whiteSpace: 'nowrap' as const, cursor: 'pointer', borderRadius: 'var(--radius-sm)',
 }
@@ -188,7 +197,7 @@ function CardAction({ product, sold, reserve, inquiryHref }: { product: Product;
         onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--green)' }}
       >
         <ChatCircle size={14} weight="bold" />
-        Reserve
+        Inquire
       </a>
     )
   }

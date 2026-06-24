@@ -45,7 +45,7 @@ export default function BoardFootCalculator() {
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center', marginBottom: 40 }}>
         <span style={{
           fontFamily: 'var(--font-display)',
-          fontSize: '9px',
+          fontSize: 'var(--fs-9)',
           fontWeight: 700,
           letterSpacing: '3px',
           textTransform: 'uppercase',
@@ -63,7 +63,7 @@ export default function BoardFootCalculator() {
               style={{
                 padding: '5px 12px',
                 fontFamily: 'var(--font-display)',
-                fontSize: '10px',
+                fontSize: 'var(--fs-10)',
                 fontWeight: 700,
                 letterSpacing: '0.5px',
                 textTransform: 'uppercase',
@@ -113,7 +113,7 @@ export default function BoardFootCalculator() {
         }}>
           <div style={{
             fontFamily: 'var(--font-display)',
-            fontSize: '10px',
+            fontSize: 'var(--fs-10)',
             fontWeight: 700,
             letterSpacing: '3px',
             textTransform: 'uppercase',
@@ -134,7 +134,7 @@ export default function BoardFootCalculator() {
           </div>
           <div style={{
             fontFamily: 'var(--font-display)',
-            fontSize: '16px',
+            fontSize: 'var(--fs-16)',
             fontWeight: 700,
             letterSpacing: '4px',
             textTransform: 'uppercase',
@@ -186,7 +186,7 @@ export default function BoardFootCalculator() {
       >
         <p style={{
           fontFamily: 'var(--font-body)',
-          fontSize: '13px',
+          fontSize: 'var(--fs-13)',
           fontStyle: 'italic',
           color: 'var(--gray)',
           lineHeight: 1.65,
@@ -199,7 +199,7 @@ export default function BoardFootCalculator() {
           className="bf-shop-cta"
           style={{
             fontFamily: 'var(--font-display)',
-            fontSize: '10px',
+            fontSize: 'var(--fs-10)',
             fontWeight: 700,
             letterSpacing: '2px',
             textTransform: 'uppercase',
@@ -239,7 +239,7 @@ function DimensionField({ label, value, onChange }: { label: string; value: stri
     }}>
       <div style={{
         fontFamily: 'var(--font-display)',
-        fontSize: '9px',
+        fontSize: 'var(--fs-9)',
         fontWeight: 700,
         letterSpacing: '3px',
         textTransform: 'uppercase',
@@ -274,7 +274,7 @@ function DimensionField({ label, value, onChange }: { label: string; value: stri
       />
       <div style={{
         fontFamily: 'var(--font-body)',
-        fontSize: '12px',
+        fontSize: 'var(--fs-12)',
         fontStyle: 'italic',
         color: 'var(--gray)',
         marginTop: 6,
@@ -290,7 +290,7 @@ function ResultStat({ label, value }: { label: string; value: string }) {
     <div>
       <div style={{
         fontFamily: 'var(--font-display)',
-        fontSize: '9px',
+        fontSize: 'var(--fs-9)',
         fontWeight: 700,
         letterSpacing: '2.5px',
         textTransform: 'uppercase',

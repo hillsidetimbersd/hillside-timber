@@ -79,7 +79,7 @@ function HTHero({ brand }: { brand: ReturnType<typeof useBrand> }) {
       }}>
         <div style={{
           fontFamily: 'var(--font-display)',
-          fontSize: '10px',
+          fontSize: 'var(--fs-10)',
           fontWeight: 700,
           letterSpacing: '4px',
           textTransform: 'uppercase',
@@ -103,7 +103,7 @@ function HTHero({ brand }: { brand: ReturnType<typeof useBrand> }) {
         </h1>
         <p style={{
           fontFamily: 'var(--font-body)',
-          fontSize: '17px',
+          fontSize: 'var(--fs-17)',
           color: 'var(--gray-dark)',
           maxWidth: 'var(--content-text)',
           margin: '0 auto 28px',
@@ -142,7 +142,7 @@ function HTHero({ brand }: { brand: ReturnType<typeof useBrand> }) {
             }}>
               <div style={{
                 fontFamily: 'var(--font-display)',
-                fontSize: '10px',
+                fontSize: 'var(--fs-10)',
                 fontWeight: 700,
                 letterSpacing: '3px',
                 color: 'var(--green)',
@@ -152,7 +152,7 @@ function HTHero({ brand }: { brand: ReturnType<typeof useBrand> }) {
               </div>
               <div style={{
                 fontFamily: 'var(--font-display)',
-                fontSize: '13px',
+                fontSize: 'var(--fs-13)',
                 fontWeight: 700,
                 letterSpacing: '1.4px',
                 textTransform: 'uppercase',
@@ -163,7 +163,7 @@ function HTHero({ brand }: { brand: ReturnType<typeof useBrand> }) {
               </div>
               <p style={{
                 fontFamily: 'var(--font-body)',
-                fontSize: '14px',
+                fontSize: 'var(--fs-14)',
                 color: 'var(--gray-dark)',
                 lineHeight: 1.55,
               }}>
@@ -266,7 +266,7 @@ function SFWHero({ brand }: { brand: ReturnType<typeof useBrand> }) {
         {/* Eyebrow */}
         <div style={{
           fontFamily: 'var(--font-display)',
-          fontSize: '10px',
+          fontSize: 'var(--fs-10)',
           fontWeight: 700,
           letterSpacing: '4px',
           textTransform: 'uppercase',
@@ -293,7 +293,7 @@ function SFWHero({ brand }: { brand: ReturnType<typeof useBrand> }) {
         {/* Sub */}
         <p style={{
           fontFamily: 'var(--font-body)',
-          fontSize: '17px',
+          fontSize: 'var(--fs-17)',
           color: 'rgba(255,255,255,0.7)',
           maxWidth: 480,
           lineHeight: 1.7,
@@ -328,7 +328,7 @@ function SFWHero({ brand }: { brand: ReturnType<typeof useBrand> }) {
             }}>
               <div style={{
                 fontFamily: 'var(--font-display)',
-                fontSize: '10px',
+                fontSize: 'var(--fs-10)',
                 fontWeight: 700,
                 letterSpacing: '3px',
                 color: config.accentColor,
@@ -338,7 +338,7 @@ function SFWHero({ brand }: { brand: ReturnType<typeof useBrand> }) {
               </div>
               <div style={{
                 fontFamily: 'var(--font-display)',
-                fontSize: '13px',
+                fontSize: 'var(--fs-13)',
                 fontWeight: 700,
                 letterSpacing: '1px',
                 textTransform: 'uppercase',
@@ -349,7 +349,7 @@ function SFWHero({ brand }: { brand: ReturnType<typeof useBrand> }) {
               </div>
               <p style={{
                 fontFamily: 'var(--font-body)',
-                fontSize: '14px',
+                fontSize: 'var(--fs-14)',
                 color: 'rgba(255,255,255,0.55)',
                 lineHeight: 1.6,
               }}>

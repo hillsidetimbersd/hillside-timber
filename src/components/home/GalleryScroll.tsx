@@ -9,7 +9,7 @@ function lerp(a: number, b: number, t: number) { return a + (b - a) * t }
 function clamp(v: number, min: number, max: number) { return Math.max(min, Math.min(max, v)) }
 
 function tileLabel(product: Product): string {
-  return product.sections.find((s) => s !== 'Coming Soon') ?? 'Wood Slab'
+  return product.sections.find((s) => s !== 'Still Drying') ?? 'Wood Slab'
 }
 
 export default function GalleryScroll({ products = [] }: { products?: Product[] }) {
@@ -155,7 +155,7 @@ export default function GalleryScroll({ products = [] }: { products?: Product[] 
             From tree to<br />finished piece.
           </h2>
           <p style={{
-            fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--gray)', lineHeight: 1.8, maxWidth: 480, fontStyle: 'italic',
+            fontFamily: 'var(--font-body)', fontSize: 'var(--fs-15)', color: 'var(--gray)', lineHeight: 1.8, maxWidth: 480, fontStyle: 'italic',
           }}>
             Every photo above is a real piece in our inventory, pulled fresh each visit. Browse the full catalog or start a conversation about your custom project.
           </p>
@@ -206,10 +206,10 @@ function GalleryTile({ product }: { product: Product }) {
           padding: '14px 16px', pointerEvents: 'none',
           background: 'linear-gradient(to top, rgba(15,15,13,0.85) 0%, rgba(15,15,13,0.12) 44%, rgba(15,15,13,0) 66%)',
         }}>
-          <div style={{ fontFamily: 'var(--font-display)', fontSize: '9px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--tan)', marginBottom: 3 }}>
+          <div style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--fs-9)', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--tan)', marginBottom: 3 }}>
             {tileLabel(product)}
           </div>
-          <div style={{ fontFamily: 'var(--font-display)', fontSize: '15px', fontWeight: 700, letterSpacing: '0.3px', textTransform: 'uppercase', color: '#fff', lineHeight: 1.1 }}>
+          <div style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--fs-15)', fontWeight: 700, letterSpacing: '0.3px', textTransform: 'uppercase', color: '#fff', lineHeight: 1.1 }}>
             {product.name}
           </div>
         </div>
@@ -231,14 +231,14 @@ function CtaCard({ title, sub, href, accent }: { title: string; sub: string; hre
       onMouseLeave={(e) => { e.currentTarget.style.borderColor = accent ? 'var(--green)' : 'var(--border)'; e.currentTarget.style.boxShadow = 'none' }}
     >
       <div>
-        <div style={{ fontFamily: 'var(--font-display)', fontSize: '13px', fontWeight: 700, letterSpacing: '0.5px', color: 'var(--black)', marginBottom: 3, textTransform: 'uppercase' }}>
+        <div style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--fs-13)', fontWeight: 700, letterSpacing: '0.5px', color: 'var(--black)', marginBottom: 3, textTransform: 'uppercase' }}>
           {title}
         </div>
-        <div style={{ fontFamily: 'var(--font-body)', fontSize: '11px', color: 'var(--gray)', fontStyle: 'italic' }}>
+        <div style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-11)', color: 'var(--gray)', fontStyle: 'italic' }}>
           {sub}
         </div>
       </div>
-      <span style={{ fontSize: '18px', color: 'var(--green)', fontWeight: 700 }}>→</span>
+      <span style={{ fontSize: 'var(--fs-18)', color: 'var(--green)', fontWeight: 700 }}>→</span>
     </a>
   )
 }

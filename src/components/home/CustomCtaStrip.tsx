@@ -55,7 +55,7 @@ export default function CustomCtaStrip() {
         </h2>
         <p style={{
           fontFamily: 'var(--font-body)',
-          fontSize: '17px',
+          fontSize: 'var(--fs-17)',
           color: 'rgba(255,255,255,0.7)',
           maxWidth: 480,
           margin: '0 auto 32px',
