@@ -186,7 +186,9 @@ const SFW_CONFIG = {
   accentColor: '#c8a882',
   ctaPrimary: 'View Our Work',
   ctaPrimaryHref: '/gallery',
-  videoSrc: '/assets/videos/sfw-hero.mp4' as string | null,
+  videoWebm: '/assets/videos/sfw-hero.webm' as string | null,
+  videoMp4: '/assets/videos/sfw-hero.mp4' as string | null,
+  videoPoster: '/assets/videos/sfw-hero-poster.jpg',
 }
 
 const SFW_VALUE_PROPS = [
@@ -197,6 +199,7 @@ const SFW_VALUE_PROPS = [
 
 function SFWHero({ brand }: { brand: ReturnType<typeof useBrand> }) {
   const bgRef = useRef<HTMLDivElement>(null)
+  const videoRef = useRef<HTMLVideoElement>(null)
   const config = SFW_CONFIG
 
   useEffect(() => {
@@ -209,10 +212,24 @@ function SFWHero({ brand }: { brand: ReturnType<typeof useBrand> }) {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  // Honor reduced-motion: hold the poster frame instead of looping the B-roll.
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const apply = () => {
+      const v = videoRef.current
+      if (!v) return
+      if (mq.matches) v.pause()
+      else void v.play().catch(() => {})
+    }
+    apply()
+    mq.addEventListener('change', apply)
+    return () => mq.removeEventListener('change', apply)
+  }, [])
+
   return (
     <section style={{
       position: 'relative',
-      height: '100vh',
+      minHeight: '100vh',
       overflow: 'hidden',
       display: 'flex',
       flexDirection: 'column',
@@ -228,15 +245,20 @@ function SFWHero({ brand }: { brand: ReturnType<typeof useBrand> }) {
           overflow: 'hidden',
         }}
       >
-        {config.videoSrc ? (
+        {config.videoMp4 ? (
           <video
+            ref={videoRef}
             autoPlay
             muted
             loop
             playsInline
-            style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 30%', display: 'block' }}
+            preload="auto"
+            poster={config.videoPoster}
+            aria-hidden="true"
+            style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 42%', display: 'block' }}
           >
-            <source src={config.videoSrc} type="video/mp4" />
+            {config.videoWebm ? <source src={config.videoWebm} type="video/webm" /> : null}
+            <source src={config.videoMp4} type="video/mp4" />
           </video>
         ) : (
           <div style={{
