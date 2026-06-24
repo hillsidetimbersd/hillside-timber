@@ -1,6 +1,19 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState, useSyncExternalStore } from 'react'
+
+// prefers-reduced-motion as an external store, so we read it without a
+// set-state-in-effect (and it reacts if the user flips the setting live).
+function subscribeReducedMotion(onChange: () => void): () => void {
+  if (typeof window === 'undefined') return () => {}
+  const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+  mq.addEventListener('change', onChange)
+  return () => mq.removeEventListener('change', onChange)
+}
+
+function getReducedMotion(): boolean {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+}
 
 interface Props {
   src: string
@@ -39,11 +52,7 @@ export default function MagnifyImage({
   const ringRef = useRef<HTMLDivElement>(null)
   const hintRef = useRef<HTMLDivElement>(null)
   const [active, setActive] = useState(false)
-  const [reduced, setReduced] = useState(false)
-
-  useEffect(() => {
-    setReduced(window.matchMedia('(prefers-reduced-motion: reduce)').matches)
-  }, [])
+  const reduced = useSyncExternalStore(subscribeReducedMotion, getReducedMotion, () => false)
 
   const lensOn = active && !reduced
 

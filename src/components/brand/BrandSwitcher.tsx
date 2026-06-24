@@ -13,9 +13,13 @@ export default function BrandSwitcher() {
 
   function handleSwitch(targetKey: string) {
     if (targetKey === brand.key) return
-    // Set cookie directly so the server component reads it on next request
+    // Set cookie directly so the server component reads it on next request. These are
+    // genuine event-handler side effects, not render-time mutations; the compiler-oriented
+    // react-hooks/immutability rule false-positives on assigning to these globals here.
+    /* eslint-disable react-hooks/immutability */
     document.cookie = `ww-brand=${targetKey}; path=/; max-age=31536000; samesite=lax`
     window.location.href = '/'
+    /* eslint-enable react-hooks/immutability */
   }
 
   return (
