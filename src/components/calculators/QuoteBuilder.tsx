@@ -288,7 +288,7 @@ Estimated range: $${price?.min.toLocaleString()}–$${price?.max.toLocaleString(
                 marginTop: 8,
                 lineHeight: 1.5,
               }}>
-                Refines as you complete each step. Final quote from Slavic within 1–2 days.
+                Refines as you complete each step. Final quote within 1–2 days.
               </div>
               <div style={{ display: 'flex', gap: 3, marginTop: 16 }}>
                 {[1, 2, 3, 4].map((n) => (

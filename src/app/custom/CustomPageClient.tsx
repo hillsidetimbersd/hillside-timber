@@ -49,7 +49,7 @@ function CustomPageInner() {
           <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-16)', color: 'rgba(255,255,255,0.82)', maxWidth: 650, lineHeight: 1.6, fontStyle: 'italic' }}>
             {hasPrefill
               ? "We've pre-filled your Quote Builder selections. Add a few contact details to finish your request."
-              : 'Tell us about the piece you have in mind. Slavic reviews every request personally.'
+              : 'Tell us about the piece you have in mind. We review every request personally.'
             }
           </p>
         </div>
@@ -62,7 +62,7 @@ function CustomPageInner() {
         <div className="how-it-works-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 32 }}>
           {[
             { num: '01', title: 'Submit a Request', body: 'Fill out the project form with your dimensions, species preferences, and budget.' },
-            { num: '02', title: 'Get a Quote', body: 'Slavic will review and send you a detailed quote and timeline within 1 to 2 business days.' },
+            { num: '02', title: 'Get a Quote', body: 'We review your request and send a detailed quote and timeline within 1 to 2 business days.' },
             { num: '03', title: 'We Build It', body: 'Your piece is handcrafted in our Sioux Falls workshop using locally harvested timber.' },
             { num: '04', title: 'Delivered', body: 'We deliver locally or ship nationwide via freight. White-glove delivery available.' },
           ].map((step) => (

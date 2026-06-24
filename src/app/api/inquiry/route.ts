@@ -112,8 +112,8 @@ export async function POST(request: Request) {
         subject: 'We received your custom project request',
         html: `
           <p>Hi ${escapeHtml(name)},</p>
-          <p>Thanks for reaching out about your custom project. We have your request and Slavic
-          reviews every one personally. We will be in touch soon to talk through the details.</p>
+          <p>Thanks for reaching out about your custom project. We have your request, and we
+          review every one personally. We will be in touch soon to talk through the details.</p>
           <p>In the meantime, if anything comes up you can reach us at (605) 310-4846.</p>
           <p>Sioux Falls Woodworking</p>
         `,
