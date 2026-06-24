@@ -49,6 +49,8 @@ export default function SolarKilnStory() {
     if (!el) return
     setArmed(true)
     if (typeof IntersectionObserver === 'undefined') {
+      // Fallback when IntersectionObserver is unavailable: reveal immediately.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setInView(true)
       return
     }

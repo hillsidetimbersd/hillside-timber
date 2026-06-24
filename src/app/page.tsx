@@ -43,7 +43,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <GalleryScroll products={pickRandom(ht, 15)} />
+      <GalleryScroll products={pickRandom(ht, 45)} />
       <TopPicks products={pickTopPicks(ht, 4)} />
       <FreightStrip />
       <VendorTicker />

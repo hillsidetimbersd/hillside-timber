@@ -3,7 +3,7 @@
 import { ArrowUpRight, ChatCircle, Tag } from '@phosphor-icons/react'
 import type { Product } from '@/lib/squarespace'
 import { formatPrice } from '@/lib/square'
-import MagnifyImage from '@/components/media/MagnifyImage'
+import HoverImage from '@/components/media/HoverImage'
 
 /** Eyebrow label: the piece's primary store section. "Still Drying" is shown as a badge, never here. */
 function primarySection(product: Product): string {
@@ -63,18 +63,16 @@ export default function ProductCard({ product }: { product: Product }) {
       onMouseEnter={(e) => { e.currentTarget.style.boxShadow = 'var(--shadow)'; e.currentTarget.style.transform = 'translateY(-2px)' }}
       onMouseLeave={(e) => { e.currentTarget.style.boxShadow = 'var(--shadow-sm)'; e.currentTarget.style.transform = 'none' }}
     >
-      {/* Image with magnifying lens to inspect the grain */}
+      {/* Product image with badges */}
       {product.images[0] ? (
-        <MagnifyImage
+        <HoverImage
           src={product.images[0]}
           alt={product.name}
-          lensSize={150}
-          zoom={2.4}
           style={{ aspectRatio: '4/3', background: '#f0ede8' }}
           imgStyle={{ opacity: sold ? 0.55 : 1, filter: sold ? 'grayscale(0.35)' : 'none' }}
         >
           {badges}
-        </MagnifyImage>
+        </HoverImage>
       ) : (
         <div style={{ aspectRatio: '4/3', overflow: 'hidden', background: '#f0ede8', position: 'relative' }}>
           <div style={{ width: '100%', height: '100%', background: '#e0dbd0' }} />
@@ -100,9 +98,9 @@ export default function ProductCard({ product }: { product: Product }) {
         </h3>
 
         {product.dimensions && (
-          <div style={{
-            fontFamily: 'var(--font-body)', fontSize: 'var(--fs-12)', color: 'var(--gray)',
-            marginBottom: 8, fontStyle: 'italic',
+          <div className="muted-text" style={{
+            fontFamily: 'var(--font-body)', fontSize: 'var(--fs-12)',
+            marginBottom: 8,
           }}>
             {product.dimensions}
           </div>
@@ -132,7 +130,7 @@ export default function ProductCard({ product }: { product: Product }) {
             fontFamily: 'var(--font-body)', fontSize: 'var(--fs-12)', fontStyle: 'italic',
             color: 'var(--green)', lineHeight: 1.45, marginBottom: 10,
           }}>
-            Still drying in our solar kiln. Inquire to claim it for when it&apos;s ready.
+            Still drying in our solar kiln. Inquire to purchase now, claim it, or reserve it for when it&apos;s ready.
           </p>
         )}
 
@@ -149,7 +147,7 @@ function PriceBlock({ product }: { product: Product }) {
   // A $0 price is never a real price to show; route the shopper to ask.
   if (product.priceCents === 0) {
     return (
-      <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-13)', fontStyle: 'italic', color: 'var(--gray)' }}>
+      <span className="muted-text" style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-13)' }}>
         Inquire for price
       </span>
     )

@@ -1,127 +1,143 @@
-const REVIEWS = [
-  {
-    name: 'Marcus T.',
-    location: 'Sioux Falls, SD',
-    rating: 5,
-    text: "I've worked with a lot of wood suppliers over the years. Hillside Timber is in a different league. The slabs arrived perfectly dried, and the grain on the walnut piece I ordered was absolutely stunning.",
-    product: 'Black Walnut Live Edge Slab',
-  },
-  {
-    name: 'Sarah K.',
-    location: 'Rapid City, SD',
-    rating: 5,
-    text: "Slavic built us a custom dining table for our cabin. The craftsmanship is something else entirely. Five years in and it still looks brand new. We get compliments every single time someone visits.",
-    product: 'Custom White Oak Dining Table',
-  },
-  {
-    name: 'Derek J.',
-    location: 'Minneapolis, MN',
-    rating: 5,
-    text: "Drove six hours to pick up slabs in person. Completely worth it. The solar kiln operation alone is impressive to see. These folks take wood seriously in a way that most suppliers just don't.",
-    product: 'White Oak Slab Bundle',
-  },
-]
-
-function Stars({ count }: { count: number }) {
-  return (
-    <div style={{ display: 'flex', gap: 3, marginBottom: 12 }}>
-      {Array.from({ length: count }).map((_, i) => (
-        <span key={i} style={{ color: '#2a5c3f', fontSize: 'var(--fs-14)' }}>&#9733;</span>
-      ))}
-    </div>
-  )
-}
+import { homeReviews } from '@/lib/reviews'
+import { RatingMark, SourceBadge } from '@/components/reviews/marks'
 
 export default function ReviewsSection() {
   return (
-    <section style={{
-      background: '#0f0f0d',
-      padding: '120px var(--section-pad-x)',
-    }}>
+    <section style={{ background: '#0f0f0d', padding: '120px var(--section-pad-x)' }}>
       <div style={{ maxWidth: 'var(--content-max)', margin: '0 auto' }}>
         {/* Header */}
-        <div style={{ marginBottom: 60 }}>
-          <div style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: 'var(--fs-9)',
-            fontWeight: 700,
-            letterSpacing: '4px',
-            textTransform: 'uppercase',
-            color: 'var(--green)',
-            marginBottom: 14,
-          }}>
-            What Customers Say
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'flex-end',
+            justifyContent: 'space-between',
+            gap: 24,
+            flexWrap: 'wrap',
+            marginBottom: 60,
+          }}
+        >
+          <div>
+            <div
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 'var(--fs-9)',
+                fontWeight: 700,
+                letterSpacing: '4px',
+                textTransform: 'uppercase',
+                color: 'var(--tan)',
+                marginBottom: 14,
+              }}
+            >
+              What Customers Say
+            </div>
+            <h2
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 'clamp(38px, 4vw, 64px)',
+                fontWeight: 800,
+                letterSpacing: '-1px',
+                textTransform: 'uppercase',
+                color: '#fff',
+                lineHeight: 0.95,
+              }}
+            >
+              Built on trust.
+              <br />
+              <span style={{ color: 'rgba(255,255,255,0.3)' }}>Proven by results.</span>
+            </h2>
           </div>
-          <h2 style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: 'clamp(38px, 4vw, 64px)',
-            fontWeight: 800,
-            letterSpacing: '-1px',
-            textTransform: 'uppercase',
-            color: '#fff',
-            lineHeight: 0.95,
-          }}>
-            Built on trust.<br />
-            <span style={{ color: 'rgba(255,255,255,0.3)' }}>Proven by results.</span>
-          </h2>
+          <a
+            href="/reviews"
+            className="btn-ghost-white"
+            style={{ flexShrink: 0 }}
+          >
+            Read all reviews
+          </a>
         </div>
 
         {/* Reviews grid */}
-        <div className="reviews-grid" style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: 24,
-        }}>
-          {REVIEWS.map((r) => (
+        <div
+          className="reviews-grid"
+          style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24 }}
+        >
+          {homeReviews.map((r) => (
             <div
-              key={r.name}
+              key={r.id}
               style={{
                 background: 'rgba(255,255,255,0.04)',
                 border: '1px solid rgba(255,255,255,0.07)',
                 padding: '32px 28px',
                 borderRadius: 'var(--radius)',
+                display: 'flex',
+                flexDirection: 'column',
               }}
             >
-              <Stars count={r.rating} />
-              <p style={{
-                fontFamily: 'var(--font-body)',
-                fontSize: 'var(--fs-16)',
-                color: 'rgba(255,255,255,0.7)',
-                lineHeight: 1.75,
-                marginBottom: 24,
-                fontStyle: 'italic',
-              }}>
+              <RatingMark review={r} starColor="var(--tan)" recommendColor="var(--tan)" emptyColor="rgba(255,255,255,0.16)" />
+              <p
+                style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 'var(--fs-16)',
+                  color: 'rgba(255,255,255,0.72)',
+                  lineHeight: 1.75,
+                  margin: '16px 0 22px',
+                  fontStyle: 'italic',
+                  flex: 1,
+                }}
+              >
                 &ldquo;{r.text}&rdquo;
               </p>
-              <div>
-                <div style={{
-                  fontFamily: 'var(--font-display)',
-                  fontSize: 'var(--fs-12)',
-                  fontWeight: 700,
-                  letterSpacing: '1px',
-                  textTransform: 'uppercase',
-                  color: '#fff',
-                  marginBottom: 2,
-                }}>
-                  {r.name}
+              {r.context && (
+                <div
+                  style={{
+                    fontFamily: 'var(--font-display)',
+                    fontSize: 'var(--fs-10)',
+                    fontWeight: 700,
+                    letterSpacing: '1.5px',
+                    textTransform: 'uppercase',
+                    color: 'var(--tan)',
+                    marginBottom: 18,
+                  }}
+                >
+                  {r.context}
                 </div>
-                <div style={{
-                  fontFamily: 'var(--font-body)',
-                  fontSize: 'var(--fs-11)',
-                  color: 'rgba(255,255,255,0.3)',
-                }}>
-                  {r.location}
+              )}
+              <div
+                style={{
+                  borderTop: '1px solid rgba(255,255,255,0.08)',
+                  paddingTop: 16,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: 10,
+                }}
+              >
+                <div>
+                  <div
+                    style={{
+                      fontFamily: 'var(--font-display)',
+                      fontSize: 'var(--fs-12)',
+                      fontWeight: 700,
+                      letterSpacing: '1px',
+                      textTransform: 'uppercase',
+                      color: '#fff',
+                    }}
+                  >
+                    {r.author}
+                  </div>
+                  {r.standing && (
+                    <div
+                      style={{
+                        fontFamily: 'var(--font-body)',
+                        fontSize: 'var(--fs-11)',
+                        color: 'rgba(255,255,255,0.4)',
+                        marginTop: 1,
+                      }}
+                    >
+                      {r.standing}
+                    </div>
+                  )}
                 </div>
-                <div style={{
-                  fontFamily: 'var(--font-display)',
-                  fontSize: 'var(--fs-10)',
-                  letterSpacing: '1px',
-                  color: 'var(--green)',
-                  marginTop: 8,
-                  textTransform: 'uppercase',
-                }}>
-                  {r.product}
-                </div>
+                <SourceBadge source={r.source} color="rgba(255,255,255,0.45)" />
               </div>
             </div>
           ))}

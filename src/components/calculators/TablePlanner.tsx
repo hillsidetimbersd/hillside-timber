@@ -133,9 +133,9 @@ export default function TablePlanner() {
             lineHeight: 1.7,
             fontStyle: 'italic',
           }}>
-            Standard dining clearance is 36" on each side. Your {roomL} ft room supports a table up to{' '}
+            Standard dining clearance is 36&quot; on each side. Your {roomL} ft room supports a table up to{' '}
             <span style={{ color: 'var(--green)', fontStyle: 'normal' }}>
-              {recommendation.maxSupportedLength}" long
+              {recommendation.maxSupportedLength}&quot; long
             </span>
             {' '}comfortably.
           </div>
@@ -173,11 +173,11 @@ export default function TablePlanner() {
             {recommendation.isRiverTable ? (
               <>
                 2 slabs<br />
-                {recommendation.widthMin}–{recommendation.widthMax}" × {recommendation.idealLengthMin}"
+                {recommendation.widthMin}–{recommendation.widthMax}&quot; × {recommendation.idealLengthMin}&quot;
               </>
             ) : (
               <>
-                {recommendation.widthMin}–{recommendation.widthMax}" × {recommendation.idealLengthMin}"
+                {recommendation.widthMin}–{recommendation.widthMax}&quot; × {recommendation.idealLengthMin}&quot;
               </>
             )}
           </div>

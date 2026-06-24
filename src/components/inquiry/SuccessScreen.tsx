@@ -28,7 +28,7 @@ export default function SuccessScreen({ onClose }: Props) {
         fontSize: 'var(--fs-13)', color: 'var(--gray)',
         maxWidth: 300, fontStyle: 'italic', lineHeight: 1.7,
       }}>
-        Slavic reviews every request personally and will be in touch within 1 to 2 business days. We love what we do. Let&apos;s build something great together.
+        We review every request personally and will be in touch within 1 to 2 business days. We love what we do. Let&apos;s build something great together.
       </p>
       <button onClick={onClose} className="btn-ghost" style={{ marginTop: 8 }}>
         Close
