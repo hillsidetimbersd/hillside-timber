@@ -2,10 +2,9 @@
 
 import { useEffect, useRef } from 'react'
 import { useBrand } from '@/components/brand/BrandContext'
-import MagnifyImage from '@/components/media/MagnifyImage'
+import HoverImage from '@/components/media/HoverImage'
 import type { Product } from '@/lib/squarespace'
 
-function lerp(a: number, b: number, t: number) { return a + (b - a) * t }
 function clamp(v: number, min: number, max: number) { return Math.max(min, Math.min(max, v)) }
 
 function tileLabel(product: Product): string {
@@ -15,37 +14,30 @@ function tileLabel(product: Product): string {
 export default function GalleryScroll({ products = [] }: { products?: Product[] }) {
   const brand = useBrand()
   const wrapRef = useRef<HTMLDivElement>(null)
-  const gridRef = useRef<HTMLDivElement>(null)
   const col1Ref = useRef<HTMLDivElement>(null)
   const col2Ref = useRef<HTMLDivElement>(null)
   const col3Ref = useRef<HTMLDivElement>(null)
+  const textRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const wrap = wrapRef.current
-    const grid = gridRef.current
     const col1 = col1Ref.current
     const col2 = col2Ref.current
     const col3 = col3Ref.current
-    if (!wrap || !grid || !col1 || !col2 || !col3) return
+    if (!wrap || !col1 || !col2 || !col3) return
 
     const onScroll = () => {
-      const rect = wrap.getBoundingClientRect()
-      const wrapH = wrap.offsetHeight
-      const winH = window.innerHeight
-      const scrolled = -rect.top
-      const total = wrapH - winH
-      const progress = clamp(scrolled / total, 0, 1)
+      const total = wrap.offsetHeight - window.innerHeight
+      const scrolled = clamp(-wrap.getBoundingClientRect().top, 0, total)
 
-      const tiltProgress = clamp(progress / 0.4, 0, 1)
-      const rotateX = lerp(28, 0, tiltProgress)
-
-      grid.style.transform = `rotateX(${rotateX}deg) scale(${lerp(1.04, 1, tiltProgress)})`
-      grid.style.transformOrigin = '50% 0%'
-
-      const colProgress = clamp((progress - 0.3) / 0.7, 0, 1)
-      col1.style.transform = `translateY(${lerp(-6, 4, colProgress)}%)`
-      col2.style.transform = `translateY(${lerp(20, 4, colProgress)}%)`
-      col3.style.transform = `translateY(${lerp(-6, 4, colProgress)}%)`
+      // The centre column is coupled to the header text — both ride up at half
+      // page-speed, so the centre stays right under the text the whole way and the two
+      // never drift apart. The side columns trail slower behind them, for depth.
+      const text = textRef.current
+      if (text) text.style.transform = `translateY(${scrolled * 0.5}px)`
+      col2.style.transform = `translateY(${-scrolled * 0.5}px)`
+      col1.style.transform = `translateY(${-scrolled * 0.3}px)`
+      col3.style.transform = `translateY(${-scrolled * 0.3}px)`
     }
 
     window.addEventListener('scroll', onScroll, { passive: true })
@@ -61,84 +53,141 @@ export default function GalleryScroll({ products = [] }: { products?: Product[] 
 
   return (
     <div style={{ background: 'var(--cream)' }}>
-      {/* Section header — when on HT, this IS the homepage hero */}
-      <div style={{
-        padding: isHero
-          ? 'calc(var(--switcher-h) + var(--nav-h) + 72px) var(--section-pad-x) 32px'
-          : '96px var(--section-pad-x) 0',
-        textAlign: 'center',
-      }}>
-        <div className="label" style={{ marginBottom: 18, color: 'var(--green)' }}>
-          {isHero ? 'Locally Harvested · South Dakota' : 'The Work'}
-        </div>
-        <h1 style={{
-          fontFamily: 'var(--font-display)',
-          fontSize: isHero ? 'clamp(56px, 7vw, 118px)' : 'clamp(42px, 5vw, 72px)',
-          fontWeight: 800,
-          letterSpacing: '-2px',
-          lineHeight: 0.9,
-          textTransform: 'uppercase',
-          color: 'var(--black)',
-          marginBottom: 20,
-        }}>
-          {isHero ? (
-            <>Slow-Dried<br /><span style={{ color: 'var(--green)' }}>Premium Slabs.</span></>
-          ) : (
-            <>Every slab.<br /><span style={{ color: 'var(--green)' }}>Every story.</span></>
-          )}
-        </h1>
-        <p style={{
-          fontFamily: 'var(--font-body)',
-          fontSize: isHero ? '17px' : '16px',
-          color: 'var(--gray-dark)',
-          maxWidth: 'var(--content-text)',
-          margin: '0 auto',
-          lineHeight: 1.7,
-          fontStyle: 'italic',
-        }}>
-          {isHero
-            ? 'Twenty-four species and counting. Solar kiln dried on site. Harvested locally across South Dakota, with rare and exotic species sourced from around the world.'
-            : 'Locally harvested and handcrafted in South Dakota. Browse our gallery of slabs, finished pieces, and completed projects.'}
-        </p>
-        {isHero && (
-          <div style={{ marginTop: 28, display: 'inline-flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
-            <a href="/shop" className="btn-primary">Browse the Slab Catalog</a>
-            <a href="/about" className="btn-ghost">Our Story</a>
-          </div>
-        )}
-      </div>
-
-      {/* Scroll-pinned gallery of live, random inventory */}
-      {hasGallery && (
-        <div ref={wrapRef} style={{ position: 'relative', height: '350vh', perspective: '1000px', perspectiveOrigin: 'center top' }}>
-          <div style={{ position: 'sticky', top: 0, height: '100vh', overflow: 'hidden', perspective: '1000px', perspectiveOrigin: 'center top' }}>
-            {/* Top fade */}
+      {isHero && hasGallery ? (
+        /* Hero — the gallery fills the view and pins/parallaxes (the scroll stays).
+           The side columns rise tall to flank the headline; the centre column sits
+           low so the wording is never covered. The headline is overlaid on top and
+           scrolls away with the page. */
+        <div ref={wrapRef} style={{ position: 'relative', height: '380vh' }}>
+          {/* Gallery backdrop — sticky + parallaxing */}
+          <div style={{ position: 'sticky', top: 0, height: '100vh', overflow: 'hidden', zIndex: 1 }}>
             <div style={{
-              position: 'absolute', top: 0, left: 0, right: 0, height: 120,
-              background: 'linear-gradient(to bottom, var(--cream), transparent)',
-              zIndex: 10, pointerEvents: 'none',
-            }} />
-
-            <div
-              ref={gridRef}
-              style={{
-                display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10,
-                width: '100%', height: '100%', padding: '0 40px', willChange: 'transform',
-              }}
-            >
-              <GalleryCol colRef={col1Ref} items={col1} marginTop="-20px" />
-              <GalleryCol colRef={col2Ref} items={col2} marginTop="-50%" />
-              <GalleryCol colRef={col3Ref} items={col3} marginTop="-20px" />
+              display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10,
+              width: '100%', height: '100%', padding: 'calc(var(--switcher-h) + var(--nav-h) + 28px) 24px 0',
+            }}>
+              <GalleryCol colRef={col1Ref} items={col1} marginTop="0px" />
+              <GalleryCol colRef={col2Ref} items={col2} marginTop="500px" />
+              <GalleryCol colRef={col3Ref} items={col3} marginTop="0px" />
             </div>
+            {/* Cream blend top + bottom */}
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 120, background: 'linear-gradient(to bottom, var(--cream), transparent)', zIndex: 2, pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 110, background: 'linear-gradient(to top, var(--cream), transparent)', zIndex: 2, pointerEvents: 'none' }} />
+          </div>
 
-            {/* Bottom fade */}
+          {/* Headline — overlaid at the top, parallaxes away at half page-speed; only the buttons are clickable */}
+          <div ref={textRef} style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '100vh', zIndex: 5, pointerEvents: 'none', willChange: 'transform' }}>
+            {/* Faint cream lift behind the words — subtle, no hard oval. Per-text shadows do the legibility work. */}
+            <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 38% 26% at 50% 30%, rgba(248,246,241,0.42) 0%, rgba(248,246,241,0.12) 56%, transparent 74%)' }} />
             <div style={{
-              position: 'absolute', bottom: 0, left: 0, right: 0, height: 160,
-              background: 'linear-gradient(to top, var(--cream), transparent)',
-              zIndex: 10, pointerEvents: 'none',
-            }} />
+              position: 'relative', height: '100%',
+              display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center', textAlign: 'center',
+              padding: 'calc(var(--switcher-h) + var(--nav-h) + 52px) var(--section-pad-x) 0',
+            }}>
+              <div className="label" style={{ marginBottom: 18, color: 'var(--green)', textShadow: '0 0 10px var(--cream)' }}>
+                Locally Harvested · South Dakota
+              </div>
+              <h1 style={{
+                fontFamily: 'var(--font-display)', fontSize: 'clamp(56px, 7vw, 118px)', fontWeight: 800,
+                letterSpacing: '-2px', lineHeight: 0.9, textTransform: 'uppercase', color: 'var(--black)', marginBottom: 20,
+                textShadow: '0 2px 22px var(--cream), 0 0 12px var(--cream)',
+              }}>
+                Slow-Dried<br /><span style={{ color: 'var(--green)' }}>Premium Slabs.</span>
+              </h1>
+              <p style={{
+                fontFamily: 'var(--font-body)', fontSize: '17px', color: 'var(--gray-dark)',
+                maxWidth: '540px', margin: '0 auto', lineHeight: 1.7, fontStyle: 'italic',
+                textShadow: '0 1px 14px var(--cream), 0 0 7px var(--cream)',
+              }}>
+                Twenty-four species and counting. Solar kiln dried on site. Harvested locally across South Dakota, with rare and exotic species sourced from around the world.
+              </p>
+              <div style={{ marginTop: 28, display: 'inline-flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center', pointerEvents: 'auto' }}>
+                <a href="/shop" className="btn-primary">Browse the Slab Catalog</a>
+                <a href="/about" className="btn-ghost">Our Story</a>
+              </div>
+            </div>
           </div>
         </div>
+      ) : (
+        <>
+          {/* Section header (gallery page / non-hero use) */}
+          <div style={{
+            padding: isHero
+              ? 'calc(var(--switcher-h) + var(--nav-h) + 72px) var(--section-pad-x) 32px'
+              : '96px var(--section-pad-x) 0',
+            textAlign: 'center',
+          }}>
+            <div className="label" style={{ marginBottom: 18, color: 'var(--green)' }}>
+              {isHero ? 'Locally Harvested · South Dakota' : 'The Work'}
+            </div>
+            <h1 style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: isHero ? 'clamp(56px, 7vw, 118px)' : 'clamp(42px, 5vw, 72px)',
+              fontWeight: 800,
+              letterSpacing: '-2px',
+              lineHeight: 0.9,
+              textTransform: 'uppercase',
+              color: 'var(--black)',
+              marginBottom: 20,
+            }}>
+              {isHero ? (
+                <>Slow-Dried<br /><span style={{ color: 'var(--green)' }}>Premium Slabs.</span></>
+              ) : (
+                <>Every slab.<br /><span style={{ color: 'var(--green)' }}>Every story.</span></>
+              )}
+            </h1>
+            <p style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: isHero ? '17px' : '16px',
+              color: 'var(--gray-dark)',
+              maxWidth: 'var(--content-text)',
+              margin: '0 auto',
+              lineHeight: 1.7,
+              fontStyle: 'italic',
+            }}>
+              {isHero
+                ? 'Twenty-four species and counting. Solar kiln dried on site. Harvested locally across South Dakota, with rare and exotic species sourced from around the world.'
+                : 'Locally harvested and handcrafted in South Dakota. Browse our gallery of slabs, finished pieces, and completed projects.'}
+            </p>
+            {isHero && (
+              <div style={{ marginTop: 28, display: 'inline-flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
+                <a href="/shop" className="btn-primary">Browse the Slab Catalog</a>
+                <a href="/about" className="btn-ghost">Our Story</a>
+              </div>
+            )}
+          </div>
+
+          {/* Scroll-pinned gallery of live, random inventory */}
+          {hasGallery && (
+            <div ref={wrapRef} style={{ position: 'relative', height: '350vh' }}>
+              <div style={{ position: 'sticky', top: 0, height: '100vh', overflow: 'hidden' }}>
+                {/* Top fade */}
+                <div style={{
+                  position: 'absolute', top: 0, left: 0, right: 0, height: 120,
+                  background: 'linear-gradient(to bottom, var(--cream), transparent)',
+                  zIndex: 10, pointerEvents: 'none',
+                }} />
+
+                <div
+                  style={{
+                    display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10,
+                    width: '100%', height: '100%', padding: '0 40px',
+                  }}
+                >
+                  <GalleryCol colRef={col1Ref} items={col1} marginTop="-20px" />
+                  <GalleryCol colRef={col2Ref} items={col2} marginTop="-50%" />
+                  <GalleryCol colRef={col3Ref} items={col3} marginTop="-20px" />
+                </div>
+
+                {/* Bottom fade */}
+                <div style={{
+                  position: 'absolute', bottom: 0, left: 0, right: 0, height: 160,
+                  background: 'linear-gradient(to top, var(--cream), transparent)',
+                  zIndex: 10, pointerEvents: 'none',
+                }} />
+              </div>
+            </div>
+          )}
+        </>
       )}
 
       {/* CTA below */}
@@ -154,8 +203,8 @@ export default function GalleryScroll({ products = [] }: { products?: Product[] 
           }}>
             From tree to<br />finished piece.
           </h2>
-          <p style={{
-            fontFamily: 'var(--font-body)', fontSize: 'var(--fs-15)', color: 'var(--gray)', lineHeight: 1.8, maxWidth: 480, fontStyle: 'italic',
+          <p className="muted-text" style={{
+            fontFamily: 'var(--font-body)', fontSize: 'var(--fs-15)', lineHeight: 1.8, maxWidth: 480,
           }}>
             Every photo above is a real piece in our inventory, pulled fresh each visit. Browse the full catalog or start a conversation about your custom project.
           </p>
@@ -199,7 +248,7 @@ function GalleryTile({ product }: { product: Product }) {
       className="gallery-tile"
       aria-label={`${product.name}, view on the store`}
     >
-      <MagnifyImage src={product.images[0]} alt={product.name} lensSize={150} zoom={2.2} hint="View Piece →" style={{ aspectRatio: '16/10' }}>
+      <HoverImage src={product.images[0]} alt={product.name} hint="View Piece →" style={{ aspectRatio: '16/10' }}>
         {/* Caption: species + name */}
         <div style={{
           position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
@@ -213,7 +262,7 @@ function GalleryTile({ product }: { product: Product }) {
             {product.name}
           </div>
         </div>
-      </MagnifyImage>
+      </HoverImage>
     </a>
   )
 }
@@ -234,7 +283,7 @@ function CtaCard({ title, sub, href, accent }: { title: string; sub: string; hre
         <div style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--fs-13)', fontWeight: 700, letterSpacing: '0.5px', color: 'var(--black)', marginBottom: 3, textTransform: 'uppercase' }}>
           {title}
         </div>
-        <div style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-11)', color: 'var(--gray)', fontStyle: 'italic' }}>
+        <div className="muted-text" style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-11)' }}>
           {sub}
         </div>
       </div>
