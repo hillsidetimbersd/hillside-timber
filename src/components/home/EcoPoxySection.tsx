@@ -4,17 +4,20 @@
  *  panel looking intentional if a photo is ever missing (no broken image). */
 export default function EcoPoxySection() {
   return (
-    <section className="grain" style={{
+    <section style={{
       // The green bridge peak of the dark-run descent: the brand green has
-      // emerged here (fitting, EcoPoxy is the bio-resin partner). Ramps to the
-      // lighter Reviews tone at its base.
-      background: 'linear-gradient(180deg, var(--tone-ecopoxy) 0%, var(--tone-ecopoxy) 80%, var(--tone-reviews) 100%)',
+      // emerged here (fitting, EcoPoxy is the bio-resin partner). Holds the
+      // green, then settles flat onto the Reviews tone so the seams above and
+      // below have no hard line. No grain here, so the texture stays continuous
+      // across the green sections.
+      background: 'linear-gradient(180deg, var(--tone-ecopoxy) 0%, var(--tone-ecopoxy) 74%, var(--tone-reviews) 94%, var(--tone-reviews) 100%)',
       color: '#fff', padding: '120px var(--section-pad-x)', position: 'relative', overflow: 'hidden',
     }}>
-      {/* Ambient green wash for depth. Trimmed because the base is already green. */}
+      {/* Ambient green wash for depth, kept clear of the top/bottom edges so it
+          never brightens a seam. */}
       <div aria-hidden="true" style={{
-        position: 'absolute', top: '-30%', right: '-12%', width: '62%', height: '160%',
-        background: 'radial-gradient(closest-side, rgba(58,122,85,0.20), transparent 72%)',
+        position: 'absolute', top: '20%', right: '-4%', width: '52%', height: '60%',
+        background: 'radial-gradient(closest-side, rgba(58,122,85,0.18), transparent 70%)',
         filter: 'blur(24px)', zIndex: 1, pointerEvents: 'none',
       }} />
 

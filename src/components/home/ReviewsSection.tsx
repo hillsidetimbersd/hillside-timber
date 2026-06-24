@@ -4,12 +4,25 @@ import { RatingMark, SourceBadge } from '@/components/reviews/marks'
 export default function ReviewsSection() {
   return (
     <section style={{
-      // Lightest step of the dark-run descent: a green that eases toward the
-      // cream Instagram band below. Cards sit in the top band; the base ramps
-      // toward brand green only in the lower padding.
-      background: 'linear-gradient(180deg, var(--tone-reviews) 0%, var(--tone-reviews) 68%, var(--tone-bridge) 100%)',
+      // The exit of the dark run. Holds the review-card green through the cards,
+      // then carries green down through brand green into sage. An overlay below
+      // the section bleeds that sage on into the top of the cream Instagram band,
+      // so the two share one continuous fade with no seam line. The warm steps
+      // live entirely in the card-free lower padding, so cards keep their dark
+      // backing. position+z-index let the overlay paint over the band below.
+      position: 'relative',
+      zIndex: 1,
+      background: 'linear-gradient(180deg, var(--tone-reviews) 0%, var(--tone-reviews) 80%, var(--tone-bridge) 91%, var(--tone-sage) 100%)',
       padding: '120px var(--section-pad-x)',
     }}>
+      {/* Carries the sage past the section edge into the top of the cream
+          Instagram band, dissolving to nothing before its content so the green
+          fades fully out with no hard line (and hides the band's 1px top rule). */}
+      <div aria-hidden="true" style={{
+        position: 'absolute', left: 0, right: 0, bottom: -150, height: 150,
+        background: 'linear-gradient(180deg, var(--tone-sage) 0%, transparent 100%)',
+        pointerEvents: 'none',
+      }} />
       <div style={{ maxWidth: 'var(--content-max)', margin: '0 auto' }}>
         {/* Header */}
         <div

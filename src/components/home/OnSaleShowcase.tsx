@@ -10,8 +10,9 @@ export default function OnSaleShowcase({ products }: { products: Product[] }) {
       className="grain"
       style={{
         position: 'relative', overflow: 'hidden',
-        // Deepest tone in the dark-run descent; ramps to the kiln charcoal at its base.
-        background: 'linear-gradient(180deg, var(--tone-onsale) 0%, var(--tone-onsale) 80%, var(--tone-kiln) 100%)',
+        // Deepest tone in the dark-run descent; settles flat onto the kiln tone
+        // at its base so the seam below it has no hard line.
+        background: 'linear-gradient(180deg, var(--tone-onsale) 0%, var(--tone-onsale) 80%, var(--tone-kiln) 94%, var(--tone-kiln) 100%)',
         color: '#fff',
         padding: '80px var(--section-pad-x)',
       }}

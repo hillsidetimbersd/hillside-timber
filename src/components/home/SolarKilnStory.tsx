@@ -101,8 +101,10 @@ export default function SolarKilnStory() {
     <section
       id="solar-kiln"
       style={{
+        // Holds the charcoal, ramps into the EcoPoxy green, then settles flat
+        // onto that tone so the seam below has no hard line.
         background:
-          'linear-gradient(180deg, var(--tone-kiln) 0%, var(--tone-kiln) 80%, var(--tone-ecopoxy) 100%)',
+          'linear-gradient(180deg, var(--tone-kiln) 0%, var(--tone-kiln) 74%, var(--tone-ecopoxy) 94%, var(--tone-ecopoxy) 100%)',
         color: '#fff',
         padding: '132px var(--section-pad-x)',
         // Offset the fixed header when reached via the /#solar-kiln nav link.
