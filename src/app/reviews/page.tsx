@@ -158,12 +158,11 @@ export default function ReviewsPage() {
             ))}
           </div>
           <p
+            className="muted-text"
             style={{
               textAlign: 'center',
               fontFamily: 'var(--font-body)',
               fontSize: 'var(--fs-13)',
-              fontStyle: 'italic',
-              color: 'var(--gray)',
               padding: '0 24px 26px',
               margin: 0,
             }}
@@ -537,10 +536,10 @@ function ReviewCard({ review }: { review: Review }) {
             </div>
             {review.standing && (
               <div
+                className="muted-text"
                 style={{
                   fontFamily: 'var(--font-body)',
                   fontSize: 'var(--fs-11)',
-                  color: 'var(--gray)',
                   marginTop: 1,
                 }}
               >

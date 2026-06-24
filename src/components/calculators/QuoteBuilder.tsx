@@ -349,11 +349,9 @@ Estimated range: $${price?.min.toLocaleString()}–$${price?.max.toLocaleString(
               {step < 4 ? `Continue to ${STEPS[step].label} →` : 'Send to Custom Form →'}
             </button>
           </div>
-          <div style={{
+          <div className="muted-text" style={{
             fontFamily: 'var(--font-body)',
             fontSize: 'var(--fs-12)',
-            fontStyle: 'italic',
-            color: 'var(--gray)',
             marginTop: 10,
             textAlign: 'center',
             lineHeight: 1.5,
@@ -404,11 +402,9 @@ function StepHeader({ step, title, children }: { step: number; title: string; ch
       }}>
         {title}
       </div>
-      <div style={{
+      <div className="muted-text" style={{
         fontFamily: 'var(--font-body)',
         fontSize: 'var(--fs-14)',
-        fontStyle: 'italic',
-        color: 'var(--gray)',
         lineHeight: 1.6,
         maxWidth: 480,
       }}>
@@ -531,11 +527,9 @@ function StepSpecies({ state, update }: { state: QuoteState; update: <K extends 
               }}>
                 {info.name}
               </div>
-              <div style={{
+              <div className="muted-text" style={{
                 fontFamily: 'var(--font-body)',
                 fontSize: 'var(--fs-11)',
-                fontStyle: 'italic',
-                color: 'var(--gray)',
                 marginTop: 3,
               }}>
                 {info.blurb}
@@ -598,11 +592,9 @@ function DimField({ label, value, onChange }: { label: string; value: string; on
         onFocus={(e) => (e.currentTarget.style.borderBottomColor = 'var(--green)')}
         onBlur={(e) => (e.currentTarget.style.borderBottomColor = 'var(--border)')}
       />
-      <div style={{
+      <div className="muted-text" style={{
         fontFamily: 'var(--font-body)',
         fontSize: 'var(--fs-12)',
-        fontStyle: 'italic',
-        color: 'var(--gray)',
         marginTop: 6,
       }}>
         Inches

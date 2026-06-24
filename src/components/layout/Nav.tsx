@@ -1,21 +1,32 @@
 'use client'
 
-import { useState, useEffect, type CSSProperties } from 'react'
+import { useState, useEffect, useRef, type CSSProperties } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { List, X, CaretDown } from '@phosphor-icons/react'
 import { useBrand } from '@/components/brand/BrandContext'
 
+type NavChild = {
+  href: string
+  label: string
+  description: string
+}
+
 type NavLink = {
   href: string
   label: string
-  children?: { href: string; label: string }[]
+  children?: NavChild[]
 }
 
-// Reviews and FAQ live under About as a dropdown. Shared so both brands stay in sync.
-const ABOUT_CHILDREN = [
-  { href: '/reviews', label: 'Reviews' },
-  { href: '/faq', label: 'FAQ' },
+// The About menu groups the company + credibility pages into one dropdown,
+// shared by both brands so they stay in sync. Solar Kiln Drying points at the
+// kiln story on the Hillside Timber home (/#solar-kiln).
+const ABOUT_CHILDREN: NavChild[] = [
+  { href: '/about', label: 'Our Story', description: 'How we mill, dry, and number every slab' },
+  { href: '/services', label: 'Our Services', description: 'Custom milling and slab flattening' },
+  { href: '/solar-kiln', label: 'Solar Kiln Drying', description: 'Drying slabs flat and stable, sun powered' },
+  { href: '/reviews', label: 'Reviews', description: 'What customers say about us' },
+  { href: '/faq', label: 'FAQ', description: 'Ordering, pickup, and shipping' },
 ]
 
 const HT_LINKS: NavLink[] = [
@@ -112,7 +123,7 @@ export default function Nav() {
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 30, justifyContent: 'flex-end', minWidth: 244 }}>
             {leftLinks.map((l) => (
-              <NavItem key={l.href} item={l} linkStyle={linkStyle} />
+              <NavItem key={l.href} item={l} linkStyle={linkStyle} brandName={brand.name} brandTagline={brand.tagline} />
             ))}
           </div>
 
@@ -121,7 +132,7 @@ export default function Nav() {
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 30, justifyContent: 'flex-start', minWidth: 244 }}>
             {rightLinks.map((l) => (
-              <NavItem key={l.href} item={l} linkStyle={linkStyle} />
+              <NavItem key={l.href} item={l} linkStyle={linkStyle} brandName={brand.name} brandTagline={brand.tagline} />
             ))}
           </div>
         </div>
@@ -204,6 +215,13 @@ export default function Nav() {
       )}
 
       <style>{`
+        .nav-pop-row { transition: background 0.15s ease; }
+        .nav-pop-row:hover, .nav-pop-row:focus-visible { background: var(--cream); outline: none; }
+        .nav-pop-row:focus-visible { box-shadow: inset 0 0 0 2px var(--green); }
+        .nav-pop-row:hover .nav-pop-title, .nav-pop-row:focus-visible .nav-pop-title { color: var(--green); }
+        .nav-feat { transition: filter 0.16s ease; }
+        .nav-feat:hover, .nav-feat:focus-visible { filter: brightness(1.09); outline: none; }
+        .nav-feat:focus-visible { box-shadow: 0 0 0 2px var(--green); }
         @media (max-width: 768px) {
           .mobile-menu-btn { display: flex !important; }
           .nav-links { display: none !important; }
@@ -214,8 +232,11 @@ export default function Nav() {
 }
 
 /** A single top-level nav entry. Renders a plain link, or a hover/focus dropdown when it has children. */
-function NavItem({ item, linkStyle }: { item: NavLink; linkStyle: CSSProperties }) {
+function NavItem({ item, linkStyle, brandName, brandTagline }: { item: NavLink; linkStyle: CSSProperties; brandName: string; brandTagline: string }) {
   const [open, setOpen] = useState(false)
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => () => { if (closeTimer.current) clearTimeout(closeTimer.current) }, [])
 
   if (!item.children || item.children.length === 0) {
     return (
@@ -230,12 +251,22 @@ function NavItem({ item, linkStyle }: { item: NavLink; linkStyle: CSSProperties 
     )
   }
 
+  // Hover-intent: a short close delay keeps the panel open while the cursor
+  // crosses the gap between the trigger and the panel.
+  const openNow = () => { if (closeTimer.current) clearTimeout(closeTimer.current); setOpen(true) }
+  const closeSoon = () => { closeTimer.current = setTimeout(() => setOpen(false), 130) }
+
+  // shadcn "Getting started" layout: a tall brand card on the left (the About hub),
+  // the rest of the pages as a titled list on the right.
+  const featured = item.children.find((c) => c.href === '/about')
+  const rest = item.children.filter((c) => c !== featured)
+
   return (
     <div
       style={{ position: 'relative', display: 'flex', alignItems: 'center' }}
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
-      onFocus={() => setOpen(true)}
+      onMouseEnter={openNow}
+      onMouseLeave={closeSoon}
+      onFocus={openNow}
       onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setOpen(false) }}
     >
       <Link
@@ -252,80 +283,91 @@ function NavItem({ item, linkStyle }: { item: NavLink; linkStyle: CSSProperties 
         />
       </Link>
 
+      {/* Drops straight down, centered under the trigger. */}
       <div
         style={{
           position: 'absolute',
           top: '100%',
           left: '50%',
           transform: 'translateX(-50%)',
-          paddingTop: 16,
+          paddingTop: 14,
           opacity: open ? 1 : 0,
           visibility: open ? 'visible' : 'hidden',
           pointerEvents: open ? 'auto' : 'none',
-          transition: 'opacity 0.2s ease',
+          transition: 'opacity 0.18s ease',
           zIndex: 60,
         }}
       >
-        {/* Frosted, rounded, floating panel — echoes the nav pill rather than a flat box. */}
         <div
           style={{
             position: 'relative',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 3,
-            minWidth: 172,
+            width: 'min(520px, 92vw)',
+            background: '#fff',
+            border: '1px solid var(--border)',
+            borderRadius: 'var(--radius-lg)',
+            boxShadow: 'var(--shadow-lg)',
             padding: 8,
-            borderRadius: 16,
-            background: 'rgba(20,20,18,0.72)',
-            backdropFilter: 'blur(24px) saturate(160%)',
-            WebkitBackdropFilter: 'blur(24px) saturate(160%)',
-            border: '1px solid rgba(255,255,255,0.14)',
-            boxShadow:
-              '0 24px 50px rgba(0,0,0,0.34), 0 6px 16px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.07)',
-            transform: open ? 'translateY(0)' : 'translateY(-8px)',
-            transition: 'transform 0.2s cubic-bezier(0.32,0.72,0,1)',
+            transform: open ? 'translateY(0)' : 'translateY(-6px)',
+            transition: 'transform 0.18s cubic-bezier(0.32,0.72,0,1)',
           }}
         >
-          {item.children.map((c) => (
-            <DropdownLink key={c.href} href={c.href} label={c.label} />
-          ))}
+          {/* Pointer notch up toward the trigger. */}
+          <span aria-hidden="true" style={{
+            position: 'absolute', top: -6, left: '50%', marginLeft: -5, width: 10, height: 10,
+            background: '#fff', borderLeft: '1px solid var(--border)', borderTop: '1px solid var(--border)',
+            transform: 'rotate(45deg)', borderTopLeftRadius: 2,
+          }} />
+
+          <div style={{ display: 'grid', gridTemplateColumns: '0.82fr 1fr', gap: 8 }}>
+            {featured && (
+              <Link
+                href={featured.href}
+                className="nav-feat"
+                style={{
+                  position: 'relative', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
+                  minHeight: 196, padding: 16, borderRadius: 'var(--radius)', overflow: 'hidden', textDecoration: 'none',
+                  // Founder photo under a green-tinted scrim: darker at the top and bottom
+                  // so the tan eyebrow and white title stay legible, lighter in the middle so
+                  // the photo reads through. The solid color is a fallback if the image fails.
+                  backgroundColor: '#14271c',
+                  backgroundImage:
+                    'linear-gradient(168deg, rgba(15,26,19,0.55) 0%, rgba(15,26,19,0.30) 44%, rgba(9,17,12,0.92) 100%), url("/assets/photos/founder.jpg")',
+                  backgroundSize: 'cover',
+                  backgroundPosition: '20% 32%',
+                }}
+              >
+                <span style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--fs-10)', fontWeight: 700, letterSpacing: '2.5px', textTransform: 'uppercase', color: 'var(--tan)', marginBottom: 'auto' }}>
+                  Our Story
+                </span>
+                <span style={{ fontFamily: 'var(--font-display)', fontSize: '21px', fontWeight: 800, letterSpacing: '-0.3px', textTransform: 'uppercase', color: '#fff', lineHeight: 1.04, marginTop: 12 }}>
+                  {brandName}
+                </span>
+                <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-12)', color: 'rgba(255,255,255,0.72)', lineHeight: 1.5, marginTop: 7 }}>
+                  {brandTagline}
+                </span>
+              </Link>
+            )}
+
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              {rest.map((c) => <DropdownRow key={c.href} child={c} />)}
+            </div>
+          </div>
         </div>
       </div>
     </div>
   )
 }
 
-function DropdownLink({ href, label }: { href: string; label: string }) {
-  const setActive = (el: HTMLAnchorElement) => {
-    el.style.background = 'rgba(255,255,255,0.09)'
-    el.style.color = 'var(--tan)'
-  }
-  const setRest = (el: HTMLAnchorElement) => {
-    el.style.background = 'transparent'
-    el.style.color = 'rgba(255,255,255,0.82)'
-  }
+/** One row in the About dropdown: title + one-line description. */
+function DropdownRow({ child }: { child: NavChild }) {
   return (
-    <Link
-      href={href}
-      style={{
-        fontFamily: 'var(--font-display)',
-        fontSize: 'var(--fs-12)',
-        fontWeight: 700,
-        letterSpacing: '2px',
-        textTransform: 'uppercase',
-        color: 'rgba(255,255,255,0.82)',
-        textDecoration: 'none',
-        padding: '11px 18px',
-        borderRadius: 9,
-        whiteSpace: 'nowrap',
-        transition: 'background 0.16s ease, color 0.16s ease',
-      }}
-      onMouseEnter={(e) => setActive(e.currentTarget)}
-      onMouseLeave={(e) => setRest(e.currentTarget)}
-      onFocus={(e) => setActive(e.currentTarget)}
-      onBlur={(e) => setRest(e.currentTarget)}
-    >
-      {label}
+    <Link href={child.href} className="nav-pop-row" style={{ display: 'block', padding: '10px 13px', borderRadius: 'var(--radius)', textDecoration: 'none' }}>
+      <span className="nav-pop-title" style={{ display: 'block', fontFamily: 'var(--font-display)', fontSize: 'var(--fs-13)', fontWeight: 700, letterSpacing: '1.2px', textTransform: 'uppercase', color: 'var(--black)', transition: 'color 0.15s ease' }}>
+        {child.label}
+      </span>
+      <span style={{ display: 'block', fontFamily: 'var(--font-body)', fontSize: 'var(--fs-12)', color: 'var(--gray)', lineHeight: 1.45, marginTop: 2 }}>
+        {child.description}
+      </span>
     </Link>
   )
 }

@@ -73,7 +73,7 @@ export default function DropZone({ files, onChange, maxFiles = 5, maxSizeMB = 10
               <span style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--fs-9)', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', color: 'var(--green)' }}>
                 Add More
               </span>
-              <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-11)', color: 'var(--gray)' }}>
+              <span className="muted-text" style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-11)' }}>
                 ({files.length}/{maxFiles})
               </span>
             </div>
@@ -85,11 +85,11 @@ export default function DropZone({ files, onChange, maxFiles = 5, maxSizeMB = 10
               <div style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--fs-10)', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', color: 'var(--black)', marginBottom: 6 }}>
                 Drop photos here
               </div>
-              <div style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-12)', color: 'var(--gray)' }}>
+              <div className="muted-text" style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-12)' }}>
                 or{' '}
                 <span style={{ color: 'var(--green)', textDecoration: 'underline' }}>browse files</span>
               </div>
-              <div style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-11)', color: 'var(--gray)', marginTop: 8, opacity: 0.7 }}>
+              <div className="muted-text" style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-11)', marginTop: 8, opacity: 0.7 }}>
                 JPG or PNG · Up to {maxFiles} photos · {maxSizeMB}MB each
               </div>
             </>

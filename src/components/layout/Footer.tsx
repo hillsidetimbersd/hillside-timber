@@ -43,7 +43,7 @@ export default function Footer() {
             marginBottom: 24,
             maxWidth: 280,
           }}>
-            {brand.tagline} Locally harvested, solar kiln dried, and finished in South Dakota.
+            {brand.footerBlurb}
           </p>
           <a
             href={brand.instagram}

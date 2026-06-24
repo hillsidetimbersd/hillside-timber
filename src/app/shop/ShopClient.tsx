@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect, type CSSProperties } from 'react'
 import { MagnifyingGlass } from '@phosphor-icons/react'
 import { useBrand } from '@/components/brand/BrandContext'
 import ProductCard from '@/components/shop/ProductCard'
@@ -11,27 +11,52 @@ export default function ShopClient({ products, sections }: { products: Product[]
   const [section, setSection] = useState('All')
   const [search, setSearch] = useState('')
 
+  // Sticky sidebar on desktop only. The grid stacks the sidebar above itself at
+  // 768px and below (globals.css), where pinning would be wrong, so mirror that
+  // exact breakpoint here. Start false so the server render and the first client
+  // render agree (no hydration mismatch), then resolve from matchMedia on mount.
+  const [isDesktop, setIsDesktop] = useState(false)
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 769px)')
+    const sync = () => setIsDesktop(mq.matches)
+    sync()
+    mq.addEventListener('change', sync)
+    return () => mq.removeEventListener('change', sync)
+  }, [])
+
+  // Sold pieces (out of stock and not still drying) are removed from the shop
+  // entirely, so the grid and every count below agree on what is actually buyable.
+  const visible = useMemo(() => products.filter((p) => p.inStock || p.drying), [products])
+
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase()
-    return products.filter((p) => {
+    return visible.filter((p) => {
       if (section !== 'All' && !p.sections.includes(section)) return false
       if (q && !`${p.name} ${p.sku} ${p.sections.join(' ')}`.toLowerCase().includes(q)) return false
       return true
     })
-  }, [products, section, search])
+  }, [visible, section, search])
 
   const countFor = (s: string) =>
-    s === 'All' ? products.length : products.filter((p) => p.sections.includes(s)).length
+    s === 'All' ? visible.length : visible.filter((p) => p.sections.includes(s)).length
 
-  // Live header stats (always reflect the full inventory, not the active section).
-  const onSale = products.filter((p) => p.onSale).length
-  const comingSoon = products.filter((p) => p.drying).length
+  // Live header stats (the full buyable inventory, not the active section).
+  const onSale = visible.filter((p) => p.onSale).length
+  const comingSoon = visible.filter((p) => p.drying).length
   const stats: { n: string; label: string }[] = [
-    { n: String(products.length), label: products.length === 1 ? 'Piece' : 'Pieces' },
+    { n: String(visible.length), label: visible.length === 1 ? 'Piece' : 'Pieces' },
   ]
   if (brand.key === 'ht') stats.push({ n: '24+', label: 'Species' })
   if (onSale > 0) stats.push({ n: String(onSale), label: 'On Sale' })
   else if (comingSoon > 0) stats.push({ n: String(comingSoon), label: 'Still Drying' })
+
+  // Sidebar pins on desktop, just below the fixed switcher + nav chrome; on
+  // mobile it stacks above the grid, so it stays in normal flow there.
+  const sidebarStyle: CSSProperties = { width: 240, flexShrink: 0, paddingRight: 32 }
+  if (isDesktop) {
+    sidebarStyle.position = 'sticky'
+    sidebarStyle.top = 'calc(var(--switcher-h) + var(--nav-h))'
+  }
 
   return (
     <div style={{ paddingTop: 'calc(var(--switcher-h) + var(--nav-h))' }}>
@@ -85,7 +110,7 @@ export default function ShopClient({ products, sections }: { products: Product[]
           maxWidth: 'var(--content-wide)', margin: '0 auto', alignItems: 'flex-start',
         }}>
         {/* Sidebar: search + sections */}
-        <aside className="shop-sidebar" style={{ width: 240, flexShrink: 0, paddingRight: 32 }}>
+        <aside className="shop-sidebar" style={sidebarStyle}>
           <div style={{ position: 'relative', marginBottom: 28 }}>
             <MagnifyingGlass size={16} weight="bold" style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'var(--green)', pointerEvents: 'none' }} />
             <input

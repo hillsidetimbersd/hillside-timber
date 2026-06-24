@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { cookies } from 'next/headers'
-import { Barlow_Condensed, Lora } from 'next/font/google'
+import { Barlow_Condensed, Source_Serif_4 } from 'next/font/google'
 import './globals.css'
 import { BrandProvider } from '@/components/brand/BrandContext'
 import BrandSwitcher from '@/components/brand/BrandSwitcher'
@@ -15,10 +15,10 @@ const barlowCondensed = Barlow_Condensed({
   display: 'swap',
 })
 
-const lora = Lora({
+const sourceSerif = Source_Serif_4({
   variable: '--font-body',
   subsets: ['latin'],
-  weight: ['400', '500'],
+  weight: ['400', '500', '600'],
   style: ['normal', 'italic'],
   display: 'swap',
 })
@@ -67,7 +67,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const brandKey = cookieStore.get('ww-brand')?.value ?? 'ht'
 
   return (
-    <html lang="en" className={`${barlowCondensed.variable} ${lora.variable}`}>
+    <html lang="en" className={`${barlowCondensed.variable} ${sourceSerif.variable}`}>
       <body>
         <BrandProvider brand={brandKey}>
           <BrandSwitcher />

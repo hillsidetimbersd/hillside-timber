@@ -4,11 +4,17 @@
  *  panel looking intentional if a photo is ever missing (no broken image). */
 export default function EcoPoxySection() {
   return (
-    <section className="grain" style={{ background: 'var(--black)', color: '#fff', padding: '120px var(--section-pad-x)', position: 'relative', overflow: 'hidden' }}>
-      {/* Ambient green wash for depth */}
+    <section className="grain" style={{
+      // The green bridge peak of the dark-run descent: the brand green has
+      // emerged here (fitting, EcoPoxy is the bio-resin partner). Ramps to the
+      // lighter Reviews tone at its base.
+      background: 'linear-gradient(180deg, var(--tone-ecopoxy) 0%, var(--tone-ecopoxy) 80%, var(--tone-reviews) 100%)',
+      color: '#fff', padding: '120px var(--section-pad-x)', position: 'relative', overflow: 'hidden',
+    }}>
+      {/* Ambient green wash for depth. Trimmed because the base is already green. */}
       <div aria-hidden="true" style={{
         position: 'absolute', top: '-30%', right: '-12%', width: '62%', height: '160%',
-        background: 'radial-gradient(closest-side, rgba(42,92,63,0.30), transparent 72%)',
+        background: 'radial-gradient(closest-side, rgba(58,122,85,0.20), transparent 72%)',
         filter: 'blur(24px)', zIndex: 1, pointerEvents: 'none',
       }} />
 
@@ -23,12 +29,12 @@ export default function EcoPoxySection() {
           }}>
             EcoPoxy <span style={{ color: 'var(--tan)' }}>Epoxy Systems</span>
           </h2>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-16)', color: 'rgba(255,255,255,0.62)', lineHeight: 1.8, maxWidth: 520, marginBottom: 18 }}>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-16)', color: 'rgba(255,255,255,0.74)', lineHeight: 1.8, maxWidth: 520, marginBottom: 18 }}>
             We have partnered with EcoPoxy, a leader in bio-based epoxy resins made with natural,
             plant-based ingredients. Built for live edge river tables, art, and woodworking, they cure
             crystal clear and hold up beautifully, with a fraction of the environmental footprint.
           </p>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-16)', color: 'rgba(255,255,255,0.62)', lineHeight: 1.8, maxWidth: 520, marginBottom: 30 }}>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-16)', color: 'rgba(255,255,255,0.74)', lineHeight: 1.8, maxWidth: 520, marginBottom: 30 }}>
             Pick up UVPOXY and FlowCast in store, and pair it with the right slab for your next pour.
             Stop by the yard by appointment to see the full selection.
           </p>
@@ -50,7 +56,7 @@ export default function EcoPoxySection() {
           {/* main: finished epoxy piece */}
           <div
             role="img"
-            aria-label="Walnut and blue epoxy coasters handmade with EcoPoxy resin"
+            aria-label="A woodworker pouring EcoPoxy FlowCast resin in the workshop"
             style={{
               position: 'relative', zIndex: 1, aspectRatio: '4 / 3', borderRadius: 'var(--radius-lg)', overflow: 'hidden',
               border: '1px solid rgba(255,255,255,0.12)',

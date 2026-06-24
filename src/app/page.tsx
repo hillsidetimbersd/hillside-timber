@@ -44,9 +44,9 @@ export default async function HomePage() {
   return (
     <>
       <GalleryScroll products={pickRandom(ht, 45)} />
+      <VendorTicker />
       <TopPicks products={pickTopPicks(ht, 4)} />
       <FreightStrip />
-      <VendorTicker />
       <SpeciesLibrary />
       <OnSaleShowcase products={pickOnSale(ht, 8)} />
       <SolarKilnStory />

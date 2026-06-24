@@ -8,6 +8,7 @@ import StepThree from './StepThree'
 import SuccessScreen from './SuccessScreen'
 import { INITIAL_FORM, validateStep } from './inquiry.types'
 import type { InquiryFormData, Step, SubmitStatus } from './inquiry.types'
+import type { PiecePreview } from '@/lib/squarespace'
 
 type Action = { key: keyof InquiryFormData; value: unknown }
 
@@ -16,11 +17,12 @@ function reducer(state: InquiryFormData, action: Action): InquiryFormData {
 }
 
 interface Props {
+  pieces: PiecePreview[]
   initialForm?: Partial<InquiryFormData>
   startStep?: Step
 }
 
-export default function CustomProjectForm({ initialForm, startStep = 1 }: Props = {}) {
+export default function CustomProjectForm({ pieces, initialForm, startStep = 1 }: Props) {
   const [form, dispatch] = useReducer(reducer, { ...INITIAL_FORM, ...(initialForm ?? {}) })
   const [step, setStep] = useState<Step>(startStep)
   const [status, setStatus] = useState<SubmitStatus>('idle')
@@ -74,6 +76,14 @@ export default function CustomProjectForm({ initialForm, startStep = 1 }: Props 
     fd.append('budget', form.budget)
     fd.append('timeline', form.timeline)
     fd.append('vision', form.vision)
+    if (form.referencedPieces.length > 0) {
+      fd.append('referencedPieces', JSON.stringify(
+        form.referencedPieces.map(p => ({
+          sku: p.sku, name: p.name, dimensions: p.dimensions,
+          price: p.priceLabel, url: p.productUrl, drying: p.drying,
+        })),
+      ))
+    }
     form.photos.forEach((f, i) => fd.append(`photo_${i}`, f))
 
     try {
@@ -120,7 +130,7 @@ export default function CustomProjectForm({ initialForm, startStep = 1 }: Props 
         ) : (
           <>
             {step === 1 && <StepOne form={form} set={set} />}
-            {step === 2 && <StepTwo form={form} set={set} />}
+            {step === 2 && <StepTwo form={form} set={set} pieces={pieces} />}
             {step === 3 && <StepThree form={form} set={set} />}
           </>
         )}

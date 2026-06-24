@@ -3,7 +3,13 @@ import { RatingMark, SourceBadge } from '@/components/reviews/marks'
 
 export default function ReviewsSection() {
   return (
-    <section style={{ background: '#0f0f0d', padding: '120px var(--section-pad-x)' }}>
+    <section style={{
+      // Lightest step of the dark-run descent: a green that eases toward the
+      // cream Instagram band below. Cards sit in the top band; the base ramps
+      // toward brand green only in the lower padding.
+      background: 'linear-gradient(180deg, var(--tone-reviews) 0%, var(--tone-reviews) 68%, var(--tone-bridge) 100%)',
+      padding: '120px var(--section-pad-x)',
+    }}>
       <div style={{ maxWidth: 'var(--content-max)', margin: '0 auto' }}>
         {/* Header */}
         <div
@@ -43,7 +49,7 @@ export default function ReviewsSection() {
             >
               Built on trust.
               <br />
-              <span style={{ color: 'rgba(255,255,255,0.3)' }}>Proven by results.</span>
+              <span style={{ color: 'rgba(255,255,255,0.5)' }}>Proven by results.</span>
             </h2>
           </div>
           <a
@@ -64,20 +70,20 @@ export default function ReviewsSection() {
             <div
               key={r.id}
               style={{
-                background: 'rgba(255,255,255,0.04)',
-                border: '1px solid rgba(255,255,255,0.07)',
+                background: 'rgba(255,255,255,0.05)',
+                border: '1px solid rgba(255,255,255,0.1)',
                 padding: '32px 28px',
                 borderRadius: 'var(--radius)',
                 display: 'flex',
                 flexDirection: 'column',
               }}
             >
-              <RatingMark review={r} starColor="var(--tan)" recommendColor="var(--tan)" emptyColor="rgba(255,255,255,0.16)" />
+              <RatingMark review={r} starColor="var(--tan)" recommendColor="var(--tan)" emptyColor="rgba(255,255,255,0.22)" />
               <p
                 style={{
                   fontFamily: 'var(--font-body)',
                   fontSize: 'var(--fs-16)',
-                  color: 'rgba(255,255,255,0.72)',
+                  color: 'rgba(255,255,255,0.82)',
                   lineHeight: 1.75,
                   margin: '16px 0 22px',
                   fontStyle: 'italic',
@@ -129,7 +135,7 @@ export default function ReviewsSection() {
                       style={{
                         fontFamily: 'var(--font-body)',
                         fontSize: 'var(--fs-11)',
-                        color: 'rgba(255,255,255,0.4)',
+                        color: 'rgba(255,255,255,0.56)',
                         marginTop: 1,
                       }}
                     >
@@ -137,7 +143,7 @@ export default function ReviewsSection() {
                     </div>
                   )}
                 </div>
-                <SourceBadge source={r.source} color="rgba(255,255,255,0.45)" />
+                <SourceBadge source={r.source} color="rgba(255,255,255,0.62)" />
               </div>
             </div>
           ))}

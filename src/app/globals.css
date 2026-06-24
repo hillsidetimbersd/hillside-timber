@@ -7,10 +7,15 @@
   --green-light: #3a7a55;
   --tan: #c8a882;
   --border: #e8e4dc;
-  /* Muted text — darkened for legibility. The old #888 failed AA on cream
-     (~3.3:1); #54544e reads ~7:1 while staying clearly below --black. */
+  /* Functional muted — tracked labels, inactive states, icon tints. Darkened
+     for legibility: the old #888 failed AA on cream (~3.3:1); #54544e reads
+     ~7:1 while staying clearly below --black. Do NOT use for body captions. */
   --gray: #54544e;
   --gray-dark: #3a3a35;
+  /* Body captions / asides — the "voice" treatment. Sits darker than body
+     prose (--gray-dark) and reads as deliberate emphasis, not de-emphasis.
+     Applied via .muted-text (color + weight + italic together). */
+  --muted: #2c2c28;
   /* Type scale — bumped up one step for legibility ("Large"). Each var is named
      by the ORIGINAL px value it replaced, so a 13px label now reads var(--fs-13). */
   --fs-9: 12px;  --fs-10: 13px; --fs-11: 14px; --fs-12: 14px; --fs-13: 15px;
@@ -30,6 +35,18 @@
   --shadow-sm: 0 2px 12px rgba(15, 15, 13, 0.05);
   --shadow: 0 12px 32px rgba(15, 15, 13, 0.09);
   --shadow-lg: 0 22px 55px rgba(15, 15, 13, 0.15);
+
+  /* Dark-run tonal descent (HT homepage). The four stacked dark sections step
+     down from the deepest mill-shadow black, pick up the brand green as a
+     drying midtone, and ease toward the cream Instagram band below. Each
+     section holds its own tone for ~80% of its height, then ramps the last
+     ~20% to the next tone, so the seams disappear yet four zones stay distinct.
+     Green emerges at EcoPoxy on purpose: it is the eco / bio-resin partner. */
+  --tone-onsale:  #0a0a09;  /* deepest, near-neutral black */
+  --tone-kiln:    #161512;  /* warm sawmill charcoal, green not yet present */
+  --tone-ecopoxy: #1a3326;  /* green has emerged: the bridge peak */
+  --tone-reviews: #20392a;  /* lighter green, the review cards sit here */
+  --tone-bridge:  #335c41;  /* near brand green, the final step into cream */
 }
 
 @theme inline {
@@ -39,7 +56,7 @@
   --color-tan: var(--tan);
   --color-border: var(--border);
   --font-display: 'Barlow Condensed', system-ui, sans-serif;
-  --font-body: 'Lora', Georgia, serif;
+  --font-body: 'Source Serif 4', Georgia, serif;
 }
 
 * {
@@ -65,6 +82,15 @@ body {
 /* ── TYPOGRAPHY UTILITIES ── */
 .font-display { font-family: var(--font-display); }
 .font-body    { font-family: var(--font-body); }
+
+/* Muted body captions / asides. One lever for the whole site: change the
+   treatment here, not at each call site. Layout props (size, margins, max-width)
+   stay inline on the element; color/weight/style live here. */
+.muted-text {
+  color: var(--muted);
+  font-weight: 600;
+  font-style: italic;
+}
 
 /* Section label — "01 SOLAR KILN DRIED" style */
 .label {
@@ -136,12 +162,61 @@ body {
 
 .btn-primary, .btn-ghost, .btn-ghost-white { border-radius: var(--radius-sm); }
 
+/* Branded keyboard focus ring. The dark-run backgrounds (OnSale, EcoPoxy,
+   Reviews) leave the browser default ring low-contrast, so use a tan ring: it
+   reads on the deep black and green tones and stays clear of cream surfaces via
+   the offset gap. Matches the branded focus rings used elsewhere on the site. */
+.btn-primary:focus-visible,
+.btn-ghost:focus-visible,
+.btn-ghost-white:focus-visible {
+  outline: 3px solid var(--tan);
+  outline-offset: 3px;
+}
+
 /* ── SECTION WRAPPER ── */
 .section-wrap {
   padding: 124px var(--section-pad-x);
 }
 @media (max-width: 768px) {
   .section-wrap { padding: 64px 24px; }
+}
+
+/* ── PRODUCT SHOWCASE BAND ── */
+/* A contained, centered column shared by a section's header row and its product
+   grid, so the eyebrow/title sit at the left card margin and the trailing action
+   sits at the right card margin. Narrower than the full content band on purpose:
+   the four picks read as one centered block with breathing room on both sides. */
+.picks-band { max-width: 1280px; margin: 0 auto; }
+.picks-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+@media (max-width: 1080px) { .picks-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px)  { .picks-grid { grid-template-columns: minmax(0, 1fr); } }
+
+/* ── SALE DISPLACE TEXT (On Sale section signature) ── */
+/* A WebGL "On Sale" headline whose surface ripples toward the cursor. The CSS
+   below is just the frame + the static fallback shown before WebGL mounts and
+   whenever motion is reduced; the ripple itself lives in SaleDisplaceText.tsx. */
+.sale-gl { position: relative; width: 100%; height: clamp(92px, 12.5vw, 168px); }
+.sale-gl canvas { display: block; position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
+.sale-gl__fallback {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-weight: 800; text-transform: uppercase;
+  letter-spacing: 0.04em; line-height: 1; color: var(--cream);
+  font-size: clamp(56px, 11vw, 150px);
+  transition: opacity 0.45s ease;
+}
+
+/* Even line lengths (no lonely short last line) */
+.balance-text { text-wrap: balance; }
+
+/* Visually-hidden, still announced to screen readers */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
 }
 
 /* ── GRAIN OVERLAY ── */
@@ -160,70 +235,57 @@ body {
   to   { transform: translateX(-50%); }
 }
 
-/* ── MILL LINE (SolarKilnStory four-step) ── */
-.kiln-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0;
+/* ── PROCESS FLOW TIMELINE (SolarKilnStory + ProcessStrip) ──
+   A single vertical seam runs the height of the section; a warm fill descends
+   it as you scroll, igniting each numbered station 01..04 in turn so the eye
+   tracks the sequence in motion. Two variants share the rail/fill/node:
+     .flow--media  centred zig-zag, a photo + text per stage (SolarKiln)
+     .flow--steps  left rail, single text column per stage (ProcessStrip)
+   Fully drawn is the CSS default, so no-JS and reduced-motion users see the
+   finished timeline; JS only subtracts the start-state under no-preference. */
+.flow {
   position: relative;
-}
-.kiln-card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-}
-/* hairline dividers only in the caption zone, never across the photos */
-.kiln-card:not(:first-child) .kiln-caption {
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  max-width: var(--content-max);
+  margin: 0 auto;
+  --rail-x: 50%;   /* where the seam sits (overridden per variant) */
+  --node: 46px;    /* station diameter */
 }
 
-.kiln-photo {
-  position: relative;
-  aspect-ratio: 4 / 3;
-  overflow: hidden;
-  background: #1a1a18;
-}
-.kiln-img {
+/* The seam and its descending fill. Height is driven by --flow-p (0..1),
+   written per frame by JS; it defaults to 1 (full) without JS. */
+.flow-rail {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  /* full color: unify the four shots without desaturating */
-  filter: saturate(1.04) contrast(1.02);
-  transform: scale(1);
-  transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
-}
-.kiln-scrim {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to bottom, rgba(15, 15, 13, 0) 55%, rgba(15, 15, 13, 0.45) 100%);
+  top: 8px;
+  bottom: 8px;
+  left: var(--rail-x);
+  width: 2px;
+  margin-left: -1px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 2px;
   pointer-events: none;
 }
+.flow-rail-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: calc(var(--flow-p, 1) * 100%);
+  background: linear-gradient(180deg, var(--tan), var(--green-light));
+  border-radius: 2px;
+  box-shadow: 0 0 16px rgba(200, 168, 130, 0.45);
+}
 
-/* the rail: a faint track between photo and caption, with a tan fill drawn over it */
-.kiln-seam {
-  position: relative;
-  height: 2px;
-  background: rgba(255, 255, 255, 0.12);
-}
-.kiln-fill {
+/* A station node sits on the seam at the vertical centre of each stage.
+   Default appearance is LIT (the finished/static state). */
+.flow-node {
   position: absolute;
-  inset: 0;
-  background: var(--tan);
-  transform: scaleX(1);
-  transform-origin: left center;
-}
-.kiln-tab {
-  position: absolute;
-  top: 50%;
-  left: 26px;
-  margin-top: -18px;
-  width: 36px;
-  height: 36px;
+  z-index: 3;
+  width: var(--node);
+  height: var(--node);
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 50%;
   font-family: var(--font-display);
   font-size: var(--fs-14);
   font-weight: 700;
@@ -231,110 +293,179 @@ body {
   background: var(--tan);
   color: var(--black);
   border: 1px solid var(--tan);
-  z-index: 2;
+  box-shadow: 0 0 0 7px rgba(15, 15, 13, 0.92), 0 0 22px rgba(200, 168, 130, 0.35);
+  transition: background 0.35s ease, color 0.35s ease, box-shadow 0.35s ease;
 }
 
-.kiln-caption { padding: 28px 26px 32px; }
-.kiln-title {
-  position: relative;
-  display: inline-block;
-  font-family: var(--font-display);
-  font-size: 20px;
-  font-weight: 700;
-  letter-spacing: -0.2px;
-  text-transform: uppercase;
-  padding-bottom: 4px;
-  margin-bottom: 10px;
-}
-.kiln-title::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  height: 2px;
-  background: var(--tan);
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
-}
-.kiln-spec {
+/* Shared text typography */
+.flow-spec {
   font-family: var(--font-display);
   font-size: var(--fs-11);
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--tan);
   margin-bottom: 12px;
 }
-.kiln-body {
+.flow-title {
+  font-family: var(--font-display);
+  font-size: clamp(26px, 2.4vw, 34px);
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  text-transform: uppercase;
+  line-height: 1;
+  margin-bottom: 14px;
+  color: #fff;
+}
+.flow-body {
   font-family: var(--font-body);
   font-size: var(--fs-15);
-  color: rgba(255, 255, 255, 0.6);
-  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.74);
+  line-height: 1.72;
+  max-width: 440px;
 }
 
-/* hover: pointer devices only, no layout shift */
+/* ── MEDIA VARIANT (SolarKiln): centred zig-zag ── */
+.flow--media .flow-stage {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 104px;
+  align-items: center;
+  min-height: 332px;
+}
+.flow--media .flow-stage + .flow-stage { margin-top: 48px; }
+.flow--media .flow-node {
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+/* odd stages: media left / text right.  even: swapped across the rail */
+.flow--media .flow-media { grid-column: 1; }
+.flow--media .flow-text {
+  grid-column: 2;
+  padding-left: 44px;
+  text-align: left;
+}
+.flow--media .flow-stage:nth-child(even) .flow-media { grid-column: 2; }
+.flow--media .flow-stage:nth-child(even) .flow-text {
+  grid-column: 1;
+  padding-left: 0;
+  padding-right: 44px;
+  text-align: right;
+}
+.flow--media .flow-stage:nth-child(even) .flow-body { margin-left: auto; }
+
+.flow-media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: #1a1a18;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 30px 64px rgba(0, 0, 0, 0.5);
+}
+.flow-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(1.04) contrast(1.02);
+  transform: scale(1.001);
+  transition: transform 0.6s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.flow-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(15, 15, 13, 0.5), transparent 55%);
+  pointer-events: none;
+}
 @media (hover: hover) {
-  .kiln-card:hover .kiln-img { transform: scale(1.03); }
-  .kiln-card:hover .kiln-title::after { transform: scaleX(1); }
+  .flow--media .flow-stage:hover .flow-img { transform: scale(1.045); }
 }
 
-/* Draw-on-scroll. The visible end-state above is the default, so no-JS and
-   reduced-motion users see the section fully drawn. The hidden start-state
-   applies only when JS arms the section AND motion is allowed. */
+/* ── STEPS VARIANT (ProcessStrip): left rail, single text column ── */
+.flow--steps {
+  --rail-x: 28px;
+  max-width: 940px;
+}
+.flow--steps .flow-stage {
+  position: relative;
+  padding-left: 92px;
+}
+.flow--steps .flow-stage + .flow-stage { margin-top: 44px; }
+.flow--steps .flow-node {
+  left: 28px;
+  top: 0;
+  transform: translateX(-50%);
+}
+.flow--steps .flow-title {
+  font-size: clamp(22px, 2vw, 28px);
+  margin-bottom: 10px;
+}
+.flow--steps .flow-body { max-width: 640px; }
+
+/* Reveal + ignite on scroll. The drawn end-state above is the default, so
+   no-JS / reduced-motion users get the finished timeline. The start-state and
+   per-station ignition apply only when JS arms the section AND motion is OK. */
 @media (prefers-reduced-motion: no-preference) {
-  .kiln-grid.kiln-armed .kiln-photo,
-  .kiln-grid.kiln-armed .kiln-caption,
-  .kiln-grid.kiln-armed .kiln-tab {
+  .flow.flow-armed .flow-stage {
     opacity: 0;
-    transform: translateY(14px);
-  }
-  .kiln-grid.kiln-armed .kiln-fill { transform: scaleX(0); }
-  .kiln-grid.kiln-armed .kiln-tab {
-    background: transparent;
-    color: var(--tan);
-  }
-
-  .kiln-grid.kiln-armed .kiln-photo,
-  .kiln-grid.kiln-armed .kiln-caption {
+    transform: translateY(16px);
     transition:
-      opacity 0.6s cubic-bezier(0.32, 0.72, 0, 1) var(--kiln-d),
-      transform 0.6s cubic-bezier(0.32, 0.72, 0, 1) var(--kiln-d);
+      opacity 0.6s cubic-bezier(0.32, 0.72, 0, 1) var(--rd, 0ms),
+      transform 0.6s cubic-bezier(0.32, 0.72, 0, 1) var(--rd, 0ms);
   }
-  .kiln-grid.kiln-armed .kiln-fill {
-    transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1) var(--kiln-d);
-  }
-  .kiln-grid.kiln-armed .kiln-tab {
-    transition:
-      opacity 0.6s cubic-bezier(0.32, 0.72, 0, 1) var(--kiln-d),
-      transform 0.6s cubic-bezier(0.32, 0.72, 0, 1) var(--kiln-d),
-      background 0.28s ease var(--kiln-d),
-      color 0.28s ease var(--kiln-d);
-  }
-
-  .kiln-grid.kiln-armed.in-view .kiln-photo,
-  .kiln-grid.kiln-armed.in-view .kiln-caption,
-  .kiln-grid.kiln-armed.in-view .kiln-tab {
+  .flow.flow-armed.flow-in .flow-stage {
     opacity: 1;
     transform: translateY(0);
   }
-  .kiln-grid.kiln-armed.in-view .kiln-fill { transform: scaleX(1); }
-  .kiln-grid.kiln-armed.in-view .kiln-tab {
+
+  /* Stations start dark; JS adds .is-lit as the fill climbs past each one. */
+  .flow.flow-armed .flow-node {
+    background: transparent;
+    color: var(--tan);
+    box-shadow: 0 0 0 7px rgba(15, 15, 13, 0.92);
+  }
+  .flow.flow-armed .flow-node.is-lit {
     background: var(--tan);
     color: var(--black);
+    box-shadow: 0 0 0 7px rgba(15, 15, 13, 0.92), 0 0 24px rgba(200, 168, 130, 0.55);
   }
 }
 
-/* Mill Line: 2-up on tablet, where four columns get too narrow to read */
-@media (min-width: 769px) and (max-width: 1080px) {
-  .kiln-grid {
-    grid-template-columns: 1fr 1fr;
-    row-gap: 52px;
+/* Zig-zag gap tightens on mid widths so neither column gets cramped */
+@media (min-width: 901px) and (max-width: 1180px) {
+  .flow--media .flow-stage { column-gap: 60px; }
+  .flow--media .flow-text { padding-left: 32px; }
+  .flow--media .flow-stage:nth-child(even) .flow-text { padding-right: 32px; }
+}
+
+/* Below 900px the zig-zag collapses to a left-rail vertical timeline so the
+   photos never shrink to thumbnails. Numbers run down the seam as the order. */
+@media (max-width: 900px) {
+  .flow--media { --rail-x: 26px; }
+  .flow--media .flow-stage {
+    grid-template-columns: 1fr;
+    row-gap: 22px;
+    padding-left: 70px;
+    min-height: 0;
   }
-  .kiln-card:not(:first-child) .kiln-caption { border-left: none; }
-  .kiln-card:nth-child(even) .kiln-caption {
-    border-left: 1px solid rgba(255, 255, 255, 0.1);
+  .flow--media .flow-media,
+  .flow--media .flow-stage:nth-child(even) .flow-media { grid-column: 1; }
+  .flow--media .flow-text,
+  .flow--media .flow-stage:nth-child(even) .flow-text {
+    grid-column: 1;
+    text-align: left;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .flow--media .flow-stage:nth-child(even) .flow-body { margin-left: 0; }
+  .flow--media .flow-node {
+    left: 26px;
+    top: 0;
+    transform: translate(-50%, 0);
   }
 }
 
@@ -347,10 +478,6 @@ body {
 @media (max-width: 768px) {
   /* Hero value props: stack to 1 col on mobile */
   .hero-props-grid {
-    grid-template-columns: 1fr !important;
-  }
-  /* Gallery CTA two-col: stack on mobile */
-  .gallery-cta-grid {
     grid-template-columns: 1fr !important;
   }
   /* Reviews: single col on mobile */
@@ -389,21 +516,11 @@ body {
   .how-it-works-grid {
     grid-template-columns: 1fr 1fr !important;
   }
-  /* Process steps: 2-up on mobile instead of a rigid 4-col row */
-  .process-grid {
-    grid-template-columns: 1fr 1fr !important;
-    gap: 48px 0 !important;
-  }
-  .process-connector { display: none !important; }
-  /* Mill Line: stack to a single column; numbers 01-04 down one column
-     read as the sequence. Drop the caption hairline when stacked. */
-  .kiln-grid {
-    grid-template-columns: 1fr !important;
-    gap: 40px 0;
-  }
-  .kiln-card:not(:first-child) .kiln-caption {
-    border-left: none;
-  }
+  /* Process flow: tighten the left-rail timeline gutters on phones */
+  .flow--media { --rail-x: 22px; }
+  .flow--media .flow-stage { padding-left: 60px; }
+  .flow--media .flow-node { left: 22px; }
+  .flow--steps .flow-stage { padding-left: 72px; }
   /* Hero content padding on mobile */
   .hero-content {
     padding: 0 24px 48px !important;
@@ -428,4 +545,75 @@ body {
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* ── PARTNER / SUPPLIER LOGO MARQUEE (VendorTicker) ── */
+.partner-strip {
+  background: var(--cream);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 40px 0;
+  overflow: hidden;
+}
+.partner-strip__label {
+  font-family: var(--font-display);
+  font-size: var(--fs-10);
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gray);
+  text-align: center;
+  margin: 0 0 26px;
+}
+/* Soft-fade the band edges so logos slide in and out instead of hard-clipping. */
+.partner-strip__viewport {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+.partner-track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  animation: partner-marquee 64s linear infinite;
+}
+/* Pause so a visitor can stop on a logo they recognize. */
+.partner-strip__viewport:hover .partner-track {
+  animation-play-state: paused;
+}
+.partner-logo {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 46px;
+}
+.partner-logo img {
+  height: var(--logo-h, 30px);
+  width: auto;
+  display: block;
+  -webkit-user-select: none;
+  user-select: none;
+}
+@keyframes partner-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-33.3333%); }
+}
+@media (max-width: 760px) {
+  .partner-strip { padding: 32px 0; }
+  .partner-logo { padding: 0 30px; }
+  .partner-logo img { height: calc(var(--logo-h, 30px) * 0.82); }
+}
+/* Motion reduced: no scroll. Show one static, centered, wrapping row of the
+   real logos; the two duplicate sets are hidden. */
+@media (prefers-reduced-motion: reduce) {
+  .partner-strip__viewport { -webkit-mask-image: none; mask-image: none; }
+  .partner-track {
+    animation: none;
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 22px;
+    width: auto;
+  }
+  .partner-logo:nth-child(n + 9) { display: none; }
 }

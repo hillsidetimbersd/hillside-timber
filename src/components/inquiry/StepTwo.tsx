@@ -3,12 +3,15 @@
 import React from 'react'
 import LineArtCard from './LineArtCard'
 import ChipSelector from './ChipSelector'
+import PiecePicker from './PiecePicker'
 import { SPECIES_OPTIONS, FINISH_OPTIONS } from './inquiry.types'
 import type { InquiryFormData } from './inquiry.types'
+import type { PiecePreview } from '@/lib/squarespace'
 
 interface Props {
   form: InquiryFormData
   set: (key: keyof InquiryFormData, value: unknown) => void
+  pieces: PiecePreview[]
 }
 
 const DiningTableSvg = () => (
@@ -99,10 +102,10 @@ const PROJECT_TYPES: { value: string; Svg: React.ComponentType }[] = [
   { value: 'Other', Svg: OtherSvg },
 ]
 
-export default function StepTwo({ form, set }: Props) {
+export default function StepTwo({ form, set, pieces }: Props) {
   return (
     <div>
-      <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-13)', color: 'var(--gray)', marginBottom: 28, fontStyle: 'italic' }}>
+      <p className="muted-text" style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-13)', marginBottom: 28 }}>
         Tell us about the piece you have in mind.
       </p>
 
@@ -193,6 +196,19 @@ export default function StepTwo({ form, set }: Props) {
           </div>
         </div>
       </FormRow>
+
+      <div style={{ marginBottom: 22 }}>
+        <PiecePicker
+          pieces={pieces}
+          value={form.referencedPieces}
+          onChange={next => set('referencedPieces', next)}
+          size="sm"
+          idPrefix="custom-piece"
+          label="Reference a slab or piece (optional)"
+          hint=""
+          description="Building from a slab you've seen, or want a finished piece as inspiration? Add it and we'll build around it."
+        />
+      </div>
     </div>
   )
 }

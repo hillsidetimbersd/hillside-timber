@@ -23,10 +23,10 @@ export default function SuccessScreen({ onClose }: Props) {
       }}>
         We&apos;ve got<br />your project.
       </h3>
-      <p style={{
+      <p className="muted-text" style={{
         fontFamily: 'var(--font-body)',
-        fontSize: 'var(--fs-13)', color: 'var(--gray)',
-        maxWidth: 300, fontStyle: 'italic', lineHeight: 1.7,
+        fontSize: 'var(--fs-13)',
+        maxWidth: 300, lineHeight: 1.7,
       }}>
         We review every request personally and will be in touch within 1 to 2 business days. We love what we do. Let&apos;s build something great together.
       </p>

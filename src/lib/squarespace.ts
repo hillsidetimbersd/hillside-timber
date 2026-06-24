@@ -62,6 +62,14 @@ const SOURCES: Source[] = [
   { path: '/wood-slabs/coming-soon', brand: 'ht', section: 'Still Drying', drying: true },
   { path: '/blanks-burls-billets', brand: 'ht', section: 'Blanks, Burls & Billets' },
   { path: '/finished-items-store', brand: 'sfw' },
+  // PHASE 2 (blocked on owner): Sioux Falls Woodworking has only the single
+  // /finished-items-store feed today, so its shop shows just "All". When the
+  // owner provides the real SFW sub-collection URLs and their category names,
+  // add one Source per sub-collection here, mirroring the HT wood-slab rows
+  // above. Shape (slug + label are placeholders, get the real ones from the owner):
+  //   { path: '/finished-items-store/<sub-collection-slug>', brand: 'sfw', section: '<Category Name>' },
+  // Each `section` then becomes a sidebar tab automatically (sectionsForBrand is
+  // brand-aware and hides empty categories). Do not invent these paths.
 ]
 
 // ─── Raw feed shapes (only the fields we read) ───
@@ -126,18 +134,42 @@ function parseDimensions(title: string): string {
     .trim()
 }
 
-/** Title minus the trailing "(SKU)" and the dimensions, leaving the species/descriptor. */
-function cleanName(title: string): string {
-  return title
+/**
+ * Title minus the dimensions and the SKU, leaving the species/descriptor.
+ * Roughly 40% of titles append the SKU bare (e.g. "Black Walnut BW5525-7") rather
+ * than parenthesized, so we strip the known SKU wherever it sits, not just a
+ * trailing "(...)". This keeps the name clean so the SKU can be shown on its own
+ * as the "Piece No." without printing the same code twice.
+ */
+function cleanName(title: string, sku = ''): string {
+  let name = title
     .replace(/\(([^)]*)\)\s*$/, '')
     .replace(DIMENSION_RE, '')
-    .replace(/\s{2,}/g, ' ')
-    .trim()
+  if (sku) {
+    const esc = sku.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    name = name.replace(new RegExp(`\\(?\\s*${esc}\\s*\\)?`, 'ig'), ' ')
+  }
+  return name.replace(/\s{2,}/g, ' ').trim()
 }
 
-function skuFromTitle(title: string): string {
-  const match = title.match(/\(([^)]+)\)\s*$/)
-  return match ? match[1].trim() : ''
+/**
+ * The buyer-facing piece code as written in the title. Most titles end with the
+ * code parenthesized, e.g. "… (BK-112525-2)"; about a tenth append it bare, e.g.
+ * "Black Walnut Round BW071423-3". Dimensions are dropped first so a measurement
+ * is never mistaken for the code. A code is 1-4 letters then digits.
+ */
+function pieceCodeFromTitle(title: string): string {
+  const t = title.replace(DIMENSION_RE, ' ')
+  const paren = t.match(/\(([^)]+)\)\s*$/)
+  if (paren) return paren[1].trim()
+  const bare = t.trim().match(/(?:^|\s)([A-Za-z]{1,4}-?\d[\w-]*)$/)
+  return bare ? bare[1] : ''
+}
+
+/** Square's auto-generated SKUs (e.g. "SQ1609285") are internal ids, not the
+ *  shop's buyer-facing piece code, so they never get shown as a "Piece No.". */
+function isSquareAutoId(s: string): boolean {
+  return /^SQ\d{5,}$/i.test(s)
 }
 
 /**
@@ -162,7 +194,11 @@ function moneyToCents(money?: RawMoney): number | null {
 function normalize(raw: RawItem, source: Source): Product {
   const title = (raw.title ?? '').trim()
   const variant = raw.variants?.[0]
-  const sku = (variant?.sku || skuFromTitle(title) || '').trim()
+  // Prefer the human code written in the title. Only fall back to the variant's
+  // SKU when the title carries no code and that SKU isn't a Square auto-id.
+  const titleCode = pieceCodeFromTitle(title)
+  const variantSku = (variant?.sku ?? '').trim()
+  const sku = titleCode || (isSquareAutoId(variantSku) ? '' : variantSku)
 
   const cdnImages = (raw.items ?? [])
     .map((i) => i.assetUrl)
@@ -183,7 +219,7 @@ function normalize(raw: RawItem, source: Source): Product {
 
   return {
     id: raw.id,
-    name: cleanName(title) || title,
+    name: cleanName(title, sku) || title,
     sku,
     dimensions: parseDimensions(title),
     sections: source.section ? [source.section] : [],
@@ -256,11 +292,46 @@ export async function getProductsByBrand(brand: BrandKey): Promise<Product[]> {
   return all.filter((p) => p.brand === brand)
 }
 
-/** Distinct section tabs present for a brand, in store order, with "All" first. */
+/**
+ * Canonical category order per brand. Sections present on a brand's pieces but
+ * not listed here are appended in first-seen order, so a newly-sourced
+ * sub-collection becomes a tab the moment its products carry a `section`, with
+ * no code change. "Still Drying" always sorts last.
+ */
+const SECTION_ORDER: Record<BrandKey, string[]> = {
+  ht: ['Live Edge Slabs', 'Rounds', 'Mantels', 'Blanks, Burls & Billets', 'Still Drying'],
+  // SFW has no categorized sub-collections yet (see the PHASE 2 note on SOURCES).
+  // Real categories will order themselves here automatically once sourced.
+  sfw: [],
+}
+
+const DRYING_SECTION = 'Still Drying'
+
+/**
+ * Section tabs for a brand, with "All" first and empty categories hidden.
+ * Brand-aware: the brand's canonical order leads, any sections present but not
+ * in that order follow in first-seen order, and the drying bucket pins last.
+ */
 export function sectionsForBrand(products: Product[]): string[] {
-  const order = ['Live Edge Slabs', 'Rounds', 'Mantels', 'Blanks, Burls & Billets', 'Still Drying']
-  const present = new Set(products.flatMap((p) => p.sections))
-  return ['All', ...order.filter((s) => present.has(s))]
+  // Every piece handed here shares one brand (the caller filters by brand first).
+  const preferred = SECTION_ORDER[products[0]?.brand ?? 'ht'] ?? []
+
+  // Sections actually present, in the order the pieces first introduce them.
+  const present: string[] = []
+  for (const p of products) {
+    for (const s of p.sections) {
+      if (!present.includes(s)) present.push(s)
+    }
+  }
+  const isPresent = (s: string) => present.includes(s)
+
+  const ordered = [
+    ...preferred.filter((s) => s !== DRYING_SECTION && isPresent(s)),
+    ...present.filter((s) => s !== DRYING_SECTION && !preferred.includes(s)),
+  ]
+  if (isPresent(DRYING_SECTION)) ordered.push(DRYING_SECTION)
+
+  return ['All', ...ordered]
 }
 
 function shuffle<T>(items: T[]): T[] {
@@ -288,9 +359,14 @@ export function pickTopPicks(products: Product[], count: number): Product[] {
     .slice(0, count)
 }
 
-/** On-sale, photographed pieces for the "On Sale" showcase. */
+/** On-sale, photographed pieces for the "On Sale" showcase. Excludes sold pieces
+ *  (a piece can carry a sale price yet already be gone) — only show what's buyable. */
 export function pickOnSale(products: Product[], count: number): Product[] {
-  return shuffle(products.filter((p) => p.onSale && p.salePriceCents != null && p.images.length > 0)).slice(0, count)
+  return shuffle(
+    products.filter(
+      (p) => p.onSale && p.salePriceCents != null && p.images.length > 0 && (p.inStock || p.drying),
+    ),
+  ).slice(0, count)
 }
 
 /** A trimmed product shape for the contact-form piece picker (keeps the client payload small). */

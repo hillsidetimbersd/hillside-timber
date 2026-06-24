@@ -49,11 +49,9 @@ export default function LineArtCard({ selected, onClick, label, sublabel, svg, s
           {label}
         </div>
         {sublabel && (
-          <div style={{
+          <div className="muted-text" style={{
             fontFamily: 'var(--font-body)',
             fontSize: 'var(--fs-10)',
-            color: 'var(--gray)',
-            fontStyle: 'italic',
           }}>
             {sublabel}
           </div>

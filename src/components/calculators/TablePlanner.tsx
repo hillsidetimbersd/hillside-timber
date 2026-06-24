@@ -123,15 +123,13 @@ export default function TablePlanner() {
         </div>
 
         {recommendation.maxSupportedLength !== null && (
-          <div style={{
+          <div className="muted-text" style={{
             background: 'var(--cream)',
             border: '1px solid var(--border)',
             padding: '16px 20px',
             fontFamily: 'var(--font-body)',
             fontSize: 'var(--fs-12)',
-            color: 'var(--gray)',
             lineHeight: 1.7,
-            fontStyle: 'italic',
           }}>
             Standard dining clearance is 36&quot; on each side. Your {roomL} ft room supports a table up to{' '}
             <span style={{ color: 'var(--green)', fontStyle: 'normal' }}>
@@ -300,11 +298,9 @@ export default function TablePlanner() {
             onMouseEnter={(e) => (e.currentTarget.style.borderColor = 'var(--green)')}
             onMouseLeave={(e) => (e.currentTarget.style.borderColor = 'var(--border)')}
           >
-            <div style={{
+            <div className="muted-text" style={{
               fontFamily: 'var(--font-body)',
               fontSize: 'var(--fs-13)',
-              fontStyle: 'italic',
-              color: 'var(--gray)',
               lineHeight: 1.6,
             }}>
               {recommendation.isRiverTable
@@ -457,11 +453,9 @@ function RoomInput({ label, value, onChange, placeholder }: {
           outline: 'none',
         }}
       />
-      <div style={{
+      <div className="muted-text" style={{
         fontFamily: 'var(--font-body)',
         fontSize: 'var(--fs-12)',
-        fontStyle: 'italic',
-        color: 'var(--gray)',
         marginTop: 6,
       }}>
         Feet
@@ -525,11 +519,9 @@ function InventoryCard({ product }: { product: { id: string; name: string; dimen
       }}>
         {product.name}
       </div>
-      <div style={{
+      <div className="muted-text" style={{
         fontFamily: 'var(--font-body)',
         fontSize: 'var(--fs-11)',
-        fontStyle: 'italic',
-        color: 'var(--gray)',
       }}>
         {product.dimensions} · {kilnLabel}
       </div>
