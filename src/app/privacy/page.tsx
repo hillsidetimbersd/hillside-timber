@@ -20,7 +20,7 @@ export default function PrivacyPage() {
           Privacy Policy
         </h1>
         <p className="muted-text" style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-13)' }}>
-          Last updated June 2026
+          Effective June 2026
         </p>
       </div>
 
