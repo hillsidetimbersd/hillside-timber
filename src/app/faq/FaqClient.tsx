@@ -10,7 +10,7 @@ import type { PiecePreview } from '@/lib/squarespace'
 const FAQ_ITEMS: FaqItem[] = [
   { id: 'buying', question: 'How do I buy a slab?', answer: 'Browse the slabs and complete your purchase right here on the site. Once your order is in, we will reach out to coordinate pickup at the yard or shipping to you.' },
   { id: 'exact-slab', question: 'Is the slab I see online the exact one I will get?', answer: 'Yes. Every slab is one of a kind and photographed individually, so the slab you see online is the slab you take home.' },
-  { id: 'shipping', question: 'Do you ship slabs?', answer: 'Yes, we ship nationwide. Small pieces go via standard carrier; large, heavy slabs ship via LTL freight, and international orders are quoted with customs included. Shipping a one-of-a-kind slab is custom, so we quote it per order: complete your purchase and we will follow up to coordinate the freight cost, or send us the pieces and your zip with the form below for a quote first.' },
+  { id: 'shipping', question: 'Do you ship slabs?', answer: 'Yes, we ship nationwide. Small pieces go via standard carrier; large, heavy slabs ship via LTL freight, and international orders are quoted with customs included. Shipping a one-of-a-kind slab is custom, so we quote it per order: complete your purchase and we will follow up to coordinate the freight cost, or send us the pieces and your zip with the form below for a quote first.', cta: { href: '/faq#ask', label: 'Request a shipping quote' } },
   { id: 'visit', question: 'Can I visit the slab yard, and where are you?', answer: 'Yes, by appointment. We are 15 miles west of Sioux Falls on Highway 42, near Canistota, South Dakota. Call ahead at (605) 310-4846 to set up a time and we will have someone ready to show you around. Many of our best customers come to pick their own slabs in person.' },
   { id: 'species', question: 'What species do you carry?', answer: 'We carry 24+ species including white oak, black walnut, cherry, maple, elm, ash, cottonwood, bur oak, ponderosa pine, and cedar. Species availability changes with our harvest schedule. Contact us if you are looking for something specific.' },
   { id: 'green-wood', question: 'Do you sell green or air-dried wood too?', answer: 'Most of our stock is solar kiln dried and ready to build. We sometimes have green or still-drying slabs, so ask and we will tell you what is available.' },
@@ -96,7 +96,7 @@ export default function FaqClient({ pieces }: { pieces: PiecePreview[] }) {
         <FaqPro items={FAQ_ITEMS} />
 
         {/* Ask us — the inquiry form (also how shipping quotes are requested) */}
-        <div id="ask" style={{ marginTop: 64, padding: '44px', background: 'var(--cream)', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)' }}>
+        <div id="ask" style={{ scrollMarginTop: 'calc(var(--switcher-h) + var(--nav-h) + 24px)', marginTop: 64, padding: '44px', background: 'var(--cream)', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)' }}>
           {sent ? (
             <div style={{ textAlign: 'center', padding: '40px 20px' }}>
               <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '28px', fontWeight: 800, textTransform: 'uppercase', color: 'var(--black)', marginBottom: 10 }}>

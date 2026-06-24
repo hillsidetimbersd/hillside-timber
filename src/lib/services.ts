@@ -40,14 +40,54 @@ export const CUSTOM_MILLING = {
   bladeNote: 'Broken-blade charges from metal in the log: $40 for a small blade, $80 for a large blade.',
 }
 
+export type ServiceFaq = {
+  /** Stable id, used as the React key. */
+  id: string
+  question: string
+  answer: string
+}
+
 export const SLAB_FLATTENING = {
   eyebrow: 'Flat and ready to build',
   title: 'Slab Flattening & Leveling',
-  lead: 'Got a slab that needs leveling? Our flattening table takes single slabs up to 6 feet wide and 16 feet long, finished flat and ready to build.',
+  lead: 'A slab that cupped, bowed, or twisted while it dried will not sit flat on its own. We run it across our flattening table, taking down the high spots until both faces are parallel and true, so your build starts on a dead-flat surface.',
   rate: '$120',
   rateUnit: '/ hr',
   minimum: '30-minute minimum',
   maxSize: '6 × 16 ft',
   maxSizeLabel: 'Max single-slab size',
   note: 'Call ahead to schedule a time.',
+  // Common questions, answered from what we already publish: the rate and
+  // minimum, the max single-slab size, the call-ahead step, and what flattening
+  // does. The page renders every entry below automatically.
+  faqs: [
+    {
+      id: 'what-it-does',
+      question: 'What does flattening actually do?',
+      answer:
+        'It removes the cup, bow, and twist a slab picks up as it dries. We take down the high spots on both faces until they sit parallel and true, leaving a surface that is ready to sand, finish, and build on.',
+    },
+    {
+      id: 'pricing',
+      question: 'How is it priced?',
+      answer:
+        'Flattening runs $120 an hour, with a 30-minute minimum. Most single slabs are finished well inside an hour, so bring yours by and we will tell you what to expect before we start.',
+    },
+    {
+      id: 'max-size',
+      question: 'How large a slab can you handle?',
+      answer:
+        'Our table takes one slab at a time, up to 6 feet wide and 16 feet long. If your piece runs larger than that, call and we will talk through the options.',
+    },
+    {
+      id: 'scheduling',
+      question: 'How do I get a slab flattened?',
+      answer:
+        'Give us a call so we can set a time, then drop the slab off at the yard. We are 15 miles west of Sioux Falls on Highway 42, near Canistota.',
+    },
+    // PHASE 2 — owner to supply. Append more entries here as { id, question,
+    // answer } and they render automatically below. Likely additions: how flat
+    // the finished surface gets, what to bring or prep beforehand, and typical
+    // turnaround time.
+  ] satisfies ServiceFaq[],
 }

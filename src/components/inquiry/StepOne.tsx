@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useId } from 'react'
 import LineArtCard from './LineArtCard'
 import type { InquiryFormData, DeliveryMethod } from './inquiry.types'
 
@@ -43,25 +43,27 @@ const DELIVERY: { value: DeliveryMethod; label: string; sublabel: string; Svg: R
 ]
 
 export default function StepOne({ form, set }: Props) {
+  const uid = useId()
   return (
     <div>
       <p className="muted-text" style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-13)', marginBottom: 28 }}>
         Tell us a little about yourself so we can reach you with a quote.
       </p>
 
-      <FormRow label="Your Name *">
-        <input required value={form.name} onChange={e => set('name', e.target.value)} placeholder="Full name" />
+      <FormRow label="Your Name *" htmlFor={`${uid}-name`}>
+        <input id={`${uid}-name`} required value={form.name} onChange={e => set('name', e.target.value)} placeholder="Full name" />
       </FormRow>
-      <FormRow label="Email *">
-        <input required type="email" value={form.email} onChange={e => set('email', e.target.value)} placeholder="you@example.com" />
+      <FormRow label="Email *" htmlFor={`${uid}-email`}>
+        <input id={`${uid}-email`} required type="email" value={form.email} onChange={e => set('email', e.target.value)} placeholder="you@example.com" />
       </FormRow>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-        <FormRow label="Phone">
-          <input type="tel" value={form.phone} onChange={e => set('phone', e.target.value)} placeholder="(605) 555-0100" />
+        <FormRow label="Phone" htmlFor={`${uid}-phone`}>
+          <input id={`${uid}-phone`} type="tel" value={form.phone} onChange={e => set('phone', e.target.value)} placeholder="(605) 555-0100" />
         </FormRow>
-        <FormRow label="Zip Code *">
+        <FormRow label="Zip Code *" htmlFor={`${uid}-zip`}>
           <input
+            id={`${uid}-zip`}
             required
             value={form.zip}
             onChange={e => set('zip', e.target.value.replace(/\D/g, '').slice(0, 5))}
@@ -90,16 +92,19 @@ export default function StepOne({ form, set }: Props) {
   )
 }
 
-function FormRow({ label, children }: { label: string; children: React.ReactNode }) {
+function FormRow({ label, htmlFor, children }: { label: string; htmlFor?: string; children: React.ReactNode }) {
+  // A real <label htmlFor> when the row wraps a single input; a plain styled
+  // heading for the delivery row (a group of custom cards, not one control).
+  const labelStyle = {
+    display: 'block', fontFamily: 'var(--font-display)',
+    fontSize: 'var(--fs-9)', fontWeight: 700, letterSpacing: '2px',
+    textTransform: 'uppercase' as const, color: 'var(--gray)', marginBottom: 6,
+  }
   return (
     <div style={{ marginBottom: 22 }}>
-      <label style={{
-        display: 'block', fontFamily: 'var(--font-display)',
-        fontSize: 'var(--fs-9)', fontWeight: 700, letterSpacing: '2px',
-        textTransform: 'uppercase' as const, color: 'var(--gray)', marginBottom: 6,
-      }}>
-        {label}
-      </label>
+      {htmlFor
+        ? <label htmlFor={htmlFor} style={labelStyle}>{label}</label>
+        : <div style={labelStyle}>{label}</div>}
       {children}
     </div>
   )

@@ -62,6 +62,14 @@ const SOURCES: Source[] = [
   { path: '/wood-slabs/coming-soon', brand: 'ht', section: 'Still Drying', drying: true },
   { path: '/blanks-burls-billets', brand: 'ht', section: 'Blanks, Burls & Billets' },
   { path: '/finished-items-store', brand: 'sfw' },
+  // PHASE 2 (blocked on owner): Sioux Falls Woodworking has only the single
+  // /finished-items-store feed today, so its shop shows just "All". When the
+  // owner provides the real SFW sub-collection URLs and their category names,
+  // add one Source per sub-collection here, mirroring the HT wood-slab rows
+  // above. Shape (slug + label are placeholders, get the real ones from the owner):
+  //   { path: '/finished-items-store/<sub-collection-slug>', brand: 'sfw', section: '<Category Name>' },
+  // Each `section` then becomes a sidebar tab automatically (sectionsForBrand is
+  // brand-aware and hides empty categories). Do not invent these paths.
 ]
 
 // ─── Raw feed shapes (only the fields we read) ───
@@ -284,11 +292,46 @@ export async function getProductsByBrand(brand: BrandKey): Promise<Product[]> {
   return all.filter((p) => p.brand === brand)
 }
 
-/** Distinct section tabs present for a brand, in store order, with "All" first. */
+/**
+ * Canonical category order per brand. Sections present on a brand's pieces but
+ * not listed here are appended in first-seen order, so a newly-sourced
+ * sub-collection becomes a tab the moment its products carry a `section`, with
+ * no code change. "Still Drying" always sorts last.
+ */
+const SECTION_ORDER: Record<BrandKey, string[]> = {
+  ht: ['Live Edge Slabs', 'Rounds', 'Mantels', 'Blanks, Burls & Billets', 'Still Drying'],
+  // SFW has no categorized sub-collections yet (see the PHASE 2 note on SOURCES).
+  // Real categories will order themselves here automatically once sourced.
+  sfw: [],
+}
+
+const DRYING_SECTION = 'Still Drying'
+
+/**
+ * Section tabs for a brand, with "All" first and empty categories hidden.
+ * Brand-aware: the brand's canonical order leads, any sections present but not
+ * in that order follow in first-seen order, and the drying bucket pins last.
+ */
 export function sectionsForBrand(products: Product[]): string[] {
-  const order = ['Live Edge Slabs', 'Rounds', 'Mantels', 'Blanks, Burls & Billets', 'Still Drying']
-  const present = new Set(products.flatMap((p) => p.sections))
-  return ['All', ...order.filter((s) => present.has(s))]
+  // Every piece handed here shares one brand (the caller filters by brand first).
+  const preferred = SECTION_ORDER[products[0]?.brand ?? 'ht'] ?? []
+
+  // Sections actually present, in the order the pieces first introduce them.
+  const present: string[] = []
+  for (const p of products) {
+    for (const s of p.sections) {
+      if (!present.includes(s)) present.push(s)
+    }
+  }
+  const isPresent = (s: string) => present.includes(s)
+
+  const ordered = [
+    ...preferred.filter((s) => s !== DRYING_SECTION && isPresent(s)),
+    ...present.filter((s) => s !== DRYING_SECTION && !preferred.includes(s)),
+  ]
+  if (isPresent(DRYING_SECTION)) ordered.push(DRYING_SECTION)
+
+  return ['All', ...ordered]
 }
 
 function shuffle<T>(items: T[]): T[] {

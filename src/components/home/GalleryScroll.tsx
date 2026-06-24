@@ -29,8 +29,13 @@ export default function GalleryScroll({ products = [] }: { products?: Product[] 
     const col3 = col3Ref.current
     if (!wrap || !col1 || !col2 || !col3) return
 
-    const onScroll = () => {
-      const total = wrap.offsetHeight - window.innerHeight
+    // offsetHeight only changes on resize, so cache it instead of reading layout
+    // every frame.
+    let total = wrap.offsetHeight - window.innerHeight
+    let frame = 0
+
+    const apply = () => {
+      frame = 0
       const scrolled = clamp(-wrap.getBoundingClientRect().top, 0, total)
 
       // The centre column is coupled to the header text — both ride up at half
@@ -43,9 +48,20 @@ export default function GalleryScroll({ products = [] }: { products?: Product[] 
       col3.style.transform = `translateY(${-scrolled * 0.3}px)`
     }
 
+    // Coalesce bursts of scroll events into one transform write per frame, applied
+    // inside rAF (right before paint) so the parallax stays locked to the scroll
+    // instead of lagging a beat behind it and bouncing.
+    const onScroll = () => { if (!frame) frame = requestAnimationFrame(apply) }
+    const onResize = () => { total = wrap.offsetHeight - window.innerHeight; apply() }
+
     window.addEventListener('scroll', onScroll, { passive: true })
-    onScroll()
-    return () => window.removeEventListener('scroll', onScroll)
+    window.addEventListener('resize', onResize)
+    apply()
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onResize)
+      if (frame) cancelAnimationFrame(frame)
+    }
   }, [products.length])
 
   const isHero = brand.key === 'ht'
@@ -79,8 +95,10 @@ export default function GalleryScroll({ products = [] }: { products?: Product[] 
 
           {/* Headline — overlaid at the top, parallaxes away at half page-speed; only the buttons are clickable */}
           <div ref={textRef} style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '100vh', zIndex: 5, pointerEvents: 'none', willChange: 'transform' }}>
-            {/* Faint cream lift behind the words — subtle, no hard oval. Per-text shadows do the legibility work. */}
-            <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 38% 26% at 50% 30%, rgba(248,246,241,0.42) 0%, rgba(248,246,241,0.12) 56%, transparent 74%)' }} />
+            {/* Faint cream lift behind the words — subtle, no hard oval. Sized to cover the
+                whole stack (label through subtext), not just the headline, so the italic
+                line below never sits on a bare photo. Per-text shadows finish the job. */}
+            <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 40% 40% at 50% 35%, rgba(248,246,241,0.46) 0%, rgba(248,246,241,0.14) 58%, transparent 76%)' }} />
             <div style={{
               position: 'relative', height: '100%',
               display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center', textAlign: 'center',
@@ -98,8 +116,8 @@ export default function GalleryScroll({ products = [] }: { products?: Product[] 
               </h1>
               <p style={{
                 fontFamily: 'var(--font-body)', fontSize: '17px', color: 'var(--gray-dark)',
-                maxWidth: '540px', margin: '0 auto', lineHeight: 1.7, fontStyle: 'italic',
-                textShadow: '0 1px 14px var(--cream), 0 0 7px var(--cream)',
+                maxWidth: '430px', margin: '0 auto', lineHeight: 1.7, fontStyle: 'italic',
+                textShadow: '0 0 6px var(--cream), 0 0 12px var(--cream), 0 1px 16px var(--cream)',
               }}>
                 Twenty-four species and counting. Solar kiln dried on site. Harvested locally across South Dakota, with rare and exotic species sourced from around the world.
               </p>
@@ -199,17 +217,25 @@ export default function GalleryScroll({ products = [] }: { products?: Product[] 
         .gallery-tile:focus-visible { outline: 3px solid var(--green); outline-offset: 3px; }
         /* Captions fan to their column's edge. align-items moves the pill (which
            ignores text-align); text-align fans the wrapped eyebrow/name lines.
-           These live in CSS, not inline, so the mobile rules below can override them. */
-        .gallery-cap { display: flex; flex-direction: column; justify-content: flex-end; }
-        .gallery-cap--left   { align-items: flex-start; text-align: left; }
-        .gallery-cap--center { align-items: center;     text-align: center; }
-        .gallery-cap--right  { align-items: flex-end;    text-align: right; }
+           The scrim is one curved (radial) pool whose anchor (--cap-pos) sits under
+           that same corner, so the darkest area always falls beneath the text and the
+           rest of the slab stays exposed. These live in CSS, not inline, so the mobile
+           rules below can override them. */
+        .gallery-cap {
+          display: flex; flex-direction: column; justify-content: flex-end;
+          background: radial-gradient(130% 90% at var(--cap-pos, 50% 100%),
+            rgba(15,15,13,0.95) 0%, rgba(15,15,13,0.68) 28%, rgba(15,15,13,0.28) 54%, rgba(15,15,13,0) 76%);
+        }
+        .gallery-cap--left   { align-items: flex-start; text-align: left;   --cap-pos: 6% 100%; }
+        .gallery-cap--center { align-items: center;     text-align: center; --cap-pos: 50% 100%; }
+        .gallery-cap--right  { align-items: flex-end;   text-align: right;  --cap-pos: 94% 100%; }
         .gallery-piece-no { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
         /* On phones the gallery is three narrow columns: the fan is imperceptible and
-           the pill is too cramped, so collapse everything back to a clean left caption. */
+           the pill is too cramped, so collapse everything back to a clean left caption
+           (text and the scrim pool both return to the bottom-left). */
         @media (max-width: 640px) {
           .gallery-piece-no { display: none; }
-          .gallery-cap--center, .gallery-cap--right { align-items: flex-start; text-align: left; }
+          .gallery-cap--center, .gallery-cap--right { align-items: flex-start; text-align: left; --cap-pos: 6% 100%; }
         }
       `}</style>
     </div>
@@ -241,10 +267,10 @@ function GalleryTile({ product, align }: { product: Product; align: Align }) {
       aria-label={`${product.name}, view on the store`}
     >
       <HoverImage src={product.images[0]} alt={product.name} hint="View Piece →" style={{ aspectRatio: '16/10' }}>
-        {/* Caption: section + name + Piece No., fanned to the column's edge (left / centre / right). */}
+        {/* Caption: section + name + Piece No., fanned to the column's edge (left / centre / right).
+            The scrim is a curved pool anchored under that same corner (see the gallery-cap classes). */}
         <div className={`gallery-cap gallery-cap--${align}`} style={{
           position: 'absolute', inset: 0, padding: '14px 16px', pointerEvents: 'none',
-          background: 'linear-gradient(to top, rgba(15,15,13,0.85) 0%, rgba(15,15,13,0.12) 44%, rgba(15,15,13,0) 66%)',
         }}>
           <div style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--fs-9)', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--tan)', marginBottom: 3 }}>
             {tileLabel(product)}

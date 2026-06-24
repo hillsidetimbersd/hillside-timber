@@ -326,7 +326,14 @@ function NavItem({ item, linkStyle, brandName, brandTagline }: { item: NavLink; 
                 style={{
                   position: 'relative', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
                   minHeight: 196, padding: 16, borderRadius: 'var(--radius)', overflow: 'hidden', textDecoration: 'none',
-                  background: 'linear-gradient(160deg, #2f6344 0%, #14271c 100%)',
+                  // Founder photo under a green-tinted scrim: darker at the top and bottom
+                  // so the tan eyebrow and white title stay legible, lighter in the middle so
+                  // the photo reads through. The solid color is a fallback if the image fails.
+                  backgroundColor: '#14271c',
+                  backgroundImage:
+                    'linear-gradient(168deg, rgba(15,26,19,0.55) 0%, rgba(15,26,19,0.30) 44%, rgba(9,17,12,0.92) 100%), url("/assets/photos/founder.jpg")',
+                  backgroundSize: 'cover',
+                  backgroundPosition: '20% 32%',
                 }}
               >
                 <span style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--fs-10)', fontWeight: 700, letterSpacing: '2.5px', textTransform: 'uppercase', color: 'var(--tan)', marginBottom: 'auto' }}>

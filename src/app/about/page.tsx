@@ -1,5 +1,11 @@
+import type { Metadata } from 'next'
 import { cookies } from 'next/headers'
 import { getBrand } from '@/lib/brand'
+
+export const metadata: Metadata = {
+  title: 'About',
+  description: 'The story behind Hillside Timber and Sioux Falls Woodworking. Locally harvested, solar kiln dried, and milled in South Dakota.',
+}
 
 const STEPS = ['Sourced', 'Milled', 'Kiln-Dried', 'Inspected']
 
@@ -96,6 +102,39 @@ export default async function AboutPage() {
         </div>
       </section>
 
+      {/* Visit — a compact, contained invitation. The footer already carries the
+          full address, so this keeps only what the footer lacks: the by-appointment
+          framing, the Highway 42 direction, and the warm invite. Moved up out of the
+          bottom slot so it no longer reads as a full-width line echoing the footer. */}
+      <section style={{ background: 'var(--cream)', padding: '76px var(--section-pad-x)' }}>
+        <div className="about-visit" style={{
+          maxWidth: 780, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 44,
+          background: '#fff', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)',
+          boxShadow: 'var(--shadow-lg)', padding: '38px 42px',
+        }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div className="label" style={{ marginBottom: 14 }}>Come Visit</div>
+            <h2 style={{
+              fontFamily: 'var(--font-display)', fontSize: 'clamp(27px, 3vw, 36px)', fontWeight: 800,
+              letterSpacing: '-0.5px', textTransform: 'uppercase', color: 'var(--black)', lineHeight: 1, marginBottom: 12,
+            }}>
+              Visits by appointment
+            </h2>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-16)', color: 'var(--gray-dark)', lineHeight: 1.6, maxWidth: 430, margin: 0 }}>
+              We&apos;re 15 miles west of Sioux Falls on Highway 42. Reach out and we&apos;ll set a time to walk the yard with you in person.
+            </p>
+          </div>
+          <div className="about-visit-cta" style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch', gap: 12, flexShrink: 0 }}>
+            <a href={`tel:${phoneDigits}`} className="btn-primary" style={{ textAlign: 'center', justifyContent: 'center', whiteSpace: 'nowrap' }}>
+              {brand.contact.phone}
+            </a>
+            <a href="/contact" className="btn-ghost" style={{ textAlign: 'center', justifyContent: 'center', whiteSpace: 'nowrap' }}>
+              Send a Message
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* Services teaser — the full breakdown and pricing live on /services */}
       <div style={{ background: '#fff', padding: '88px var(--section-pad-x)' }}>
         <div className="about-services-teaser" style={{ maxWidth: 'var(--content-max)', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr auto', gap: 48, alignItems: 'center' }}>
@@ -112,24 +151,13 @@ export default async function AboutPage() {
         </div>
       </div>
 
-      {/* Contact CTA */}
-      <div style={{ background: '#0f0f0d', padding: '80px var(--section-pad-x)', textAlign: 'center' }}>
-        <div className="label" style={{ marginBottom: 16 }}>Come Visit</div>
-        <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '40px', fontWeight: 800, textTransform: 'uppercase', color: '#fff', marginBottom: 12 }}>
-          Visits by<br />appointment.
-        </h2>
-        <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-16)', color: 'rgba(255,255,255,0.5)', marginBottom: 32, fontStyle: 'italic' }}>
-          We are 15 miles west of Sioux Falls on Highway 42. Reach out to set up a time, we would love to show you the yard in person.
-        </p>
-        <a href={`tel:${phoneDigits}`} className="btn-primary">
-          {brand.contact.phone}
-        </a>
-      </div>
-
       <style>{`
         @media (max-width: 860px) {
           .about-intro { grid-template-columns: 1fr !important; gap: 38px !important; }
           .about-services-teaser { grid-template-columns: 1fr !important; gap: 26px !important; }
+        }
+        @media (max-width: 700px) {
+          .about-visit { flex-direction: column !important; align-items: stretch !important; gap: 24px !important; padding: 30px 26px !important; }
         }
         @media (max-width: 640px) {
           .about-stats { grid-template-columns: 1fr 1fr !important; }

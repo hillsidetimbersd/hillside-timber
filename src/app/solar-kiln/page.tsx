@@ -17,7 +17,7 @@ export default async function SolarKilnPage() {
   return (
     <div style={{ paddingTop: 'calc(var(--switcher-h) + var(--nav-h))' }}>
       {/* Hero */}
-      <section style={{ background: 'var(--cream)', padding: '76px var(--section-pad-x) 8px', textAlign: 'center' }}>
+      <section style={{ background: 'var(--cream)', padding: '76px var(--section-pad-x)', textAlign: 'center' }}>
         <div style={{ maxWidth: 'var(--content-text)', margin: '0 auto' }}>
           <div className="label" style={{ marginBottom: 14 }}>{SOLAR_KILN.eyebrow}</div>
           <h1 style={{

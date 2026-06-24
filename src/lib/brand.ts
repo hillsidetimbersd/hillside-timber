@@ -11,7 +11,7 @@ export const BRANDS: Record<BrandKey, BrandConfig> = {
     heroHeadline: ['Every slab.', 'Every story.'],
     heroSub: 'Locally harvested and solar kiln dried in South Dakota. 24+ species available.',
     accentColor: '#2a5c3f',
-    logo: '/assets/logos/ht-logo.svg',
+    logo: '/assets/logos/ht-logo.webp',
     instagram: 'https://instagram.com/hillsidetimber',
     instagramHandle: '@hillsidetimber',
     contact: {
