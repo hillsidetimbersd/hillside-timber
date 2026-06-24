@@ -61,11 +61,9 @@ export default function CalculatorShell({ activeTool, onChange, children }: Prop
         }}>
           Calculators
         </h1>
-        <p style={{
+        <p className="muted-text" style={{
           fontFamily: 'var(--font-body)',
           fontSize: 'var(--fs-15)',
-          fontStyle: 'italic',
-          color: 'var(--gray)',
           lineHeight: 1.7,
           maxWidth: 440,
         }}>

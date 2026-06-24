@@ -50,7 +50,7 @@ export default async function AboutPage() {
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
-              <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-15)', color: 'var(--gray)', fontStyle: 'italic' }}>Questions about a piece?</span>
+              <span className="muted-text" style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-15)' }}>Questions about a piece?</span>
               <a href={`tel:${phoneDigits}`} className="btn-primary">{brand.contact.phone}</a>
             </div>
           </div>
@@ -96,35 +96,19 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      {/* Services */}
-      <div style={{ background: '#fff', padding: '90px var(--section-pad-x)' }}>
-        <div style={{ maxWidth: 'var(--content-max)', margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: 48 }}>
+      {/* Services teaser — the full breakdown and pricing live on /services */}
+      <div style={{ background: '#fff', padding: '88px var(--section-pad-x)' }}>
+        <div className="about-services-teaser" style={{ maxWidth: 'var(--content-max)', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr auto', gap: 48, alignItems: 'center' }}>
+          <div>
             <div className="label" style={{ marginBottom: 14 }}>What We Do</div>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(34px, 4vw, 56px)', fontWeight: 800, letterSpacing: '-1px', textTransform: 'uppercase', color: 'var(--black)', lineHeight: 0.95, marginBottom: 14 }}>
-              Our Services
+            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(30px, 3.6vw, 50px)', fontWeight: 800, letterSpacing: '-1px', textTransform: 'uppercase', color: 'var(--black)', lineHeight: 0.96, marginBottom: 14 }}>
+              We mill and flatten<br />to order.
             </h2>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-16)', color: 'var(--gray)', fontStyle: 'italic', maxWidth: 600, margin: '0 auto', lineHeight: 1.6 }}>
-              Beyond the slab yard, we mill and flatten wood to order. Bring us your logs or your rough slabs.
+            <p className="muted-text" style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-16)', maxWidth: 580, lineHeight: 1.6 }}>
+              Bring us your logs or your rough slabs. Custom milling is priced by diameter, and our flattening table levels single slabs up to 6 feet wide. See the full breakdown and pricing.
             </p>
           </div>
-          <div className="about-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
-            <ServiceCard
-              title="Custom Milling"
-              body="We mill your logs into slabs, handling anything up to 60 inches in diameter. Live edges preserved, every flitch numbered so book matches stay together."
-              price="From $20 per cut"
-              note="Pricing scales with diameter and species. Reach out for a current quote."
-            />
-            <ServiceCard
-              title="Slab Flattening & Leveling"
-              body="Got a slab that needs leveling? Our flattening table takes single slabs up to 6 feet wide and 16 feet long, finished flat and ready to build."
-              price="$120 / hour"
-              note="30-minute minimum. Call ahead to schedule a time."
-            />
-          </div>
-          <div style={{ textAlign: 'center', marginTop: 40 }}>
-            <a href="/contact" className="btn-primary">Bring Us Your Logs</a>
-          </div>
+          <a href="/services" className="btn-primary" style={{ whiteSpace: 'nowrap' }}>See Our Services</a>
         </div>
       </div>
 
@@ -145,31 +129,13 @@ export default async function AboutPage() {
       <style>{`
         @media (max-width: 860px) {
           .about-intro { grid-template-columns: 1fr !important; gap: 38px !important; }
+          .about-services-teaser { grid-template-columns: 1fr !important; gap: 26px !important; }
         }
         @media (max-width: 640px) {
           .about-stats { grid-template-columns: 1fr 1fr !important; }
           .about-stats > div:nth-child(3) { border-left: none !important; }
         }
       `}</style>
-    </div>
-  )
-}
-
-function ServiceCard({ title, body, price, note }: { title: string; body: string; price: string; note: string }) {
-  return (
-    <div style={{ background: 'var(--cream)', border: '1px solid var(--border)', padding: '36px 32px', display: 'flex', flexDirection: 'column', borderRadius: 'var(--radius)' }}>
-      <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '22px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.3px', color: 'var(--black)', marginBottom: 12 }}>
-        {title}
-      </h3>
-      <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-15)', color: 'var(--gray-dark)', lineHeight: 1.75, marginBottom: 20, flex: 1 }}>
-        {body}
-      </p>
-      <div style={{ fontFamily: 'var(--font-display)', fontSize: '26px', fontWeight: 800, color: 'var(--green)', letterSpacing: '-0.5px' }}>
-        {price}
-      </div>
-      <div style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-13)', color: 'var(--gray)', fontStyle: 'italic', marginTop: 4 }}>
-        {note}
-      </div>
     </div>
   )
 }

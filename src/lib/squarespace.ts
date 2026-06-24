@@ -126,18 +126,42 @@ function parseDimensions(title: string): string {
     .trim()
 }
 
-/** Title minus the trailing "(SKU)" and the dimensions, leaving the species/descriptor. */
-function cleanName(title: string): string {
-  return title
+/**
+ * Title minus the dimensions and the SKU, leaving the species/descriptor.
+ * Roughly 40% of titles append the SKU bare (e.g. "Black Walnut BW5525-7") rather
+ * than parenthesized, so we strip the known SKU wherever it sits, not just a
+ * trailing "(...)". This keeps the name clean so the SKU can be shown on its own
+ * as the "Piece No." without printing the same code twice.
+ */
+function cleanName(title: string, sku = ''): string {
+  let name = title
     .replace(/\(([^)]*)\)\s*$/, '')
     .replace(DIMENSION_RE, '')
-    .replace(/\s{2,}/g, ' ')
-    .trim()
+  if (sku) {
+    const esc = sku.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    name = name.replace(new RegExp(`\\(?\\s*${esc}\\s*\\)?`, 'ig'), ' ')
+  }
+  return name.replace(/\s{2,}/g, ' ').trim()
 }
 
-function skuFromTitle(title: string): string {
-  const match = title.match(/\(([^)]+)\)\s*$/)
-  return match ? match[1].trim() : ''
+/**
+ * The buyer-facing piece code as written in the title. Most titles end with the
+ * code parenthesized, e.g. "… (BK-112525-2)"; about a tenth append it bare, e.g.
+ * "Black Walnut Round BW071423-3". Dimensions are dropped first so a measurement
+ * is never mistaken for the code. A code is 1-4 letters then digits.
+ */
+function pieceCodeFromTitle(title: string): string {
+  const t = title.replace(DIMENSION_RE, ' ')
+  const paren = t.match(/\(([^)]+)\)\s*$/)
+  if (paren) return paren[1].trim()
+  const bare = t.trim().match(/(?:^|\s)([A-Za-z]{1,4}-?\d[\w-]*)$/)
+  return bare ? bare[1] : ''
+}
+
+/** Square's auto-generated SKUs (e.g. "SQ1609285") are internal ids, not the
+ *  shop's buyer-facing piece code, so they never get shown as a "Piece No.". */
+function isSquareAutoId(s: string): boolean {
+  return /^SQ\d{5,}$/i.test(s)
 }
 
 /**
@@ -162,7 +186,11 @@ function moneyToCents(money?: RawMoney): number | null {
 function normalize(raw: RawItem, source: Source): Product {
   const title = (raw.title ?? '').trim()
   const variant = raw.variants?.[0]
-  const sku = (variant?.sku || skuFromTitle(title) || '').trim()
+  // Prefer the human code written in the title. Only fall back to the variant's
+  // SKU when the title carries no code and that SKU isn't a Square auto-id.
+  const titleCode = pieceCodeFromTitle(title)
+  const variantSku = (variant?.sku ?? '').trim()
+  const sku = titleCode || (isSquareAutoId(variantSku) ? '' : variantSku)
 
   const cdnImages = (raw.items ?? [])
     .map((i) => i.assetUrl)
@@ -183,7 +211,7 @@ function normalize(raw: RawItem, source: Source): Product {
 
   return {
     id: raw.id,
-    name: cleanName(title) || title,
+    name: cleanName(title, sku) || title,
     sku,
     dimensions: parseDimensions(title),
     sections: source.section ? [source.section] : [],
@@ -288,9 +316,14 @@ export function pickTopPicks(products: Product[], count: number): Product[] {
     .slice(0, count)
 }
 
-/** On-sale, photographed pieces for the "On Sale" showcase. */
+/** On-sale, photographed pieces for the "On Sale" showcase. Excludes sold pieces
+ *  (a piece can carry a sale price yet already be gone) — only show what's buyable. */
 export function pickOnSale(products: Product[], count: number): Product[] {
-  return shuffle(products.filter((p) => p.onSale && p.salePriceCents != null && p.images.length > 0)).slice(0, count)
+  return shuffle(
+    products.filter(
+      (p) => p.onSale && p.salePriceCents != null && p.images.length > 0 && (p.inStock || p.drying),
+    ),
+  ).slice(0, count)
 }
 
 /** A trimmed product shape for the contact-form piece picker (keeps the client payload small). */

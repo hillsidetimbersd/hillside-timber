@@ -45,7 +45,7 @@ const DELIVERY: { value: DeliveryMethod; label: string; sublabel: string; Svg: R
 export default function StepOne({ form, set }: Props) {
   return (
     <div>
-      <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-13)', color: 'var(--gray)', marginBottom: 28, fontStyle: 'italic' }}>
+      <p className="muted-text" style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-13)', marginBottom: 28 }}>
         Tell us a little about yourself so we can reach you with a quote.
       </p>
 

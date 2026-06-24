@@ -35,11 +35,10 @@ export default function ResourcesPage() {
           Resources
         </h1>
         <p
+          className="muted-text"
           style={{
             fontFamily: 'var(--font-body)',
             fontSize: 'var(--fs-17)',
-            fontStyle: 'italic',
-            color: 'var(--gray)',
             lineHeight: 1.7,
             maxWidth: 700,
           }}
@@ -171,11 +170,10 @@ export default function ResourcesPage() {
             More guides and tools on the way
           </h3>
           <p
+            className="muted-text"
             style={{
               fontFamily: 'var(--font-body)',
               fontSize: 'var(--fs-17)',
-              fontStyle: 'italic',
-              color: 'var(--gray)',
               lineHeight: 1.7,
               maxWidth: 640,
             }}
@@ -266,11 +264,10 @@ function CalcCard({
       </h3>
 
       <p
+        className="muted-text"
         style={{
           fontFamily: 'var(--font-body)',
           fontSize: 'var(--fs-15)',
-          fontStyle: 'italic',
-          color: 'var(--gray)',
           lineHeight: 1.65,
           flex: 1,
         }}

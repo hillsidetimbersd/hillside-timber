@@ -13,6 +13,7 @@ export interface BrandConfig {
   shortName: string
   domain: string
   tagline: string
+  footerBlurb: string
   heroHeadline: string[]
   heroSub: string
   accentColor: string

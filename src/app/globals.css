@@ -7,10 +7,15 @@
   --green-light: #3a7a55;
   --tan: #c8a882;
   --border: #e8e4dc;
-  /* Muted text — darkened for legibility. The old #888 failed AA on cream
-     (~3.3:1); #54544e reads ~7:1 while staying clearly below --black. */
+  /* Functional muted — tracked labels, inactive states, icon tints. Darkened
+     for legibility: the old #888 failed AA on cream (~3.3:1); #54544e reads
+     ~7:1 while staying clearly below --black. Do NOT use for body captions. */
   --gray: #54544e;
   --gray-dark: #3a3a35;
+  /* Body captions / asides — the "voice" treatment. Sits darker than body
+     prose (--gray-dark) and reads as deliberate emphasis, not de-emphasis.
+     Applied via .muted-text (color + weight + italic together). */
+  --muted: #2c2c28;
   /* Type scale — bumped up one step for legibility ("Large"). Each var is named
      by the ORIGINAL px value it replaced, so a 13px label now reads var(--fs-13). */
   --fs-9: 12px;  --fs-10: 13px; --fs-11: 14px; --fs-12: 14px; --fs-13: 15px;
@@ -39,7 +44,7 @@
   --color-tan: var(--tan);
   --color-border: var(--border);
   --font-display: 'Barlow Condensed', system-ui, sans-serif;
-  --font-body: 'Lora', Georgia, serif;
+  --font-body: 'Source Serif 4', Georgia, serif;
 }
 
 * {
@@ -65,6 +70,15 @@ body {
 /* ── TYPOGRAPHY UTILITIES ── */
 .font-display { font-family: var(--font-display); }
 .font-body    { font-family: var(--font-body); }
+
+/* Muted body captions / asides. One lever for the whole site: change the
+   treatment here, not at each call site. Layout props (size, margins, max-width)
+   stay inline on the element; color/weight/style live here. */
+.muted-text {
+  color: var(--muted);
+  font-weight: 600;
+  font-style: italic;
+}
 
 /* Section label — "01 SOLAR KILN DRIED" style */
 .label {
@@ -142,6 +156,44 @@ body {
 }
 @media (max-width: 768px) {
   .section-wrap { padding: 64px 24px; }
+}
+
+/* ── PRODUCT SHOWCASE BAND ── */
+/* A contained, centered column shared by a section's header row and its product
+   grid, so the eyebrow/title sit at the left card margin and the trailing action
+   sits at the right card margin. Narrower than the full content band on purpose:
+   the four picks read as one centered block with breathing room on both sides. */
+.picks-band { max-width: 1280px; margin: 0 auto; }
+.picks-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+@media (max-width: 1080px) { .picks-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px)  { .picks-grid { grid-template-columns: minmax(0, 1fr); } }
+
+/* ── SALE DISPLACE TEXT (On Sale section signature) ── */
+/* A WebGL "On Sale" headline whose surface ripples toward the cursor. The CSS
+   below is just the frame + the static fallback shown before WebGL mounts and
+   whenever motion is reduced; the ripple itself lives in SaleDisplaceText.tsx. */
+.sale-gl { position: relative; width: 100%; height: clamp(92px, 12.5vw, 168px); }
+.sale-gl canvas { display: block; position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
+.sale-gl__fallback {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-weight: 800; text-transform: uppercase;
+  letter-spacing: 0.04em; line-height: 1; color: var(--cream);
+  font-size: clamp(56px, 11vw, 150px);
+  transition: opacity 0.45s ease;
+}
+
+/* Even line lengths (no lonely short last line) */
+.balance-text { text-wrap: balance; }
+
+/* Visually-hidden, still announced to screen readers */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
 }
 
 /* ── GRAIN OVERLAY ── */
@@ -349,10 +401,6 @@ body {
   .hero-props-grid {
     grid-template-columns: 1fr !important;
   }
-  /* Gallery CTA two-col: stack on mobile */
-  .gallery-cta-grid {
-    grid-template-columns: 1fr !important;
-  }
   /* Reviews: single col on mobile */
   .reviews-grid {
     grid-template-columns: 1fr !important;
@@ -428,4 +476,75 @@ body {
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* ── PARTNER / SUPPLIER LOGO MARQUEE (VendorTicker) ── */
+.partner-strip {
+  background: var(--cream);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 40px 0;
+  overflow: hidden;
+}
+.partner-strip__label {
+  font-family: var(--font-display);
+  font-size: var(--fs-10);
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gray);
+  text-align: center;
+  margin: 0 0 26px;
+}
+/* Soft-fade the band edges so logos slide in and out instead of hard-clipping. */
+.partner-strip__viewport {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+.partner-track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  animation: partner-marquee 64s linear infinite;
+}
+/* Pause so a visitor can stop on a logo they recognize. */
+.partner-strip__viewport:hover .partner-track {
+  animation-play-state: paused;
+}
+.partner-logo {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 46px;
+}
+.partner-logo img {
+  height: var(--logo-h, 30px);
+  width: auto;
+  display: block;
+  -webkit-user-select: none;
+  user-select: none;
+}
+@keyframes partner-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-33.3333%); }
+}
+@media (max-width: 760px) {
+  .partner-strip { padding: 32px 0; }
+  .partner-logo { padding: 0 30px; }
+  .partner-logo img { height: calc(var(--logo-h, 30px) * 0.82); }
+}
+/* Motion reduced: no scroll. Show one static, centered, wrapping row of the
+   real logos; the two duplicate sets are hidden. */
+@media (prefers-reduced-motion: reduce) {
+  .partner-strip__viewport { -webkit-mask-image: none; mask-image: none; }
+  .partner-track {
+    animation: none;
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 22px;
+    width: auto;
+  }
+  .partner-logo:nth-child(n + 9) { display: none; }
 }

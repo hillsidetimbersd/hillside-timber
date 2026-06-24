@@ -184,11 +184,9 @@ export default function BoardFootCalculator() {
           gap: 32,
         }}
       >
-        <p style={{
+        <p className="muted-text" style={{
           fontFamily: 'var(--font-body)',
           fontSize: 'var(--fs-13)',
-          fontStyle: 'italic',
-          color: 'var(--gray)',
           lineHeight: 1.65,
         }}>
           <strong style={{ fontStyle: 'normal', fontWeight: 600, color: 'var(--gray-dark)' }}>These are estimates only.</strong>{' '}
@@ -272,11 +270,9 @@ function DimensionField({ label, value, onChange }: { label: string; value: stri
         onFocus={(e) => (e.currentTarget.style.borderBottomColor = 'var(--green)')}
         onBlur={(e) => (e.currentTarget.style.borderBottomColor = 'var(--border)')}
       />
-      <div style={{
+      <div className="muted-text" style={{
         fontFamily: 'var(--font-body)',
         fontSize: 'var(--fs-12)',
-        fontStyle: 'italic',
-        color: 'var(--gray)',
         marginTop: 6,
       }}>
         Inches

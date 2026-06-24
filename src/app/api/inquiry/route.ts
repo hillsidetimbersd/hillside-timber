@@ -19,6 +19,22 @@ export async function POST(request: Request) {
     const timeline = formData.get('timeline') as string | null
     const vision = formData.get('vision') as string | null
 
+    // Real store pieces the visitor referenced (optional). Capped so a crafted
+    // request can't bloat the owner's email past delivery limits.
+    type RefPiece = { sku?: string; name?: string; dimensions?: string; price?: string; url?: string; drying?: boolean }
+    let referencedPieces: RefPiece[] = []
+    const referencedPiecesRaw = formData.get('referencedPieces')
+    if (typeof referencedPiecesRaw === 'string') {
+      try {
+        const parsed = JSON.parse(referencedPiecesRaw) as unknown
+        if (Array.isArray(parsed)) {
+          referencedPieces = (parsed as RefPiece[]).filter((p) => p?.sku).slice(0, 25)
+        }
+      } catch {
+        // Malformed JSON: drop the references rather than failing the inquiry.
+      }
+    }
+
     if (!name || !email || !projectType || !budget || !vision) {
       return NextResponse.json({ error: 'Required fields missing' }, { status: 400 })
     }
@@ -95,14 +111,30 @@ export async function POST(request: Request) {
         ? `<p><strong>Photos:</strong><br>${photoUrls.map((u) => `<a href="${u}">${escapeHtml(u)}</a>`).join('<br>')}</p>`
         : ''
 
+      const piecesHtml = referencedPieces.length
+        ? `
+          <p style="margin:16px 0 4px;font-weight:bold">Referenced ${referencedPieces.length} piece${referencedPieces.length > 1 ? 's' : ''}:</p>
+          ${referencedPieces
+            .map(
+              (pc) => `
+          <p style="margin:8px 0;padding:12px 16px;background:#f6f4ef;border-left:3px solid #2a5c3f">
+            ${escapeHtml(pc.name ?? '')} (Piece No. ${escapeHtml(pc.sku ?? '')})${pc.drying ? ' &middot; Still Drying' : ''}
+            ${pc.dimensions ? `<br>${escapeHtml(pc.dimensions)}` : ''}${pc.price ? ` &middot; ${escapeHtml(pc.price)}` : ''}
+            ${pc.url && /^https?:\/\//i.test(pc.url) ? `<br><a href="${escapeHtml(pc.url)}">${escapeHtml(pc.url)}</a>` : ''}
+          </p>`,
+            )
+            .join('')}`
+        : ''
+
       await sendEmail({
         to: OWNER_EMAIL,
         replyTo: email,
-        subject: `New custom project request from ${name}`,
+        subject: `New custom project request from ${name}${referencedPieces.length ? ` · ${referencedPieces.length} piece${referencedPieces.length > 1 ? 's' : ''}` : ''}`,
         html: `
           <p><strong>${escapeHtml(name)}</strong> (${escapeHtml(email)}) submitted a custom project request.</p>
           <table style="border-collapse:collapse;font-size:14px">${detailHtml}</table>
           <p style="white-space:pre-wrap"><strong>Vision:</strong><br>${escapeHtml(vision)}</p>
+          ${piecesHtml}
           ${photosHtml}
         `,
       })

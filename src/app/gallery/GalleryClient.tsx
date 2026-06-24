@@ -8,25 +8,28 @@ import { sizePortfolioImage, type PortfolioProject } from '@/lib/portfolio'
 
 // CDN request widths. Cards stay light; the lightbox stays crisp.
 const HERO_COVER = 1600
-const CARD_COVER = 800
+const CARD_COVER = 1000
 const PEEK = 600
 const THUMB = 240
 const LB_MAIN = 1600
 
-function ProjectCard({ project, featured = false, onOpen }: {
+type CardVariant = 'lead' | 'fill' | 'tile'
+
+function ProjectCard({ project, variant = 'tile', eager = false, onOpen }: {
   project: PortfolioProject
-  featured?: boolean
+  variant?: CardVariant
+  eager?: boolean
   onOpen: () => void
 }) {
   const { title, category, count, images, cover } = project
-  const coverSized = sizePortfolioImage(cover, featured ? HERO_COVER : CARD_COVER)
+  const coverSized = sizePortfolioImage(cover, variant === 'lead' ? HERO_COVER : CARD_COVER)
   const peekA = count >= 2 ? sizePortfolioImage(images[1], PEEK) : null
   const peekB = count >= 3 ? sizePortfolioImage(images[2], PEEK) : null
 
   return (
     <button
       type="button"
-      className={`pcard${featured ? ' pcard--featured' : ''}`}
+      className={`pcard pcard--${variant}`}
       onClick={onOpen}
       aria-label={`${title}. ${count} photo${count === 1 ? '' : 's'}. Open gallery.`}
     >
@@ -34,9 +37,9 @@ function ProjectCard({ project, featured = false, onOpen }: {
         {peekB && <img className="pcard__peek pcard__peek--b" src={peekB} alt="" aria-hidden="true" loading="lazy" />}
         {peekA && <img className="pcard__peek pcard__peek--a" src={peekA} alt="" aria-hidden="true" loading="lazy" />}
         <span className="pcard__cover">
-          <img src={coverSized} alt={`${title}, handcrafted by Hillside Timber`} loading={featured ? undefined : 'lazy'} />
+          <img src={coverSized} alt={`${title}, handcrafted by Hillside Timber`} loading={eager ? undefined : 'lazy'} />
           <span className="pcard__scrim" aria-hidden="true" />
-          <span className="pcard__cta" aria-hidden="true"><ArrowUpRight size={featured ? 20 : 17} weight="bold" /></span>
+          <span className="pcard__cta" aria-hidden="true"><ArrowUpRight size={variant === 'lead' ? 20 : 17} weight="bold" /></span>
           {count > 1 && <span className="pcard__count">{count} photos</span>}
           <span className="pcard__meta">
             <span className="pcard__eyebrow">{category}</span>
@@ -194,44 +197,59 @@ export default function GalleryClient({ projects }: { projects: PortfolioProject
     )
   }
 
-  const [featured, ...rest] = projects
+  // Editorial composition: a lead piece flanked by two stacked tiles forms a
+  // visual row of three, then the remaining pieces flow as balanced pairs. With
+  // the current 7-project feed this resolves to a clean 3 + 2 + 2, with no
+  // orphan tile, and brings real work above the fold instead of one giant cover.
+  const lead = projects[0]
+  const side = projects.slice(1, 3)
+  const rest = projects.slice(3)
 
   return (
     <div style={{ paddingTop: 'calc(var(--switcher-h) + var(--nav-h))', background: 'var(--cream)' }}>
       <style>{STYLES}</style>
 
       <header className="g-sec g-pad g-head">
-        <div className="label" style={{ marginBottom: 14 }}>Portfolio · Finished Work</div>
-        <h1 style={{
-          fontFamily: 'var(--font-display)', fontSize: 'clamp(44px, 6vw, 92px)', fontWeight: 800,
-          letterSpacing: '-2px', lineHeight: 0.92, textTransform: 'uppercase', color: 'var(--black)', marginBottom: 20,
-        }}>
-          Built to be<br /><span style={{ color: 'var(--green)' }}>lived with.</span>
-        </h1>
-        <p style={{
-          fontFamily: 'var(--font-body)', fontSize: 'var(--fs-17)', color: 'var(--gray-dark)',
-          maxWidth: 'var(--content-text)', lineHeight: 1.75, fontStyle: 'italic',
-        }}>
-          Every project here is a real piece we built, photographed in full. Open any one to step through the
-          grain, the joinery, and the finished result, the same way it left the shop.
-        </p>
+        <div className="g-head__row">
+          <div className="g-head__lede">
+            <div className="label" style={{ marginBottom: 12 }}>Portfolio · Finished Work</div>
+            <h1 className="g-head__h1">
+              Built to be<br /><span style={{ color: 'var(--green)' }}>lived with.</span>
+            </h1>
+          </div>
+          <p className="g-head__intro">
+            Every project here is a real piece we built, photographed in full. Open any one to step
+            through the grain, the joinery, and the finished result.
+          </p>
+        </div>
       </header>
 
-      <section className="g-sec g-pad">
-        <ProjectCard project={featured} featured onOpen={() => setActive(0)} />
-      </section>
+      <section className="g-sec g-pad g-grid-sec">
+        <div className="g-lead">
+          <div className="gcard-enter">
+            <ProjectCard project={lead} variant="lead" eager onOpen={() => setActive(0)} />
+          </div>
+          {side.length > 0 && (
+            <div className="g-sidestack">
+              {side.map((p, idx) => (
+                <div key={p.id} className="gcard-enter" style={{ animationDelay: `${(idx + 1) * 90}ms` }}>
+                  <ProjectCard project={p} variant="fill" eager onOpen={() => setActive(idx + 1)} />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
-      {rest.length > 0 && (
-        <section className="g-sec g-pad g-grid-sec">
-          <div className="pgrid">
+        {rest.length > 0 && (
+          <div className="pgrid pgrid--rest">
             {rest.map((p, idx) => (
-              <div key={p.id} className="gcard-enter" style={{ animationDelay: `${(idx % 3) * 90}ms` }}>
-                <ProjectCard project={p} onOpen={() => setActive(idx + 1)} />
+              <div key={p.id} className="gcard-enter" style={{ animationDelay: `${(idx % 2) * 90}ms` }}>
+                <ProjectCard project={p} onOpen={() => setActive(idx + 3)} />
               </div>
             ))}
           </div>
-        </section>
-      )}
+        )}
+      </section>
 
       {active !== null && <Lightbox project={projects[active]} onClose={() => setActive(null)} />}
     </div>
@@ -241,17 +259,46 @@ export default function GalleryClient({ projects }: { projects: PortfolioProject
 const STYLES = `
 .g-sec { max-width: var(--content-max); margin: 0 auto; }
 .g-pad { padding-left: var(--section-pad-x); padding-right: var(--section-pad-x); }
-.g-head { padding-top: 72px; padding-bottom: 44px; }
-.g-grid-sec { padding-top: 44px; padding-bottom: 100px; }
-@media (max-width: 680px) {
-  .g-pad { padding-left: 22px; padding-right: 22px; }
-  .g-head { padding-top: 48px; padding-bottom: 30px; }
-  .g-grid-sec { padding-top: 30px; padding-bottom: 64px; }
+
+/* ── Compact header band: headline left, intro set beside it, baseline-aligned ── */
+.g-head { padding-top: 40px; padding-bottom: 26px; }
+.g-head__row { display: grid; grid-template-columns: 1fr minmax(280px, 360px); gap: 56px; align-items: end; }
+.g-head__h1 {
+  font-family: var(--font-display); font-size: clamp(34px, 4.6vw, 62px); font-weight: 800;
+  letter-spacing: -1.5px; line-height: 0.94; text-transform: uppercase; color: var(--black);
+}
+.g-head__intro {
+  font-family: var(--font-body); font-size: var(--fs-15); color: var(--gray-dark);
+  line-height: 1.7; font-style: italic; padding-bottom: 6px;
+}
+@media (max-width: 900px) {
+  .g-head__row { grid-template-columns: 1fr; gap: 18px; align-items: start; }
+  .g-head__intro { max-width: var(--content-text); padding-bottom: 0; }
 }
 
-.pgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
-@media (max-width: 1100px) { .pgrid { grid-template-columns: repeat(2, 1fr); gap: 24px; } }
-@media (max-width: 680px)  { .pgrid { grid-template-columns: 1fr; gap: 20px; } }
+.g-grid-sec { padding-top: 8px; padding-bottom: 100px; }
+@media (max-width: 680px) {
+  .g-pad { padding-left: 22px; padding-right: 22px; }
+  .g-head { padding-top: 30px; padding-bottom: 22px; }
+  .g-grid-sec { padding-bottom: 64px; }
+}
+
+/* ── Lead row: large lead piece + two stacked tiles, matched heights ── */
+.g-lead { display: grid; grid-template-columns: 1.55fr 1fr; gap: 30px; margin-bottom: 30px; }
+.g-sidestack { display: grid; grid-template-rows: 1fr 1fr; gap: 30px; min-height: 0; }
+.g-sidestack > .gcard-enter { min-height: 0; }
+
+.pgrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; }
+@media (max-width: 1100px) {
+  .g-lead { grid-template-columns: 1fr; gap: 24px; }
+  .g-sidestack { grid-template-rows: none; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+  .pgrid { gap: 24px; }
+}
+@media (max-width: 680px)  {
+  .g-lead { gap: 20px; margin-bottom: 20px; }
+  .g-sidestack { grid-template-columns: 1fr; gap: 20px; }
+  .pgrid { grid-template-columns: 1fr; gap: 20px; }
+}
 
 /* Pure-CSS entrance: runs on load, needs no JS, and degrades to visible. */
 .gcard-enter { animation: gcardIn 0.7s cubic-bezier(0.16,1,0.3,1) both; }
@@ -271,8 +318,16 @@ const STYLES = `
 .pcard:hover, .pcard:focus-visible { z-index: 5; }
 
 .pcard__stack { position: relative; display: block; width: 100%; aspect-ratio: 4 / 3; }
-.pcard--featured .pcard__stack { aspect-ratio: 16 / 9; }
-@media (max-width: 680px) { .pcard--featured .pcard__stack { aspect-ratio: 4 / 3; } }
+.pcard--lead .pcard__stack { aspect-ratio: 16 / 11; }
+/* Fill tiles stretch to match the lead's height inside the side stack. */
+.pcard--fill { height: 100%; }
+.pcard--fill .pcard__stack { aspect-ratio: auto; height: 100%; }
+@media (max-width: 1100px) {
+  /* Side stack reflows into its own row; fill tiles go back to a fixed ratio. */
+  .pcard--fill { height: auto; }
+  .pcard--fill .pcard__stack { aspect-ratio: 4 / 3; height: auto; }
+}
+@media (max-width: 680px) { .pcard--lead .pcard__stack { aspect-ratio: 4 / 3; } }
 
 .pcard__peek {
   position: absolute; inset: 0; width: 100%; height: 100%;
@@ -293,7 +348,7 @@ const STYLES = `
 .pcard__meta { position: absolute; left: 0; right: 0; bottom: 0; padding: 22px 24px; display: flex; flex-direction: column; gap: 5px; }
 .pcard__eyebrow { font-family: var(--font-display); font-size: var(--fs-10); font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--tan); }
 .pcard__title { font-family: var(--font-display); font-weight: 800; letter-spacing: -0.2px; text-transform: uppercase; color: #fff; line-height: 1.02; font-size: clamp(19px, 1.7vw, 24px); }
-.pcard--featured .pcard__title { font-size: clamp(30px, 4.2vw, 56px); }
+.pcard--lead .pcard__title { font-size: clamp(24px, 2.8vw, 40px); }
 
 .pcard__count {
   position: absolute; top: 16px; right: 16px;

@@ -153,12 +153,10 @@ export default function CartDrawer({ open, onClose }: Props) {
                   }}>
                     {formatPrice(item.price)}
                   </div>
-                  <div style={{
+                  <div className="muted-text" style={{
                     fontFamily: 'var(--font-body)',
                     fontSize: 'var(--fs-11)',
-                    color: 'var(--gray)',
                     marginTop: 2,
-                    fontStyle: 'italic',
                   }}>
                     Qty: {item.qty}
                   </div>
@@ -205,12 +203,10 @@ export default function CartDrawer({ open, onClose }: Props) {
                 {formatPrice(subtotal)}
               </span>
             </div>
-            <p style={{
+            <p className="muted-text" style={{
               fontFamily: 'var(--font-body)',
               fontSize: 'var(--fs-11)',
-              color: 'var(--gray)',
               marginBottom: 16,
-              fontStyle: 'italic',
             }}>
               Shipping calculated at checkout. Heavy items may require freight quote.
             </p>

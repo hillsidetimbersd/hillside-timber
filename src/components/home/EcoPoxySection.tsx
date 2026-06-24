@@ -50,7 +50,7 @@ export default function EcoPoxySection() {
           {/* main: finished epoxy piece */}
           <div
             role="img"
-            aria-label="Walnut and blue epoxy coasters handmade with EcoPoxy resin"
+            aria-label="A woodworker pouring EcoPoxy FlowCast resin in the workshop"
             style={{
               position: 'relative', zIndex: 1, aspectRatio: '4 / 3', borderRadius: 'var(--radius-lg)', overflow: 'hidden',
               border: '1px solid rgba(255,255,255,0.12)',

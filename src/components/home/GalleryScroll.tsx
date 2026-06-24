@@ -1,9 +1,12 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import { Tag } from '@phosphor-icons/react'
 import { useBrand } from '@/components/brand/BrandContext'
 import HoverImage from '@/components/media/HoverImage'
 import type { Product } from '@/lib/squarespace'
+
+type Align = 'left' | 'center' | 'right'
 
 function clamp(v: number, min: number, max: number) { return Math.max(min, Math.min(max, v)) }
 
@@ -65,9 +68,9 @@ export default function GalleryScroll({ products = [] }: { products?: Product[] 
               display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10,
               width: '100%', height: '100%', padding: 'calc(var(--switcher-h) + var(--nav-h) + 28px) 24px 0',
             }}>
-              <GalleryCol colRef={col1Ref} items={col1} marginTop="0px" />
-              <GalleryCol colRef={col2Ref} items={col2} marginTop="500px" />
-              <GalleryCol colRef={col3Ref} items={col3} marginTop="0px" />
+              <GalleryCol colRef={col1Ref} items={col1} marginTop="0px" align="left" />
+              <GalleryCol colRef={col2Ref} items={col2} marginTop="500px" align="center" />
+              <GalleryCol colRef={col3Ref} items={col3} marginTop="0px" align="right" />
             </div>
             {/* Cream blend top + bottom */}
             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 120, background: 'linear-gradient(to bottom, var(--cream), transparent)', zIndex: 2, pointerEvents: 'none' }} />
@@ -173,9 +176,9 @@ export default function GalleryScroll({ products = [] }: { products?: Product[] 
                     width: '100%', height: '100%', padding: '0 40px',
                   }}
                 >
-                  <GalleryCol colRef={col1Ref} items={col1} marginTop="-20px" />
-                  <GalleryCol colRef={col2Ref} items={col2} marginTop="-50%" />
-                  <GalleryCol colRef={col3Ref} items={col3} marginTop="-20px" />
+                  <GalleryCol colRef={col1Ref} items={col1} marginTop="-20px" align="left" />
+                  <GalleryCol colRef={col2Ref} items={col2} marginTop="-50%" align="center" />
+                  <GalleryCol colRef={col3Ref} items={col3} marginTop="-20px" align="right" />
                 </div>
 
                 {/* Bottom fade */}
@@ -190,56 +193,45 @@ export default function GalleryScroll({ products = [] }: { products?: Product[] 
         </>
       )}
 
-      {/* CTA below */}
-      <div style={{
-        padding: '96px var(--section-pad-x)', background: 'var(--cream)', display: 'grid',
-        gridTemplateColumns: '1fr 1fr', gap: 60, alignItems: 'center',
-        borderTop: '1px solid var(--border)', maxWidth: 'var(--content-max)', margin: '0 auto',
-      }} className="gallery-cta-grid">
-        <div>
-          <h2 style={{
-            fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 3vw, 40px)', fontWeight: 800,
-            letterSpacing: '-0.5px', textTransform: 'uppercase', color: 'var(--black)', lineHeight: 1.1, marginBottom: 12,
-          }}>
-            From tree to<br />finished piece.
-          </h2>
-          <p className="muted-text" style={{
-            fontFamily: 'var(--font-body)', fontSize: 'var(--fs-15)', lineHeight: 1.8, maxWidth: 480,
-          }}>
-            Every photo above is a real piece in our inventory, pulled fresh each visit. Browse the full catalog or start a conversation about your custom project.
-          </p>
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <CtaCard title="Shop Wood Slabs" sub="Live edge, rounds, mantels. 24+ species." href="/shop" />
-          <CtaCard title="Blanks, Burls & Billets" sub="Turning stock, burl caps, figured wood." href="/shop" />
-          <CtaCard title="Request a Custom Project" sub="Sioux Falls Woodworking, handcrafted to order." href="/custom" accent />
-        </div>
-      </div>
-
       <style>{`
         .gallery-tile { position: relative; display: block; border-radius: var(--radius); overflow: hidden; flex-shrink: 0; text-decoration: none; box-shadow: var(--shadow-sm); transition: box-shadow 0.25s ease; }
         .gallery-tile:hover { box-shadow: var(--shadow); }
         .gallery-tile:focus-visible { outline: 3px solid var(--green); outline-offset: 3px; }
+        /* Captions fan to their column's edge. align-items moves the pill (which
+           ignores text-align); text-align fans the wrapped eyebrow/name lines.
+           These live in CSS, not inline, so the mobile rules below can override them. */
+        .gallery-cap { display: flex; flex-direction: column; justify-content: flex-end; }
+        .gallery-cap--left   { align-items: flex-start; text-align: left; }
+        .gallery-cap--center { align-items: center;     text-align: center; }
+        .gallery-cap--right  { align-items: flex-end;    text-align: right; }
+        .gallery-piece-no { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+        /* On phones the gallery is three narrow columns: the fan is imperceptible and
+           the pill is too cramped, so collapse everything back to a clean left caption. */
+        @media (max-width: 640px) {
+          .gallery-piece-no { display: none; }
+          .gallery-cap--center, .gallery-cap--right { align-items: flex-start; text-align: left; }
+        }
       `}</style>
     </div>
   )
 }
 
-function GalleryCol({ colRef, items, marginTop }: {
+function GalleryCol({ colRef, items, marginTop, align }: {
   colRef: React.RefObject<HTMLDivElement | null>
   items: Product[]
   marginTop: string
+  align: Align
 }) {
   return (
     <div ref={colRef} style={{ display: 'flex', flexDirection: 'column', gap: 10, willChange: 'transform', marginTop }}>
       {items.map((p) => (
-        <GalleryTile key={p.id} product={p} />
+        <GalleryTile key={p.id} product={p} align={align} />
       ))}
     </div>
   )
 }
 
-function GalleryTile({ product }: { product: Product }) {
+function GalleryTile({ product, align }: { product: Product; align: Align }) {
   return (
     <a
       href={product.productUrl}
@@ -249,10 +241,9 @@ function GalleryTile({ product }: { product: Product }) {
       aria-label={`${product.name}, view on the store`}
     >
       <HoverImage src={product.images[0]} alt={product.name} hint="View Piece →" style={{ aspectRatio: '16/10' }}>
-        {/* Caption: species + name */}
-        <div style={{
-          position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
-          padding: '14px 16px', pointerEvents: 'none',
+        {/* Caption: section + name + Piece No., fanned to the column's edge (left / centre / right). */}
+        <div className={`gallery-cap gallery-cap--${align}`} style={{
+          position: 'absolute', inset: 0, padding: '14px 16px', pointerEvents: 'none',
           background: 'linear-gradient(to top, rgba(15,15,13,0.85) 0%, rgba(15,15,13,0.12) 44%, rgba(15,15,13,0) 66%)',
         }}>
           <div style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--fs-9)', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--tan)', marginBottom: 3 }}>
@@ -261,33 +252,19 @@ function GalleryTile({ product }: { product: Product }) {
           <div style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--fs-15)', fontWeight: 700, letterSpacing: '0.3px', textTransform: 'uppercase', color: '#fff', lineHeight: 1.1 }}>
             {product.name}
           </div>
+          {product.sku && (
+            <div className="gallery-piece-no" style={{
+              marginTop: 7, padding: '3px 8px 3px 7px', borderRadius: 'var(--radius-sm)',
+              background: 'rgba(15,15,13,0.5)', border: '1px solid rgba(200,168,130,0.45)',
+            }}>
+              <Tag size={11} weight="fill" style={{ color: 'var(--tan)' }} />
+              <span style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--fs-9)', fontWeight: 700, letterSpacing: '1.2px', textTransform: 'uppercase', color: 'var(--tan)', opacity: 0.75 }}>Piece No.</span>
+              <span style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--fs-10)', fontWeight: 800, letterSpacing: '0.5px', color: '#fff' }}>{product.sku}</span>
+            </div>
+          )}
         </div>
       </HoverImage>
     </a>
   )
 }
 
-function CtaCard({ title, sub, href, accent }: { title: string; sub: string; href: string; accent?: boolean }) {
-  return (
-    <a
-      href={href}
-      style={{
-        background: '#fff', border: `1px solid ${accent ? 'var(--green)' : 'var(--border)'}`, borderRadius: 'var(--radius)', padding: '20px 24px',
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer',
-        textDecoration: 'none', transition: 'border-color 0.2s, box-shadow 0.2s',
-      }}
-      onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--green)'; e.currentTarget.style.boxShadow = '0 2px 16px rgba(42,92,63,0.08)' }}
-      onMouseLeave={(e) => { e.currentTarget.style.borderColor = accent ? 'var(--green)' : 'var(--border)'; e.currentTarget.style.boxShadow = 'none' }}
-    >
-      <div>
-        <div style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--fs-13)', fontWeight: 700, letterSpacing: '0.5px', color: 'var(--black)', marginBottom: 3, textTransform: 'uppercase' }}>
-          {title}
-        </div>
-        <div className="muted-text" style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-11)' }}>
-          {sub}
-        </div>
-      </div>
-      <span style={{ fontSize: 'var(--fs-18)', color: 'var(--green)', fontWeight: 700 }}>→</span>
-    </a>
-  )
-}

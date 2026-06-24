@@ -14,7 +14,7 @@ interface Props {
 export default function StepThree({ form, set }: Props) {
   return (
     <div>
-      <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-13)', color: 'var(--gray)', marginBottom: 28, fontStyle: 'italic' }}>
+      <p className="muted-text" style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-13)', marginBottom: 28 }}>
         Almost done. Help us understand your budget, timing, and vision.
       </p>
 
@@ -37,7 +37,7 @@ export default function StepThree({ form, set }: Props) {
       </FormRow>
 
       <FormRow label="Inspiration Photos">
-        <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-11)', color: 'var(--gray)', fontStyle: 'italic', marginBottom: 10, marginTop: -4 }}>
+        <p className="muted-text" style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-11)', marginBottom: 10, marginTop: -4 }}>
           Drop photos of your space, inspiration pieces, or style references.
         </p>
         <DropZone
@@ -47,7 +47,7 @@ export default function StepThree({ form, set }: Props) {
       </FormRow>
 
       <FormRow label="Your Vision, Your Way *">
-        <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-11)', color: 'var(--gray)', fontStyle: 'italic', marginBottom: 10, marginTop: -4 }}>
+        <p className="muted-text" style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-11)', marginBottom: 10, marginTop: -4 }}>
           Share anything. A sketch, a vibe, a Pinterest board description, how the piece will be used, what matters most to you. We read every word and love to collaborate to make this exactly right.
         </p>
         <textarea

@@ -68,10 +68,12 @@ export default function SolarKilnStory() {
   }, [])
 
   return (
-    <section style={{
+    <section id="solar-kiln" style={{
       background: 'var(--black)',
       color: '#fff',
       padding: '132px var(--section-pad-x)',
+      // Offset the fixed header when reached via the /#solar-kiln nav link.
+      scrollMarginTop: 'calc(var(--switcher-h) + var(--nav-h))',
     }}>
       <div style={{ maxWidth: 'var(--content-max)', margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: 72 }}>

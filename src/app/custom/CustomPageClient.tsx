@@ -4,8 +4,9 @@ import { useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
 import CustomProjectForm from '@/components/inquiry/CustomProjectForm'
 import type { InquiryFormData, Step } from '@/components/inquiry/inquiry.types'
+import type { PiecePreview } from '@/lib/squarespace'
 
-function CustomPageInner() {
+function CustomPageInner({ pieces }: { pieces: PiecePreview[] }) {
   const search = useSearchParams()
 
   const initialForm: Partial<InquiryFormData> = {}
@@ -73,7 +74,7 @@ function CustomPageInner() {
               <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--fs-14)', fontWeight: 700, textTransform: 'uppercase', color: 'var(--black)', marginBottom: 8, letterSpacing: '0.5px' }}>
                 {step.title}
               </h3>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-15)', color: 'var(--gray)', lineHeight: 1.7, fontStyle: 'italic' }}>
+              <p className="muted-text" style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-15)', lineHeight: 1.7 }}>
                 {step.body}
               </p>
             </div>
@@ -82,16 +83,16 @@ function CustomPageInner() {
       </div>
 
       <div style={{ padding: '40px 24px 100px' }}>
-        <CustomProjectForm initialForm={initialForm} startStep={startStep} />
+        <CustomProjectForm initialForm={initialForm} startStep={startStep} pieces={pieces} />
       </div>
     </div>
   )
 }
 
-export default function CustomPageClient() {
+export default function CustomPageClient({ pieces }: { pieces: PiecePreview[] }) {
   return (
     <Suspense fallback={null}>
-      <CustomPageInner />
+      <CustomPageInner pieces={pieces} />
     </Suspense>
   )
 }

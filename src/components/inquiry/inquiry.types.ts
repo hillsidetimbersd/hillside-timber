@@ -1,3 +1,5 @@
+import type { PiecePreview } from '@/lib/squarespace'
+
 export type DeliveryMethod = '' | 'pickup' | 'local' | 'nationwide'
 export type DimensionsUnit = 'in' | 'cm'
 export type SubmitStatus = 'idle' | 'uploading' | 'sending' | 'sent' | 'error'
@@ -20,6 +22,8 @@ export interface InquiryFormData {
   dimensionsW: string
   dimensionsH: string
   dimensionsUnit: DimensionsUnit
+  /** Real store pieces the visitor wants built from or referenced for inspiration. */
+  referencedPieces: PiecePreview[]
 
   // Step 3
   budget: string
@@ -32,6 +36,7 @@ export const INITIAL_FORM: InquiryFormData = {
   name: '', email: '', phone: '', zip: '', deliveryMethod: '',
   projectType: '', projectTypeOther: '', species: [], finish: '',
   dimensionsL: '', dimensionsW: '', dimensionsH: '', dimensionsUnit: 'in',
+  referencedPieces: [],
   budget: '', timeline: '', vision: '', photos: [],
 }
 
