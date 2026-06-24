@@ -36,17 +36,19 @@
   --shadow: 0 12px 32px rgba(15, 15, 13, 0.09);
   --shadow-lg: 0 22px 55px rgba(15, 15, 13, 0.15);
 
-  /* Dark-run tonal descent (HT homepage). The four stacked dark sections step
-     down from the deepest mill-shadow black, pick up the brand green as a
-     drying midtone, and ease toward the cream Instagram band below. Each
-     section holds its own tone for ~80% of its height, then ramps the last
-     ~20% to the next tone, so the seams disappear yet four zones stay distinct.
+  /* Dark-run tonal descent (HT homepage). The four stacked dark sections flow
+     from the deepest mill-shadow black, through the brand green as a drying
+     midtone, and out through warm sage into the cream Instagram band below.
+     Each section holds its own tone, then settles flat onto the next section's
+     tone at the seam (slope 0 on both sides) so no hard line shows at the join.
      Green emerges at EcoPoxy on purpose: it is the eco / bio-resin partner. */
   --tone-onsale:  #0a0a09;  /* deepest, near-neutral black */
   --tone-kiln:    #161512;  /* warm sawmill charcoal, green not yet present */
   --tone-ecopoxy: #1a3326;  /* green has emerged: the bridge peak */
   --tone-reviews: #20392a;  /* lighter green, the review cards sit here */
-  --tone-bridge:  #335c41;  /* near brand green, the final step into cream */
+  --tone-bridge:  #335c41;  /* near brand green, where the warm exit begins */
+  --tone-sage:    #6f8a60;  /* sage: the warm step that carries green to cream */
+  --tone-haze:    #c6cab2;  /* pale sage, eases into the cream Instagram band */
 }
 
 @theme inline {
@@ -247,14 +249,22 @@ body {
   position: relative;
   max-width: var(--content-max);
   margin: 0 auto;
+  /* Establish a stacking context so the rail can sit behind the stages. While
+     animating, each stage carries a transform (its own stacking context), which
+     would otherwise trap the node's z-index and let the last-child rail paint
+     over the numbers. */
+  z-index: 0;
   --rail-x: 50%;   /* where the seam sits (overridden per variant) */
   --node: 46px;    /* station diameter */
 }
 
 /* The seam and its descending fill. Height is driven by --flow-p (0..1),
-   written per frame by JS; it defaults to 1 (full) without JS. */
+   written per frame by JS; it defaults to 1 (full) without JS. z-index:-1 keeps
+   the seam and its fill behind every stage, so each station number stays on top
+   of the line threading through it. */
 .flow-rail {
   position: absolute;
+  z-index: -1;
   top: 8px;
   bottom: 8px;
   left: var(--rail-x);
@@ -295,6 +305,16 @@ body {
   border: 1px solid var(--tan);
   box-shadow: 0 0 0 7px rgba(15, 15, 13, 0.92), 0 0 22px rgba(200, 168, 130, 0.35);
   transition: background 0.35s ease, color 0.35s ease, box-shadow 0.35s ease;
+}
+/* A ring that pulses out of a station the moment the seam reaches it. */
+.flow-node::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 50%;
+  border: 2px solid var(--tan);
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* Shared text typography */
@@ -340,21 +360,29 @@ body {
   top: 50%;
   transform: translate(-50%, -50%);
 }
-/* odd stages: media left / text right.  even: swapped across the rail */
-.flow--media .flow-media { grid-column: 1; }
+/* odd stages: media left / text right.  even: swapped across the rail. Text is
+   always left-aligned (so both sides read the same way) and the block is pulled
+   to the rail with justify-self, so the copy stays tied to its station. */
+/* Both items are pinned to row 1. Without grid-row, the even-stage photo (first
+   in source) takes col 2 / row 1 and the text, wanting col 1, drops to row 2
+   (sparse packing won't backfill), landing the copy below the photo. */
+.flow--media .flow-media { grid-column: 1; grid-row: 1; }
 .flow--media .flow-text {
   grid-column: 2;
+  grid-row: 1;
+  justify-self: start;
+  max-width: 460px;
   padding-left: 44px;
   text-align: left;
 }
 .flow--media .flow-stage:nth-child(even) .flow-media { grid-column: 2; }
 .flow--media .flow-stage:nth-child(even) .flow-text {
   grid-column: 1;
+  justify-self: end;
   padding-left: 0;
   padding-right: 44px;
-  text-align: right;
+  text-align: left;
 }
-.flow--media .flow-stage:nth-child(even) .flow-body { margin-left: auto; }
 
 .flow-media {
   position: relative;
@@ -422,9 +450,11 @@ body {
     transform: translateY(0);
   }
 
-  /* Stations start dark; JS adds .is-lit as the fill climbs past each one. */
+  /* Stations start dark; JS adds .is-lit as the fill climbs past each one. The
+     unlit fill is opaque (not transparent) so the seam behind it is occluded:
+     the number always sits on top of the line, lit or not. */
   .flow.flow-armed .flow-node {
-    background: transparent;
+    background: var(--black);
     color: var(--tan);
     box-shadow: 0 0 0 7px rgba(15, 15, 13, 0.92);
   }
@@ -433,6 +463,16 @@ body {
     color: var(--black);
     box-shadow: 0 0 0 7px rgba(15, 15, 13, 0.92), 0 0 24px rgba(200, 168, 130, 0.55);
   }
+  /* The seam reaching a station fires a one-shot ring pulse out of it. */
+  .flow.flow-armed .flow-node.is-lit::after {
+    animation: flow-ignite 0.72s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+
+@keyframes flow-ignite {
+  0% { opacity: 0.85; transform: scale(0.92); }
+  70% { opacity: 0; }
+  100% { opacity: 0; transform: scale(2.1); }
 }
 
 /* Zig-zag gap tightens on mid widths so neither column gets cramped */
@@ -452,11 +492,15 @@ body {
     padding-left: 70px;
     min-height: 0;
   }
+  /* Single column: reset grid-row so the photo and text stack (rows 1 and 2)
+     instead of sharing the pinned row 1, and let the text fill the column. */
   .flow--media .flow-media,
-  .flow--media .flow-stage:nth-child(even) .flow-media { grid-column: 1; }
+  .flow--media .flow-stage:nth-child(even) .flow-media { grid-column: 1; grid-row: auto; }
   .flow--media .flow-text,
   .flow--media .flow-stage:nth-child(even) .flow-text {
     grid-column: 1;
+    grid-row: auto;
+    justify-self: stretch;
     text-align: left;
     padding-left: 0;
     padding-right: 0;
