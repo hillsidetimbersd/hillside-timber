@@ -8,7 +8,7 @@ export async function POST(request: Request) {
       email?: string
       message?: string
       company?: string
-      piece?: { sku?: string; name?: string; dimensions?: string; price?: string; url?: string }
+      pieces?: Array<{ sku?: string; name?: string; dimensions?: string; price?: string; url?: string; drying?: boolean }>
     }
 
     // Honeypot: a real person never fills the hidden "company" field. Quietly accept and drop.
@@ -17,7 +17,8 @@ export async function POST(request: Request) {
     const name = body.name?.trim() ?? ''
     const email = body.email?.trim() ?? ''
     const message = body.message?.trim() ?? ''
-    const piece = body.piece?.sku ? body.piece : null
+    // Cap the list so a crafted request can't bloat the owner's email past delivery limits.
+    const pieces = (Array.isArray(body.pieces) ? body.pieces.filter((p) => p?.sku) : []).slice(0, 25)
 
     if (!name || !email || !message) {
       return NextResponse.json({ error: 'Please add your name, email, and a message.' }, { status: 400 })
@@ -32,25 +33,31 @@ export async function POST(request: Request) {
       )
     }
 
-    const pieceHtml = piece
+    const piecesHtml = pieces.length
       ? `
-        <p style="margin-top:16px;padding:12px 16px;background:#f6f4ef;border-left:3px solid #2a5c3f">
-          <strong>Inquiring about:</strong> ${escapeHtml(piece.name ?? '')} (Piece No. ${escapeHtml(piece.sku ?? '')})
-          ${piece.dimensions ? `<br>${escapeHtml(piece.dimensions)}` : ''}${piece.price ? ` &middot; ${escapeHtml(piece.price)}` : ''}
-          ${piece.url ? `<br><a href="${escapeHtml(piece.url)}">${escapeHtml(piece.url)}</a>` : ''}
-        </p>`
+        <p style="margin:16px 0 4px;font-weight:bold">Inquiring about ${pieces.length} piece${pieces.length > 1 ? 's' : ''}:</p>
+        ${pieces
+          .map(
+            (pc) => `
+        <p style="margin:8px 0;padding:12px 16px;background:#f6f4ef;border-left:3px solid #2a5c3f">
+          ${escapeHtml(pc.name ?? '')} (Piece No. ${escapeHtml(pc.sku ?? '')})${pc.drying ? ' &middot; Still Drying' : ''}
+          ${pc.dimensions ? `<br>${escapeHtml(pc.dimensions)}` : ''}${pc.price ? ` &middot; ${escapeHtml(pc.price)}` : ''}
+          ${pc.url && /^https?:\/\//i.test(pc.url) ? `<br><a href="${escapeHtml(pc.url)}">${escapeHtml(pc.url)}</a>` : ''}
+        </p>`,
+          )
+          .join('')}`
       : ''
 
     const sent = await sendEmail({
       to: OWNER_EMAIL,
       replyTo: email,
-      subject: `New website message from ${name}${piece ? ` · ${piece.sku}` : ''}`,
+      subject: `New website message from ${name}${pieces.length ? ` · ${pieces.length} piece${pieces.length > 1 ? 's' : ''}` : ''}`,
       html: `
         <p>New message from the contact form:</p>
         <p><strong>Name:</strong> ${escapeHtml(name)}<br>
         <strong>Email:</strong> ${escapeHtml(email)}</p>
         <p style="white-space:pre-wrap">${escapeHtml(message)}</p>
-        ${pieceHtml}
+        ${piecesHtml}
       `,
     })
     if (!sent) {

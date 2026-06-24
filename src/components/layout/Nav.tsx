@@ -12,12 +12,17 @@ type NavLink = {
   children?: { href: string; label: string }[]
 }
 
+// Reviews and FAQ live under About as a dropdown. Shared so both brands stay in sync.
+const ABOUT_CHILDREN = [
+  { href: '/reviews', label: 'Reviews' },
+  { href: '/faq', label: 'FAQ' },
+]
+
 const HT_LINKS: NavLink[] = [
   { href: '/', label: 'Home' },
   { href: '/gallery', label: 'Gallery' },
   { href: '/shop', label: 'Shop' },
-  { href: '/about', label: 'About' },
-  { href: '/faq', label: 'FAQ' },
+  { href: '/about', label: 'About', children: ABOUT_CHILDREN },
   { href: '/contact', label: 'Contact' },
 ]
 
@@ -26,7 +31,7 @@ const SFW_LINKS: NavLink[] = [
   { href: '/gallery', label: 'Gallery' },
   { href: '/shop', label: 'Shop' },
   { href: '/custom', label: 'Custom' },
-  { href: '/about', label: 'About', children: [{ href: '/faq', label: 'FAQ' }] },
+  { href: '/about', label: 'About', children: ABOUT_CHILDREN },
   { href: '/contact', label: 'Contact' },
 ]
 
@@ -253,26 +258,32 @@ function NavItem({ item, linkStyle }: { item: NavLink; linkStyle: CSSProperties 
           top: '100%',
           left: '50%',
           transform: 'translateX(-50%)',
-          paddingTop: 22,
+          paddingTop: 16,
           opacity: open ? 1 : 0,
           visibility: open ? 'visible' : 'hidden',
           pointerEvents: open ? 'auto' : 'none',
-          transition: 'opacity 0.18s ease',
+          transition: 'opacity 0.2s ease',
           zIndex: 60,
         }}
       >
+        {/* Frosted, rounded, floating panel — echoes the nav pill rather than a flat box. */}
         <div
           style={{
+            position: 'relative',
             display: 'flex',
             flexDirection: 'column',
-            gap: 2,
-            minWidth: 150,
-            background: 'rgba(15,15,13,0.98)',
-            border: '1px solid rgba(255,255,255,0.1)',
-            boxShadow: '0 18px 44px rgba(0,0,0,0.45)',
+            gap: 3,
+            minWidth: 172,
             padding: 8,
-            transform: open ? 'translateY(0)' : 'translateY(-6px)',
-            transition: 'transform 0.18s ease',
+            borderRadius: 16,
+            background: 'rgba(20,20,18,0.72)',
+            backdropFilter: 'blur(24px) saturate(160%)',
+            WebkitBackdropFilter: 'blur(24px) saturate(160%)',
+            border: '1px solid rgba(255,255,255,0.14)',
+            boxShadow:
+              '0 24px 50px rgba(0,0,0,0.34), 0 6px 16px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.07)',
+            transform: open ? 'translateY(0)' : 'translateY(-8px)',
+            transition: 'transform 0.2s cubic-bezier(0.32,0.72,0,1)',
           }}
         >
           {item.children.map((c) => (
@@ -285,6 +296,14 @@ function NavItem({ item, linkStyle }: { item: NavLink; linkStyle: CSSProperties 
 }
 
 function DropdownLink({ href, label }: { href: string; label: string }) {
+  const setActive = (el: HTMLAnchorElement) => {
+    el.style.background = 'rgba(255,255,255,0.09)'
+    el.style.color = 'var(--tan)'
+  }
+  const setRest = (el: HTMLAnchorElement) => {
+    el.style.background = 'transparent'
+    el.style.color = 'rgba(255,255,255,0.82)'
+  }
   return (
     <Link
       href={href}
@@ -294,14 +313,17 @@ function DropdownLink({ href, label }: { href: string; label: string }) {
         fontWeight: 700,
         letterSpacing: '2px',
         textTransform: 'uppercase',
-        color: '#fff',
+        color: 'rgba(255,255,255,0.82)',
         textDecoration: 'none',
-        padding: '10px 16px',
+        padding: '11px 18px',
+        borderRadius: 9,
         whiteSpace: 'nowrap',
-        transition: 'background 0.15s, color 0.15s',
+        transition: 'background 0.16s ease, color 0.16s ease',
       }}
-      onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = 'var(--tan)' }}
-      onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#fff' }}
+      onMouseEnter={(e) => setActive(e.currentTarget)}
+      onMouseLeave={(e) => setRest(e.currentTarget)}
+      onFocus={(e) => setActive(e.currentTarget)}
+      onBlur={(e) => setRest(e.currentTarget)}
     >
       {label}
     </Link>

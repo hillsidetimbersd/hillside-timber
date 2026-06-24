@@ -132,7 +132,7 @@ export default function ProductCard({ product }: { product: Product }) {
             fontFamily: 'var(--font-body)', fontSize: 'var(--fs-12)', fontStyle: 'italic',
             color: 'var(--green)', lineHeight: 1.45, marginBottom: 10,
           }}>
-            Still drying in our solar kiln. Inquire to claim it for when it&apos;s ready.
+            Still drying in our solar kiln. Inquire to purchase now, claim it, or reserve it for when it&apos;s ready.
           </p>
         )}
 
