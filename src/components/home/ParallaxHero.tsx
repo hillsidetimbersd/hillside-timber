@@ -192,14 +192,15 @@ const SFW_CONFIG = {
 }
 
 const SFW_VALUE_PROPS = [
-  { num: '01', label: 'Handcrafted', body: 'Every piece built by hand in our Sioux Falls workshop. No assembly lines. No shortcuts.' },
-  { num: '02', label: 'One of a Kind', body: 'Natural grain, live edges, and unique character. No two pieces are ever the same.' },
-  { num: '03', label: 'Custom Built', body: 'Bring us your dimensions, your vision, your space. We build it from the ground up.' },
+  { label: 'Handcrafted', body: 'Every piece built by hand in our Sioux Falls workshop. No assembly lines. No shortcuts.' },
+  { label: 'One of a Kind', body: 'Natural grain, live edges, and unique character. No two pieces are ever the same.' },
+  { label: 'Custom Built', body: 'Bring us your dimensions, your vision, your space. We build it from the ground up.' },
 ]
 
 function SFWHero({ brand }: { brand: ReturnType<typeof useBrand> }) {
   const bgRef = useRef<HTMLDivElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
+  const pillarsRef = useRef<HTMLDivElement>(null)
   const config = SFW_CONFIG
 
   useEffect(() => {
@@ -210,6 +211,24 @@ function SFWHero({ brand }: { brand: ReturnType<typeof useBrand> }) {
     }
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  // Arm the value pillars once when they scroll into view (single staggered
+  // fade-up; no node-ignition seam, since these are pillars, not a sequence).
+  useEffect(() => {
+    const el = pillarsRef.current
+    if (!el) return
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          el.classList.add('is-in')
+          io.disconnect()
+        }
+      },
+      { threshold: 0.25 },
+    )
+    io.observe(el)
+    return () => io.disconnect()
   }, [])
 
   // Honor reduced-motion: hold the poster frame instead of looping the B-roll.
@@ -233,7 +252,6 @@ function SFWHero({ brand }: { brand: ReturnType<typeof useBrand> }) {
       overflow: 'hidden',
       display: 'flex',
       flexDirection: 'column',
-      justifyContent: 'flex-end',
     }}>
       {/* Background (parallax wrapper) */}
       <div
@@ -283,100 +301,83 @@ function SFWHero({ brand }: { brand: ReturnType<typeof useBrand> }) {
       <div className="hero-content" style={{
         position: 'relative',
         zIndex: 2,
-        padding: '0 var(--section-pad-x) 60px',
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        padding: '0 var(--section-pad-x) 52px',
       }}>
-        {/* Eyebrow */}
-        <div style={{
-          fontFamily: 'var(--font-display)',
-          fontSize: 'var(--fs-10)',
-          fontWeight: 700,
-          letterSpacing: '4px',
-          textTransform: 'uppercase',
-          color: config.accentColor,
-          marginBottom: 20,
+        {/* Centered statement block */}
+        <div className="hero-statement" style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          textAlign: 'center',
+          paddingTop: 'calc(var(--switcher-h) + var(--nav-h))',
+          paddingBottom: 48,
         }}>
-          {config.eyebrow}
+          {/* Eyebrow */}
+          <div style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: 'var(--fs-10)',
+            fontWeight: 700,
+            letterSpacing: '4px',
+            textTransform: 'uppercase',
+            color: config.accentColor,
+            marginBottom: 20,
+          }}>
+            {config.eyebrow}
+          </div>
+
+          {/* Headline */}
+          <h1 style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: 'clamp(56px, 8vw, 124px)',
+            fontWeight: 800,
+            letterSpacing: '-2px',
+            lineHeight: 0.92,
+            color: '#fff',
+            marginBottom: 24,
+            textTransform: 'uppercase',
+          }}>
+            {brand.heroHeadline[0]}<br />{brand.heroHeadline[1]}
+          </h1>
+
+          {/* Sub */}
+          <p style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 'var(--fs-17)',
+            color: 'rgba(255,255,255,0.7)',
+            maxWidth: 480,
+            lineHeight: 1.7,
+            margin: '0 auto 36px',
+            fontStyle: 'italic',
+          }}>
+            {brand.heroSub}
+          </p>
+
+          {/* CTAs */}
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
+            <a href={config.ctaPrimaryHref} className="btn-primary">{config.ctaPrimary}</a>
+            {brand.hasCustomProject
+              ? <a href="/custom" className="btn-ghost-white">Start a Custom Project</a>
+              : <a href="/contact" className="btn-ghost-white">Contact Us</a>
+            }
+          </div>
         </div>
 
-        {/* Headline */}
-        <h1 style={{
-          fontFamily: 'var(--font-display)',
-          fontSize: 'clamp(56px, 8vw, 124px)',
-          fontWeight: 800,
-          letterSpacing: '-2px',
-          lineHeight: 0.92,
-          color: '#fff',
-          marginBottom: 24,
-          textTransform: 'uppercase',
-        }}>
-          {brand.heroHeadline[0]}<br />{brand.heroHeadline[1]}
-        </h1>
-
-        {/* Sub */}
-        <p style={{
-          fontFamily: 'var(--font-body)',
-          fontSize: 'var(--fs-17)',
-          color: 'rgba(255,255,255,0.7)',
-          maxWidth: 480,
-          lineHeight: 1.7,
-          marginBottom: 36,
-          fontStyle: 'italic',
-        }}>
-          {brand.heroSub}
-        </p>
-
-        {/* CTAs */}
-        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 64 }}>
-          <a href={config.ctaPrimaryHref} className="btn-primary">{config.ctaPrimary}</a>
-          {brand.hasCustomProject
-            ? <a href="/custom" className="btn-ghost-white">Start a Custom Project</a>
-            : <a href="/contact" className="btn-ghost-white">Contact Us</a>
-          }
-        </div>
-
-        {/* Value props */}
-        <div className="hero-props-grid" style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: '1px',
-          background: 'rgba(255,255,255,0.08)',
-          borderTop: '1px solid rgba(255,255,255,0.1)',
-        }}>
-          {SFW_VALUE_PROPS.map((p) => (
-            <div key={p.num} style={{
-              padding: '20px 24px',
-              background: 'rgba(0,0,0,0.25)',
-              backdropFilter: 'blur(4px)',
-            }}>
-              <div style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: 'var(--fs-10)',
-                fontWeight: 700,
-                letterSpacing: '3px',
-                color: config.accentColor,
-                marginBottom: 6,
-              }}>
-                {p.num}
-              </div>
-              <div style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: 'var(--fs-13)',
-                fontWeight: 700,
-                letterSpacing: '1px',
-                textTransform: 'uppercase',
-                color: '#fff',
-                marginBottom: 6,
-              }}>
-                {p.label}
-              </div>
-              <p style={{
-                fontFamily: 'var(--font-body)',
-                fontSize: 'var(--fs-14)',
-                color: 'rgba(255,255,255,0.55)',
-                lineHeight: 1.6,
-              }}>
-                {p.body}
-              </p>
+        {/* Value pillars — refined bottom band (three strengths, not a sequence) */}
+        <div ref={pillarsRef} className="hero-pillars">
+          {SFW_VALUE_PROPS.map((p, i) => (
+            <div
+              key={p.label}
+              className="hero-pillar"
+              style={{ '--rd': `${i * 90}ms` } as React.CSSProperties}
+            >
+              <span className="hero-pillar-edge" aria-hidden="true" />
+              <div className="hero-pillar-label">{p.label}</div>
+              <p className="hero-pillar-body">{p.body}</p>
             </div>
           ))}
         </div>
