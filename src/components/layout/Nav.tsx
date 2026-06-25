@@ -3,8 +3,9 @@
 import { useState, useEffect, useRef, type CSSProperties } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
-import { List, X, CaretDown } from '@phosphor-icons/react'
+import { List, X, CaretDown, ShoppingBag } from '@phosphor-icons/react'
 import { useBrand } from '@/components/brand/BrandContext'
+import { useCart } from '@/components/cart/useCart'
 
 type NavChild = {
   href: string
@@ -16,6 +17,8 @@ type NavLink = {
   href: string
   label: string
   children?: NavChild[]
+  /** Renders as the cart entry: a bag icon plus a live item-count badge. */
+  cart?: boolean
 }
 
 // The About menu groups the company + credibility pages into one dropdown,
@@ -27,27 +30,37 @@ const ABOUT_CHILDREN: NavChild[] = [
   { href: '/solar-kiln', label: 'Solar Kiln Drying', description: 'Drying slabs flat and stable, sun powered' },
   { href: '/reviews', label: 'Reviews', description: 'What customers say about us' },
   { href: '/faq', label: 'FAQ', description: 'Ordering, pickup, and shipping' },
+  { href: '/contact', label: 'Contact', description: 'Call, email, or send the details' },
 ]
+
+// Sioux Falls Woodworking folds custom work into a Shop dropdown, so its top-level
+// menu stays at five entries (Home, Gallery, Shop, About, Cart).
+const SFW_SHOP_CHILDREN: NavChild[] = [
+  { href: '/shop', label: 'All Pieces', description: 'Finished pieces ready to take home' },
+  { href: '/custom', label: 'Custom Work', description: 'Commission a one of a kind piece' },
+]
+
+const CART_LINK: NavLink = { href: '/cart', label: 'Cart', cart: true }
 
 const HT_LINKS: NavLink[] = [
   { href: '/', label: 'Home' },
   { href: '/gallery', label: 'Gallery' },
   { href: '/shop', label: 'Shop' },
   { href: '/about', label: 'About', children: ABOUT_CHILDREN },
-  { href: '/contact', label: 'Contact' },
+  CART_LINK,
 ]
 
 const SFW_LINKS: NavLink[] = [
   { href: '/', label: 'Home' },
   { href: '/gallery', label: 'Gallery' },
-  { href: '/shop', label: 'Shop' },
-  { href: '/custom', label: 'Custom' },
+  { href: '/shop', label: 'Shop', children: SFW_SHOP_CHILDREN },
   { href: '/about', label: 'About', children: ABOUT_CHILDREN },
-  { href: '/contact', label: 'Contact' },
+  CART_LINK,
 ]
 
 export default function Nav() {
   const brand = useBrand()
+  const { count } = useCart()
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
 
@@ -123,7 +136,7 @@ export default function Nav() {
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 30, justifyContent: 'flex-end', minWidth: 244 }}>
             {leftLinks.map((l) => (
-              <NavItem key={l.href} item={l} linkStyle={linkStyle} brandName={brand.name} brandTagline={brand.tagline} />
+              <NavItem key={l.href} item={l} linkStyle={linkStyle} brandName={brand.name} brandTagline={brand.tagline} count={count} />
             ))}
           </div>
 
@@ -132,7 +145,7 @@ export default function Nav() {
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 30, justifyContent: 'flex-start', minWidth: 244 }}>
             {rightLinks.map((l) => (
-              <NavItem key={l.href} item={l} linkStyle={linkStyle} brandName={brand.name} brandTagline={brand.tagline} />
+              <NavItem key={l.href} item={l} linkStyle={linkStyle} brandName={brand.name} brandTagline={brand.tagline} count={count} />
             ))}
           </div>
         </div>
@@ -189,7 +202,7 @@ export default function Nav() {
                   textDecoration: 'none',
                 }}
               >
-                {l.label}
+                {l.label}{l.cart && count > 0 ? ` (${count})` : ''}
               </Link>
               {l.children?.map((c) => (
                 <Link
@@ -215,6 +228,15 @@ export default function Nav() {
       )}
 
       <style>{`
+        .nav-cart-badge {
+          display: inline-flex; align-items: center; justify-content: center;
+          min-width: 22px; height: 22px; padding: 0 6px; box-sizing: border-box;
+          border-radius: 999px; background: var(--green); color: #fff;
+          font-family: var(--font-display); font-weight: 700; font-size: 12px;
+          line-height: 1; font-variant-numeric: tabular-nums; flex-shrink: 0;
+        }
+        .nav-cart-badge__n { display: block; transform: translateY(-0.9px); }
+        .nav-cart-link:focus-visible { outline: 2px solid var(--tan); outline-offset: 4px; border-radius: 6px; }
         .nav-pop-row { transition: background 0.15s ease; }
         .nav-pop-row:hover, .nav-pop-row:focus-visible { background: var(--cream); outline: none; }
         .nav-pop-row:focus-visible { box-shadow: inset 0 0 0 2px var(--green); }
@@ -232,11 +254,41 @@ export default function Nav() {
 }
 
 /** A single top-level nav entry. Renders a plain link, or a hover/focus dropdown when it has children. */
-function NavItem({ item, linkStyle, brandName, brandTagline }: { item: NavLink; linkStyle: CSSProperties; brandName: string; brandTagline: string }) {
+function NavItem({ item, linkStyle, brandName, brandTagline, count }: { item: NavLink; linkStyle: CSSProperties; brandName: string; brandTagline: string; count: number }) {
   const [open, setOpen] = useState(false)
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => () => { if (closeTimer.current) clearTimeout(closeTimer.current) }, [])
+
+  // The cart entry: a bag icon, the label, and a live count badge. Uses the shared
+  // link color (which flips with the nav background), so it stays legible on the
+  // light home hero and on the dark frosted bar alike; the badge is always green.
+  if (item.cart) {
+    return (
+      <Link
+        href={item.href}
+        className="nav-cart-link"
+        aria-label={count > 0 ? `Cart, ${count} ${count === 1 ? 'item' : 'items'}` : 'Cart'}
+        style={{ ...linkStyle, opacity: 1, display: 'inline-flex', alignItems: 'center', gap: 7, position: 'relative' }}
+        onMouseEnter={(e) => (e.currentTarget.style.opacity = '1')}
+        onMouseLeave={(e) => (e.currentTarget.style.opacity = '0.9')}
+      >
+        <ShoppingBag size={16} weight="bold" aria-hidden="true" />
+        {item.label}
+        {count > 0 && (
+          // HTML badge, not SVG. SVG <text> does not reflow when the webfont finishes loading,
+          // so on a reload-with-items the badge froze in its fallback layout (a too-wide advance)
+          // and text-anchor="middle" centered that wide cell, leaving the ink leaning left. HTML
+          // text reflows correctly, so the real (condensed) font is used and flex-centers cleanly.
+          // The inner span carries a tiny measured nudge to seat lining numerals (no descender)
+          // dead-center vertically; horizontal is exact via flex.
+          <span className="nav-cart-badge" aria-hidden="true">
+            <span className="nav-cart-badge__n">{count}</span>
+          </span>
+        )}
+      </Link>
+    )
+  }
 
   if (!item.children || item.children.length === 0) {
     return (
@@ -301,7 +353,7 @@ function NavItem({ item, linkStyle, brandName, brandTagline }: { item: NavLink; 
         <div
           style={{
             position: 'relative',
-            width: 'min(520px, 92vw)',
+            width: featured ? 'min(520px, 92vw)' : 'min(320px, 92vw)',
             background: '#fff',
             border: '1px solid var(--border)',
             borderRadius: 'var(--radius-lg)',
@@ -318,7 +370,7 @@ function NavItem({ item, linkStyle, brandName, brandTagline }: { item: NavLink; 
             transform: 'rotate(45deg)', borderTopLeftRadius: 2,
           }} />
 
-          <div style={{ display: 'grid', gridTemplateColumns: '0.82fr 1fr', gap: 8 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: featured ? '0.82fr 1fr' : '1fr', gap: 8 }}>
             {featured && (
               <Link
                 href={featured.href}
