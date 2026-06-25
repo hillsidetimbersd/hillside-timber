@@ -153,6 +153,29 @@ async function fetchProjectPage(url: string): Promise<string | null> {
   }
 }
 
+export interface PortfolioCover {
+  slug: string
+  title: string
+  /** Bare CDN cover URL; size it at the call site with `sizePortfolioImage`. */
+  cover: string
+}
+
+/**
+ * Lightweight read for callers that only need each project's cover (the homepage
+ * "Recent Work" mosaic): one feed request, no per-project page scrape. Use
+ * `getPortfolioProjects` instead when you need the full photo set (the gallery).
+ */
+export async function getPortfolioCovers(): Promise<PortfolioCover[]> {
+  const items = await fetchPortfolioFeed()
+  return items
+    .map((it) => ({
+      title: (it.title ?? '').trim(),
+      slug: (it.fullUrl ?? '').split('/').filter(Boolean).pop() ?? '',
+      cover: it.assetUrl ? clean(it.assetUrl) : '',
+    }))
+    .filter((p) => p.slug && p.cover)
+}
+
 /**
  * Read the portfolio: list its projects, then fetch each project page in
  * parallel to collect its full photo set. The cover is forced first so it is the
