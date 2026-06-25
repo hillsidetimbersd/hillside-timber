@@ -47,6 +47,14 @@
   --tone-ecopoxy: #1a3326;  /* green has emerged: the bridge peak */
   --tone-reviews: #20392a;  /* lighter green, the review cards sit here */
   --tone-bridge:  #335c41;  /* near brand green, the final step into cream */
+
+  /* Brand switcher — each brand owns an active tone. HT keeps the forest green;
+     SFW gets a warm walnut so the whole bar visibly changes identity on switch.
+     Inactive text is darkened from the old #888 to read clearly on the cream half. */
+  --sfw-active: #3a2a1d;
+  --sfw-active-text: #f0ddc4;
+  --switch-inactive: #efece6;
+  --switch-inactive-text: #6e6e66;
 }
 
 @theme inline {
@@ -536,6 +544,34 @@ body {
     --section-pad-x: 24px;
   }
 }
+
+/* ── BRAND SWITCHER (split control) ── */
+/* Tactile split: each half wakes with a warm tan glow that follows the cursor, a
+   fine kerf (saw-cut) line marks the seam, and the active brand owns its tone. */
+.ww-half { position: relative; overflow: hidden; }
+.ww-half > :not(.ww-wake) { position: relative; z-index: 1; }
+.ww-wake {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  background: radial-gradient(130% 150% at var(--wx, 50%) 130%, rgba(200, 168, 130, 0.34), transparent 68%);
+}
+.ww-half:not(.is-active):hover .ww-wake { opacity: 1; }
+.ww-half:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--tan); }
+.ww-seam {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1.5px;
+  transform: translateX(-50%);
+  z-index: 4;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(200, 168, 130, 0.12), rgba(200, 168, 130, 0.85), rgba(200, 168, 130, 0.12));
+}
+
 
 /* ── REDUCED MOTION ── */
 @media (prefers-reduced-motion: reduce) {
