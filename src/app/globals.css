@@ -521,7 +521,8 @@ body {
 /* ── MOBILE RESPONSIVE ── */
 @media (max-width: 768px) {
   /* Hero value props: stack to 1 col on mobile */
-  .hero-props-grid {
+  .hero-props-grid,
+  .ht-hero-props-grid {
     grid-template-columns: 1fr !important;
   }
   /* Reviews: single col on mobile */
