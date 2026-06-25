@@ -124,7 +124,7 @@ function HTHero({ brand }: { brand: ReturnType<typeof useBrand> }) {
         zIndex: 2,
         padding: '0 28px 28px',
       }}>
-        <div style={{
+        <div className="ht-hero-props-grid" style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(3, 1fr)',
           gap: 1,
