@@ -30,6 +30,23 @@ function readRaw(): string {
   return localStorage.getItem(KEY) ?? '[]'
 }
 
+/** A parsed entry is only trusted if it has the fields the cart math relies on.
+ *  Guards against a stale/tampered/legacy value under the key poisoning totals. */
+function isCartItem(v: unknown): v is CartItem {
+  if (typeof v !== 'object' || v === null) return false
+  const i = v as Record<string, unknown>
+  return (
+    typeof i.id === 'string' &&
+    typeof i.catalogObjectId === 'string' &&
+    typeof i.name === 'string' &&
+    typeof i.price === 'number' &&
+    Number.isFinite(i.price) &&
+    typeof i.qty === 'number' &&
+    Number.isFinite(i.qty) &&
+    i.qty > 0
+  )
+}
+
 // Must return a referentially stable value when the data is unchanged, or
 // useSyncExternalStore will loop. We re-parse only when the raw string changes.
 function getSnapshot(): CartItem[] {
@@ -37,7 +54,12 @@ function getSnapshot(): CartItem[] {
   if (raw === cachedRaw) return cachedItems
   cachedRaw = raw
   try {
-    cachedItems = JSON.parse(raw)
+    // JSON.parse only throws on malformed JSON; a valid-but-wrong value (null, a
+    // number, an object) parses fine, so we must also confirm it is an array of
+    // well-formed items. Otherwise items.reduce() below crashes every cart reader,
+    // including the Nav badge mounted on every page.
+    const parsed: unknown = JSON.parse(raw)
+    cachedItems = Array.isArray(parsed) ? parsed.filter(isCartItem) : EMPTY
   } catch {
     cachedItems = EMPTY
   }

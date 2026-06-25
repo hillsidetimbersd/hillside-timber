@@ -38,7 +38,8 @@ export interface Product {
   /** URL slug (last path segment of the Squarespace URL); the on-site detail route is /shop/[slug]. */
   slug: string
   brand: BrandKey
-  /** Squarespace "starred" flag, used to drive the Our Top Picks section. */
+  /** Squarespace "starred" flag. Parsed and available, but not currently read by any
+   *  selector (Top Picks sorts by price); reserved for a future curated ordering. */
   starred: boolean
   /** Wood species inferred from the title (e.g. "Walnut"), or null if unrecognized. Drives the shop species filter. */
   species: string | null
@@ -346,7 +347,16 @@ async function loadSquarespaceProducts(): Promise<Product[]> {
     }
   }
 
-  return Array.from(byId.values())
+  const products = Array.from(byId.values())
+  // A total feed outage makes every fetchSource() return [] (it swallows errors),
+  // which would otherwise resolve to an empty catalog. Throw instead of returning []
+  // so unstable_cache never persists the empty result for the full revalidate window
+  // and the next request retries. A partial result (at least one source succeeded)
+  // still caches, so one failing sub-collection never blanks the whole store.
+  if (products.length === 0) {
+    throw new Error('Squarespace feed returned no products (all sources failed)')
+  }
+  return products
 }
 
 /**
@@ -357,11 +367,23 @@ async function loadSquarespaceProducts(): Promise<Product[]> {
  * Pages stay dynamic — only this feed load is cached, and the per-request random
  * selectors below run on the cached array, so home-page variety is preserved.
  */
-export const getSquarespaceProducts = unstable_cache(
+const loadSquarespaceProductsCached = unstable_cache(
   loadSquarespaceProducts,
   ['squarespace-products'],
   { revalidate: REVALIDATE_SECONDS },
 )
+
+export async function getSquarespaceProducts(): Promise<Product[]> {
+  try {
+    return await loadSquarespaceProductsCached()
+  } catch {
+    // Total feed outage: loadSquarespaceProducts threw, so unstable_cache did NOT
+    // persist the empty result. Degrade to an empty catalog for this one request
+    // (callers render a graceful "inventory is loading" state); the next request
+    // retries and re-caches the real catalog the moment Squarespace recovers.
+    return []
+  }
+}
 
 export async function getProductsByBrand(brand: BrandKey): Promise<Product[]> {
   const all = await getSquarespaceProducts()
@@ -527,7 +549,9 @@ export function toPiecePreview(p: Product): PiecePreview {
     dimensions: p.dimensions,
     image: p.images[0] ?? '',
     section,
-    priceLabel: cents > 0 ? `$${Math.round(cents / 100).toLocaleString()}` : 'Inquire for price',
+    // Floor, never round: a rounded label could overstate a price near a half-dollar
+    // (e.g. $999.50 -> "$1,000"). Whole-dollar compact label for the picker chip.
+    priceLabel: cents > 0 ? `$${Math.floor(cents / 100).toLocaleString()}` : 'Inquire for price',
     drying: p.drying,
     productUrl: p.productUrl,
   }

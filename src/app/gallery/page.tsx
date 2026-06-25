@@ -3,7 +3,7 @@ import { getPortfolioProjects } from '@/lib/portfolio'
 import GalleryClient from './GalleryClient'
 
 export const metadata: Metadata = {
-  title: 'Gallery · Hillside Timber',
+  title: 'Gallery',
   description:
     'Finished work from Hillside Timber and Sioux Falls Woodworking. Custom tables, mantels, and handcrafted pieces, photographed in full.',
 }

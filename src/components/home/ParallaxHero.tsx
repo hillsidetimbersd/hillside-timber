@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import Link from 'next/link'
 import { useBrand } from '@/components/brand/BrandContext'
 
 const SQ = 'https://images.squarespace-cdn.com/content/v1/60007801ebc4a249bd3ce872/'
@@ -113,8 +114,8 @@ function HTHero({ brand }: { brand: ReturnType<typeof useBrand> }) {
           {brand.heroSub}
         </p>
         <div style={{ display: 'inline-flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
-          <a href={HT_CONFIG.ctaPrimaryHref} className="btn-primary">{HT_CONFIG.ctaPrimary}</a>
-          <a href={HT_CONFIG.ctaSecondaryHref} className="btn-ghost">{HT_CONFIG.ctaSecondary}</a>
+          <Link href={HT_CONFIG.ctaPrimaryHref} className="btn-primary">{HT_CONFIG.ctaPrimary}</Link>
+          <Link href={HT_CONFIG.ctaSecondaryHref} className="btn-ghost">{HT_CONFIG.ctaSecondary}</Link>
         </div>
       </div>
 
@@ -359,10 +360,10 @@ function SFWHero({ brand }: { brand: ReturnType<typeof useBrand> }) {
 
           {/* CTAs */}
           <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
-            <a href={config.ctaPrimaryHref} className="btn-primary">{config.ctaPrimary}</a>
+            <Link href={config.ctaPrimaryHref} className="btn-primary">{config.ctaPrimary}</Link>
             {brand.hasCustomProject
-              ? <a href="/custom" className="btn-ghost-white">Start a Custom Project</a>
-              : <a href="/contact" className="btn-ghost-white">Contact Us</a>
+              ? <Link href="/custom" className="btn-ghost-white">Start a Custom Project</Link>
+              : <Link href="/contact" className="btn-ghost-white">Contact Us</Link>
             }
           </div>
         </div>

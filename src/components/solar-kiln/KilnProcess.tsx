@@ -378,6 +378,10 @@ export default function KilnProcess({ howItWorks, built, steps }: KilnProcessPro
                 return (
                   <g
                     key={p.n}
+                    // Pointer-only convenience pins. The keyboard-accessible callout list
+                    // below is the real control, and the SVG is role="img" with a title/desc,
+                    // so these are hidden from assistive tech rather than half-exposed.
+                    aria-hidden="true"
                     style={{ cursor: 'pointer' }}
                     onMouseEnter={() => setActive(p.n)}
                     onMouseLeave={() => setActive(null)}

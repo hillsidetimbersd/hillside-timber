@@ -3,7 +3,7 @@ import Link from 'next/link'
 import PieceTypeIcon from '@/components/calculators/PieceTypeIcon'
 
 export const metadata: Metadata = {
-  title: 'Free Resources · Hillside Timber',
+  title: 'Free Resources',
   description:
     "Free tools and guides for planning your woodworking project. Calculate board feet, plan a dining table, and build a custom quote — no signup required.",
 }

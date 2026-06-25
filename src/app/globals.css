@@ -47,8 +47,7 @@
   --tone-ecopoxy: #1a3326;  /* green has emerged: the bridge peak */
   --tone-reviews: #20392a;  /* lighter green, the review cards sit here */
   --tone-bridge:  #335c41;  /* near brand green, where the warm exit begins */
-  --tone-sage:    #6f8a60;  /* sage: the warm step that carries green to cream */
-  --tone-haze:    #c6cab2;  /* pale sage, eases into the cream Instagram band */
+  --tone-sage:    #6f8a60;  /* sage: the warm step that carries green to cream, the descent's final tone */
 
   /* Brand switcher — each brand owns an active tone. HT keeps the forest green;
      SFW gets a warm walnut so the whole bar visibly changes identity on switch.

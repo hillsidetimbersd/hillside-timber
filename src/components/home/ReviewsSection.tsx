@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { homeReviews } from '@/lib/reviews'
 import { RatingMark, SourceBadge } from '@/components/reviews/marks'
 
@@ -65,13 +66,13 @@ export default function ReviewsSection() {
               <span style={{ color: 'rgba(255,255,255,0.5)' }}>Proven by results.</span>
             </h2>
           </div>
-          <a
+          <Link
             href="/reviews"
             className="btn-ghost-white"
             style={{ flexShrink: 0 }}
           >
             Read all reviews
-          </a>
+          </Link>
         </div>
 
         {/* Reviews grid */}

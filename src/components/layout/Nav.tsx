@@ -74,6 +74,16 @@ export default function Nav() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  // The mobile overlay is gated only by state, while the hamburger that closes it is
+  // hidden by CSS above 768px. Close the menu when the viewport grows to desktop (or a
+  // tablet rotates) so a left-open overlay can never strand the page with no close control.
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 769px)')
+    const onChange = () => { if (mq.matches) setMobileOpen(false) }
+    mq.addEventListener('change', onChange)
+    return () => mq.removeEventListener('change', onChange)
+  }, [])
+
   const transparent = isHome && !scrolled
   // When the nav has a backdrop (scrolled past a hero, or any non-home page) it becomes
   // a frosted, floating, rounded bar rather than a flat full-width black box.
@@ -155,6 +165,7 @@ export default function Nav() {
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={mobileOpen}
             style={{
               display: 'none',
               background: 'none',
@@ -244,6 +255,7 @@ export default function Nav() {
         .nav-feat { transition: filter 0.16s ease; }
         .nav-feat:hover, .nav-feat:focus-visible { filter: brightness(1.09); outline: none; }
         .nav-feat:focus-visible { box-shadow: 0 0 0 2px var(--green); }
+        .mobile-menu-btn:focus-visible { outline: 2px solid var(--tan); outline-offset: 3px; border-radius: 6px; }
         @media (max-width: 768px) {
           .mobile-menu-btn { display: flex !important; }
           .nav-links { display: none !important; }

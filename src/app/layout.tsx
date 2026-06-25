@@ -42,7 +42,9 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: new URL(siteUrl),
     title: {
       default: brand.name,
-      template: `%s — ${brand.name}`,
+      // Per-page titles are just the page name; the brand is appended here once, with
+      // the current brand. Pages must NOT hardcode the brand or it doubles.
+      template: `%s · ${brand.name}`,
     },
     description,
     openGraph: {

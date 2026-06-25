@@ -193,7 +193,7 @@ function Lightbox({
             <CaretLeft size={26} weight="bold" />
           </button>
         )}
-        <img className="pdplb__img" onClick={stop} src={sizeImg(images[i], LB_W)} alt={`${name} — photo ${i + 1} of ${count}`} />
+        <img className="pdplb__img" onClick={stop} src={sizeImg(images[i], LB_W)} alt={`${name}, photo ${i + 1} of ${count}`} />
         {count > 1 && (
           <button type="button" className="pdplb__nav pdplb__nav--next" onClick={(e) => { stop(e); go(1) }} aria-label="Next photo">
             <CaretRight size={26} weight="bold" />
@@ -300,15 +300,8 @@ const STYLES = `
 .pdplb__thumb--active { opacity: 1; outline-color: var(--tan); }
 .pdplb__thumb:focus-visible { outline-color: #fff; }
 
-.pdplb__foot { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
-.pdplb__cta { font-family: var(--font-display); font-size: var(--fs-12); font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #fff; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; border-bottom: 1.5px solid var(--tan); padding-bottom: 3px; transition: color 0.2s ease; }
-.pdplb__cta:hover { color: var(--tan); }
-.pdplb__link { font-family: var(--font-body); font-style: italic; font-size: var(--fs-13); color: rgba(255,255,255,0.55); text-decoration: none; transition: color 0.2s ease; }
-.pdplb__link:hover { color: rgba(255,255,255,0.85); }
-
 @media (max-width: 680px) {
   .pdplb__nav { width: 44px; height: 44px; }
   .pdplb__thumb { width: 64px; height: 46px; }
-  .pdplb__link { display: none; }
 }
 `

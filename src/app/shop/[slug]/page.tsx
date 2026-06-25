@@ -208,7 +208,7 @@ function FinalCta({
       <div className="pdp-final__inner">
         <h2 className="pdp-final__h2">Questions about this piece?</h2>
         <p className="pdp-final__sub">
-          Ask anything about {name} — finishing, dimensions, delivery. A real person answers, usually same day.
+          Ask anything about {name}: finishing, dimensions, delivery. A real person answers, usually same day.
         </p>
         <div className="pdp-final__actions">
           <a href={inquiryHref} className="pdp-final__btn pdp-final__btn--solid">

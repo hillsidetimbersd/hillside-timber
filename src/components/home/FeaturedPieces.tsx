@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import Link from 'next/link'
 import { ArrowUpRight } from '@phosphor-icons/react'
 import type { FeaturedPiece, FeaturedSlot } from '@/lib/featured-pieces'
 
@@ -62,7 +63,7 @@ export default function FeaturedPieces({ pieces }: { pieces: FeaturedPiece[] }) 
               className={`fp-anim ${SLOT_CLASS[p.slot]} ${EXTRA[i] ?? ''}`}
               style={{ transitionDelay: `${i * 70}ms` }}
             >
-              <a href={p.href} className="fp-card" aria-label={`${p.title}. View in the portfolio.`}>
+              <Link href={p.href} className="fp-card" aria-label={`${p.title}. View in the portfolio.`}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   className="fp-card__img"
@@ -78,13 +79,13 @@ export default function FeaturedPieces({ pieces }: { pieces: FeaturedPiece[] }) 
                   <span className="fp-card__eyebrow">{p.eyebrow}</span>
                   <span className="fp-card__title">{p.title}</span>
                 </span>
-              </a>
+              </Link>
             </div>
           ))}
         </div>
 
         <div style={{ textAlign: 'center', marginTop: 52 }}>
-          <a href="/gallery" className="btn-ghost">See the Full Portfolio</a>
+          <Link href="/gallery" className="btn-ghost">See the Full Portfolio</Link>
         </div>
       </div>
       <style>{STYLES}</style>

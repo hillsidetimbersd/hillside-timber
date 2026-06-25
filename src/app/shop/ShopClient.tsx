@@ -19,18 +19,22 @@ function toggleIn(setter: Dispatch<SetStateAction<string[]>>, value: string) {
 
 const SPECIES_VISIBLE = 7
 
-export default function ShopClient({ products, sections }: { products: Product[]; sections: string[] }) {
+export default function ShopClient({ products, sections, initialSpecies = [] }: { products: Product[]; sections: string[]; initialSpecies?: string[] }) {
   const brand = useBrand()
   const brandKey: BrandKey = brand.key === 'sfw' ? 'sfw' : 'ht'
 
   const [search, setSearch] = useState('')
   const [categories, setCategories] = useState<string[]>([])
-  const [species, setSpecies] = useState<string[]>([])
+  // Seeded from a homepage species deep-link (validated server-side in page.tsx).
+  const [species, setSpecies] = useState<string[]>(initialSpecies)
   const [priceKeys, setPriceKeys] = useState<string[]>([])
   const [availability, setAvailability] = useState<string[]>([])
   const [onSale, setOnSale] = useState(false)
   const [allSpecies, setAllSpecies] = useState(false)
-  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({ category: true })
+  // Open the species group when arriving with a species preselected, so the active filter is visible.
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(
+    initialSpecies.length > 0 ? { category: true, species: true } : { category: true },
+  )
   const toggleGroup = (id: string) => setOpenGroups((g) => ({ ...g, [id]: !g[id] }))
 
   // Sticky sidebar on desktop only. The grid stacks the sidebar above itself at
@@ -212,6 +216,7 @@ export default function ShopClient({ products, sections }: { products: Product[]
             <MagnifyingGlass size={16} weight="bold" style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'var(--green)', pointerEvents: 'none' }} />
             <input
               type="text"
+              aria-label="Search pieces"
               placeholder="Species, piece no…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
