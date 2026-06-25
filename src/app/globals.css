@@ -47,8 +47,15 @@
   --tone-ecopoxy: #1a3326;  /* green has emerged: the bridge peak */
   --tone-reviews: #20392a;  /* lighter green, the review cards sit here */
   --tone-bridge:  #335c41;  /* near brand green, where the warm exit begins */
-  --tone-sage:    #6f8a60;  /* sage: the warm step that carries green to cream */
-  --tone-haze:    #c6cab2;  /* pale sage, eases into the cream Instagram band */
+  --tone-sage:    #6f8a60;  /* sage: the warm step that carries green to cream, the descent's final tone */
+
+  /* Brand switcher — each brand owns an active tone. HT keeps the forest green;
+     SFW gets a warm walnut so the whole bar visibly changes identity on switch.
+     Inactive text is darkened from the old #888 to read clearly on the cream half. */
+  --sfw-active: #3a2a1d;
+  --sfw-active-text: #f0ddc4;
+  --switch-inactive: #efece6;
+  --switch-inactive-text: #6e6e66;
 }
 
 @theme inline {
@@ -475,6 +482,66 @@ body {
   100% { opacity: 0; transform: scale(2.1); }
 }
 
+/* ── SFW HERO VALUE PILLARS ──
+   Three independent strengths (not a numbered sequence): a quiet, centered
+   hairline-structured band. The only ornament is the "live-edge" tan accent
+   above each label — a slab-edge cue drawn straight from the brand's copy. */
+.hero-pillars {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 100%;
+  max-width: 920px;
+  margin: 0 auto;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  padding-top: 36px;
+  padding-bottom: 6px;
+}
+.hero-pillar {
+  padding: 0 34px;
+  text-align: center;
+}
+.hero-pillar + .hero-pillar {
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+}
+.hero-pillar-edge {
+  display: block;
+  width: 44px;
+  height: 2px;
+  margin: 0 auto 16px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent, var(--tan), transparent);
+}
+.hero-pillar-label {
+  font-family: var(--font-display);
+  font-size: var(--fs-15);
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #fff;
+  margin-bottom: 10px;
+}
+.hero-pillar-body {
+  font-family: var(--font-body);
+  font-size: var(--fs-14);
+  color: rgba(255, 255, 255, 0.74);
+  line-height: 1.6;
+  max-width: 32ch;
+  margin: 0 auto;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero-pillars .hero-pillar {
+    opacity: 0;
+    transform: translateY(14px);
+    transition:
+      opacity 0.6s cubic-bezier(0.32, 0.72, 0, 1) var(--rd, 0ms),
+      transform 0.6s cubic-bezier(0.32, 0.72, 0, 1) var(--rd, 0ms);
+  }
+  .hero-pillars.is-in .hero-pillar {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Zig-zag gap tightens on mid widths so neither column gets cramped */
 @media (min-width: 901px) and (max-width: 1180px) {
   .flow--media .flow-stage { column-gap: 60px; }
@@ -520,9 +587,21 @@ body {
 
 /* ── MOBILE RESPONSIVE ── */
 @media (max-width: 768px) {
-  /* Hero value props: stack to 1 col on mobile */
-  .hero-props-grid {
-    grid-template-columns: 1fr !important;
+  /* Hero value pillars: stack to 1 col; dividers flip vertical → horizontal */
+  .hero-pillars {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+    padding-top: 28px;
+  }
+  .hero-pillar {
+    padding: 24px 8px;
+  }
+  .hero-pillar:first-child {
+    padding-top: 4px;
+  }
+  .hero-pillar + .hero-pillar {
+    border-left: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
   }
   /* Reviews: single col on mobile */
   .reviews-grid {
@@ -579,6 +658,33 @@ body {
     --emblem-size: 74px;
     --section-pad-x: 24px;
   }
+}
+
+/* ── BRAND SWITCHER (split control) ── */
+/* Tactile split: each half wakes with a warm tan glow that follows the cursor, a
+   fine kerf (saw-cut) line marks the seam, and the active brand owns its tone. */
+.ww-half { position: relative; overflow: hidden; }
+.ww-half > :not(.ww-wake) { position: relative; z-index: 1; }
+.ww-wake {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  background: radial-gradient(130% 150% at var(--wx, 50%) 130%, rgba(200, 168, 130, 0.34), transparent 68%);
+}
+.ww-half:not(.is-active):hover .ww-wake { opacity: 1; }
+.ww-half:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--tan); }
+.ww-seam {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1.5px;
+  transform: translateX(-50%);
+  z-index: 4;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(200, 168, 130, 0.12), rgba(200, 168, 130, 0.85), rgba(200, 168, 130, 0.12));
 }
 
 /* ── REDUCED MOTION ── */

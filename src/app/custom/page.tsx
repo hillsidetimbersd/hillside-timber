@@ -3,7 +3,7 @@ import { getSquarespaceProducts, toPiecePreview } from '@/lib/squarespace'
 import CustomPageClient from './CustomPageClient'
 
 export const metadata: Metadata = {
-  title: 'Custom Projects · Sioux Falls Woodworking',
+  title: 'Custom Projects',
 }
 
 // Pulls live inventory so the project form can reference real Piece No.s.

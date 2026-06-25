@@ -9,7 +9,7 @@ import {
 import { Stars, Check, RatingMark, SourceBadge } from '@/components/reviews/marks'
 
 export const metadata: Metadata = {
-  title: 'Reviews · Hillside Timber',
+  title: 'Reviews',
   description:
     'Real, verified reviews from Hillside Timber customers on Google and Facebook. A family-run slab yard 15 miles west of Sioux Falls.',
 }

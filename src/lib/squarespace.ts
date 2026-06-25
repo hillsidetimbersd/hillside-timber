@@ -2,7 +2,7 @@
  * Read-only bridge to the live Squarespace store (www.hillsidetimber.com).
  *
  * Johan manages all inventory in Squarespace. This site reads it through the
- * public `?format=json-pretty` collection feed (no API key required) and
+ * public `?format=json` collection feed (no API key required) and
  * normalizes it into a source-agnostic `Product` shape that the shop, gallery,
  * and home sections consume. Buying happens on Squarespace, so every product
  * carries a `productUrl` that links back to its Squarespace product page.
@@ -10,6 +10,8 @@
  * The feed is undocumented but stable. If it ever changes, the hardened
  * fallback is the official Squarespace Commerce API (needs a Commerce plan).
  */
+
+import { unstable_cache } from 'next/cache'
 
 export type BrandKey = 'ht' | 'sfw'
 
@@ -33,13 +35,20 @@ export interface Product {
   inStock: boolean
   /** Absolute URL of the piece on the Squarespace store, where checkout works. */
   productUrl: string
+  /** URL slug (last path segment of the Squarespace URL); the on-site detail route is /shop/[slug]. */
+  slug: string
   brand: BrandKey
-  /** Squarespace "starred" flag, used to drive the Our Top Picks section. */
+  /** Squarespace "starred" flag. Parsed and available, but not currently read by any
+   *  selector (Top Picks sorts by price); reserved for a future curated ordering. */
   starred: boolean
+  /** Wood species inferred from the title (e.g. "Walnut"), or null if unrecognized. Drives the shop species filter. */
+  species: string | null
 }
 
 const SS_BASE = 'https://www.hillsidetimber.com'
 const REVALIDATE_SECONDS = 600
+/** The store's "not priced yet" placeholder ($9,999.99). Shown as "Inquire", never as a price. */
+const PLACEHOLDER_PRICE_CENTS = 999999
 
 /** A store collection (or category) to read, with the metadata it confers. */
 interface Source {
@@ -173,6 +182,50 @@ function isSquareAutoId(s: string): boolean {
 }
 
 /**
+ * Wood species keyword map, most-specific first. Each entry maps the canonical
+ * species shown in the filter to the substrings that identify it in a title, so
+ * "Claro Walnut" and "Black Walnut" both fold into "Walnut", and the various
+ * "Red Wood" / "Sequoia" spellings fold into "Redwood". This recognizes ~98% of
+ * the live catalog; unrecognized pieces simply carry no species (null).
+ */
+const SPECIES_DICT: ReadonlyArray<readonly [string, readonly string[]]> = [
+  ['Walnut', ['claro', 'walnut']],
+  ['Maple', ['maple']],
+  ['Redwood', ['red wood', 'redwood', 'sequoia']],
+  ['Oak', ['oak']],
+  ['Buckeye', ['buckeye']],
+  ['Aspen', ['aspen']],
+  ['Box Elder', ['box elder', 'boxelder']],
+  ['Ash', ['ash']],
+  ['Catalpa', ['catalpa']],
+  ['Hackberry', ['hackberry']],
+  ['Cottonwood', ['cottonwood']],
+  ['Russian Olive', ['russian olive']],
+  ['Apple', ['crab apple', 'apple']],
+  ['Cherry', ['cherry']],
+  ['Cedar', ['cedar']],
+  ['Elm', ['elm']],
+  ['Sycamore', ['sycamore']],
+  ['Pecan', ['pecan']],
+  ['Hickory', ['hickory']],
+  ['Cypress', ['cypress']],
+  ['Mesquite', ['mesquite']],
+  ['Myrtle', ['myrtle']],
+  ['Poplar', ['poplar']],
+  ['Birch', ['birch']],
+  ['Mahogany', ['mahogany']],
+]
+
+/** Infer the wood species from a product title, or null when none is recognized. */
+function speciesOf(title: string): string | null {
+  const t = title.toLowerCase()
+  for (const [name, keywords] of SPECIES_DICT) {
+    for (const kw of keywords) if (t.includes(kw)) return name
+  }
+  return null
+}
+
+/**
  * Prefer the per-product gallery images (`items[].assetUrl`), which resolve to the
  * high-res content CDN, over the item-level `assetUrl` (a low-res redirect). Add a
  * sizing param so the CDN delivers a crisp, right-sized image.
@@ -209,7 +262,10 @@ function normalize(raw: RawItem, source: Source): Product {
     : raw.assetUrl ? [raw.assetUrl] : []
 
   // Pricing lives on the first sellable variant; the item-level fields are a fallback.
-  const priceCents = moneyToCents(variant?.priceMoney) ?? raw.priceCents ?? 0
+  // The store's $9,999.99 placeholder means "not priced yet": treat it as unpriced so
+  // it reads "Inquire" on cards, drops out of Top Picks, and lands in the Inquire filter.
+  const rawPriceCents = moneyToCents(variant?.priceMoney) ?? raw.priceCents ?? 0
+  const priceCents = rawPriceCents === PLACEHOLDER_PRICE_CENTS ? 0 : rawPriceCents
   const onSale = !!variant?.onSale || !!raw.onSale
   const salePriceCents = onSale
     ? moneyToCents(variant?.salePriceMoney) ?? raw.salePriceCents ?? null
@@ -231,8 +287,10 @@ function normalize(raw: RawItem, source: Source): Product {
     description: stripHtml(raw.excerpt || raw.body || ''),
     inStock,
     productUrl: raw.fullUrl ? `${SS_BASE}${raw.fullUrl}` : SS_BASE,
+    slug: (raw.fullUrl ?? '').split('/').filter(Boolean).pop() ?? '',
     brand: source.brand,
     starred: !!raw.starred,
+    species: speciesOf(title),
   }
 }
 
@@ -243,10 +301,15 @@ async function fetchSource(source: Source): Promise<{ raw: RawItem; source: Sour
   let offset: number | undefined
   // Guard against an unexpected pagination loop on the public feed.
   for (let page = 0; page < 25; page++) {
-    const url = `${SS_BASE}${source.path}?format=json-pretty${offset ? `&offset=${offset}` : ''}`
+    // Non-pretty JSON is the same shape as json-pretty but ~26% smaller. The raw
+    // feed is intentionally NOT cached at the fetch layer: a single page can exceed
+    // Next's 2MB data-cache entry limit (Squarespace controls page size and has
+    // served the whole catalog unpaginated). Caching lives one level up, on the
+    // compact normalized output, via unstable_cache in getSquarespaceProducts.
+    const url = `${SS_BASE}${source.path}?format=json${offset ? `&offset=${offset}` : ''}`
     let feed: RawFeed
     try {
-      const res = await fetch(url, { next: { revalidate: REVALIDATE_SECONDS } })
+      const res = await fetch(url, { cache: 'no-store' })
       if (!res.ok) break
       feed = (await res.json()) as RawFeed
     } catch {
@@ -266,7 +329,7 @@ async function fetchSource(source: Source): Promise<{ raw: RawItem; source: Sour
  * several categories), and return the normalized catalog. Sections and the
  * drying flag accumulate across the category feeds.
  */
-export async function getSquarespaceProducts(): Promise<Product[]> {
+async function loadSquarespaceProducts(): Promise<Product[]> {
   const batches = await Promise.all(SOURCES.map(fetchSource))
   const byId = new Map<string, Product>()
 
@@ -284,7 +347,42 @@ export async function getSquarespaceProducts(): Promise<Product[]> {
     }
   }
 
-  return Array.from(byId.values())
+  const products = Array.from(byId.values())
+  // A total feed outage makes every fetchSource() return [] (it swallows errors),
+  // which would otherwise resolve to an empty catalog. Throw instead of returning []
+  // so unstable_cache never persists the empty result for the full revalidate window
+  // and the next request retries. A partial result (at least one source succeeded)
+  // still caches, so one failing sub-collection never blanks the whole store.
+  if (products.length === 0) {
+    throw new Error('Squarespace feed returned no products (all sources failed)')
+  }
+  return products
+}
+
+/**
+ * The catalog, cached for `REVALIDATE_SECONDS` across requests. The normalized
+ * Product[] is small (~300 pieces, a few hundred KB) and bounded by product count,
+ * so it caches cleanly regardless of how Squarespace paginates the raw feed (the
+ * raw pages can exceed Next's 2MB data-cache limit; the normalized output cannot).
+ * Pages stay dynamic — only this feed load is cached, and the per-request random
+ * selectors below run on the cached array, so home-page variety is preserved.
+ */
+const loadSquarespaceProductsCached = unstable_cache(
+  loadSquarespaceProducts,
+  ['squarespace-products'],
+  { revalidate: REVALIDATE_SECONDS },
+)
+
+export async function getSquarespaceProducts(): Promise<Product[]> {
+  try {
+    return await loadSquarespaceProductsCached()
+  } catch {
+    // Total feed outage: loadSquarespaceProducts threw, so unstable_cache did NOT
+    // persist the empty result. Degrade to an empty catalog for this one request
+    // (callers render a graceful "inventory is loading" state); the next request
+    // retries and re-caches the real catalog the moment Squarespace recovers.
+    return []
+  }
 }
 
 export async function getProductsByBrand(brand: BrandKey): Promise<Product[]> {
@@ -334,6 +432,50 @@ export function sectionsForBrand(products: Product[]): string[] {
   return ['All', ...ordered]
 }
 
+/** A named price tier for the shop's price filter. `maxCents` is exclusive. */
+export interface PriceBand {
+  key: string
+  label: string
+  minCents: number
+  maxCents: number
+}
+
+/** Key used for pieces with no real price (placeholder or unpriced): the "Inquire" tier. */
+export const INQUIRE_BAND_KEY = 'inquire'
+
+/**
+ * Price tiers per brand, chosen from the live distribution: the slab yard clusters
+ * low, finished furniture runs higher. Bands with no pieces are dropped by the shop,
+ * so an unused tier never shows. "Inquire" is added separately when unpriced pieces exist.
+ */
+const PRICE_BANDS: Record<BrandKey, readonly PriceBand[]> = {
+  ht: [
+    { key: 'under-300', label: 'Under $300', minCents: 1, maxCents: 30000 },
+    { key: '300-600', label: '$300 to $600', minCents: 30000, maxCents: 60000 },
+    { key: '600-1200', label: '$600 to $1,200', minCents: 60000, maxCents: 120000 },
+    { key: '1200-up', label: '$1,200 & up', minCents: 120000, maxCents: Infinity },
+  ],
+  sfw: [
+    { key: 'under-500', label: 'Under $500', minCents: 1, maxCents: 50000 },
+    { key: '500-1500', label: '$500 to $1,500', minCents: 50000, maxCents: 150000 },
+    { key: '1500-3000', label: '$1,500 to $3,000', minCents: 150000, maxCents: 300000 },
+    { key: '3000-up', label: '$3,000 & up', minCents: 300000, maxCents: Infinity },
+  ],
+}
+
+export function priceBandsForBrand(brand: BrandKey): readonly PriceBand[] {
+  return PRICE_BANDS[brand]
+}
+
+/** Which price tier a piece falls in, or the Inquire tier when it has no real price. */
+export function priceBandKeyOf(product: Product, brand: BrandKey): string {
+  if (product.priceCents <= 0) return INQUIRE_BAND_KEY
+  const band = PRICE_BANDS[brand].find(
+    (b) => product.priceCents >= b.minCents && product.priceCents < b.maxCents,
+  )
+  return band ? band.key : INQUIRE_BAND_KEY
+}
+
 function shuffle<T>(items: T[]): T[] {
   const arr = [...items]
   for (let i = arr.length - 1; i > 0; i--) {
@@ -369,6 +511,21 @@ export function pickOnSale(products: Product[], count: number): Product[] {
   ).slice(0, count)
 }
 
+/**
+ * "More like this" pieces for a product detail page: same species first, then the
+ * same category, then anything else, filling up to `count`. Excludes the piece
+ * itself and sold pieces, and only shows pieces that have a photo.
+ */
+export function pickRelated(products: Product[], product: Product, count: number): Product[] {
+  const buyable = products.filter(
+    (p) => p.id !== product.id && (p.inStock || p.drying) && p.images.length > 0,
+  )
+  const score = (p: Product) =>
+    (product.species && p.species === product.species ? 2 : 0) +
+    (p.sections.some((s) => product.sections.includes(s)) ? 1 : 0)
+  return [...buyable].sort((a, b) => score(b) - score(a)).slice(0, count)
+}
+
 /** A trimmed product shape for the contact-form piece picker (keeps the client payload small). */
 export interface PiecePreview {
   id: string
@@ -392,7 +549,9 @@ export function toPiecePreview(p: Product): PiecePreview {
     dimensions: p.dimensions,
     image: p.images[0] ?? '',
     section,
-    priceLabel: cents > 0 ? `$${Math.round(cents / 100).toLocaleString()}` : 'Inquire for price',
+    // Floor, never round: a rounded label could overstate a price near a half-dollar
+    // (e.g. $999.50 -> "$1,000"). Whole-dollar compact label for the picker chip.
+    priceLabel: cents > 0 ? `$${Math.floor(cents / 100).toLocaleString()}` : 'Inquire for price',
     drying: p.drying,
     productUrl: p.productUrl,
   }

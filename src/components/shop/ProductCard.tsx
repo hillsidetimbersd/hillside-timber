@@ -1,7 +1,9 @@
 'use client'
 
+import Link from 'next/link'
 import { ArrowUpRight, ChatCircle, Tag } from '@phosphor-icons/react'
 import type { Product } from '@/lib/squarespace'
+import { getCtaState, type CtaState } from '@/lib/shop-cta'
 import { formatPrice } from '@/lib/square'
 import HoverImage from '@/components/media/HoverImage'
 
@@ -12,13 +14,14 @@ function primarySection(product: Product): string {
 }
 
 export default function ProductCard({ product }: { product: Product }) {
-  const sold = !product.inStock && !product.drying
-  const reserve = product.drying
-  const inquiryHref = `/contact?piece=${encodeURIComponent(product.sku)}`
+  const cta = getCtaState(product)
+  const sold = cta === 'sold'
+  const inquiryHref = product.sku ? `/contact?piece=${encodeURIComponent(product.sku)}` : '/contact'
+  const detailHref = product.slug ? `/shop/${product.slug}` : '/shop'
 
   const badges = (
     <>
-      {reserve && (
+      {product.drying && (
         <div style={{
           position: 'absolute', top: 12, left: 12, padding: '5px 10px', pointerEvents: 'none', zIndex: 3,
           background: 'rgba(15,15,13,0.92)', backdropFilter: 'blur(4px)',
@@ -63,6 +66,8 @@ export default function ProductCard({ product }: { product: Product }) {
       onMouseEnter={(e) => { e.currentTarget.style.boxShadow = 'var(--shadow)'; e.currentTarget.style.transform = 'translateY(-2px)' }}
       onMouseLeave={(e) => { e.currentTarget.style.boxShadow = 'var(--shadow-sm)'; e.currentTarget.style.transform = 'none' }}
     >
+      <style>{ACTION_STYLES}</style>
+
       {/* Product image with badges */}
       {product.images[0] ? (
         <HoverImage
@@ -130,13 +135,13 @@ export default function ProductCard({ product }: { product: Product }) {
             fontFamily: 'var(--font-body)', fontSize: 'var(--fs-12)', fontStyle: 'italic',
             color: 'var(--green)', lineHeight: 1.45, marginBottom: 10,
           }}>
-            Still drying in our solar kiln. Inquire to purchase now, claim it, or reserve it for when it&apos;s ready.
+            Still drying in our solar kiln. Inquire to reserve it, or claim it when it&apos;s ready.
           </p>
         )}
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: 10 }}>
           <PriceBlock product={product} />
-          <CardAction product={product} sold={sold} reserve={reserve} inquiryHref={inquiryHref} />
+          <CardAction cta={cta} detailHref={detailHref} inquiryHref={inquiryHref} />
         </div>
       </div>
     </div>
@@ -171,45 +176,56 @@ function PriceBlock({ product }: { product: Product }) {
   )
 }
 
-const ACTION_BASE = {
-  display: 'flex', alignItems: 'center', gap: 6, padding: '9px 14px',
-  fontFamily: 'var(--font-display)', fontSize: 'var(--fs-10)', fontWeight: 700,
-  letterSpacing: '1px', textTransform: 'uppercase' as const, textDecoration: 'none',
-  whiteSpace: 'nowrap' as const, cursor: 'pointer', borderRadius: 'var(--radius-sm)',
-}
-
-function CardAction({ product, sold, reserve, inquiryHref }: { product: Product; sold: boolean; reserve: boolean; inquiryHref: string }) {
-  if (sold) {
-    return (
-      <span style={{ ...ACTION_BASE, color: 'var(--gray)', border: '1px solid var(--border)', cursor: 'not-allowed' }}>
-        Sold
-      </span>
-    )
+/**
+ * The card's action, from one computed CTA state. An available piece links to its
+ * detail page (Add to cart lives there, never on the grid card); drying and
+ * unpriced pieces keep the Inquire link; a sold piece shows a disabled chip.
+ */
+function CardAction({ cta, detailHref, inquiryHref }: { cta: CtaState; detailHref: string; inquiryHref: string }) {
+  if (cta === 'sold') {
+    return <span className="pc-action pc-action--sold" aria-disabled="true">Sold</span>
   }
-  if (reserve) {
+  if (cta === 'inquire') {
     return (
-      <a
-        href={inquiryHref}
-        style={{ ...ACTION_BASE, background: 'transparent', color: 'var(--green)', border: '1.5px solid var(--green)' }}
-        onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--green)'; e.currentTarget.style.color = '#fff' }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--green)' }}
-      >
+      <a href={inquiryHref} className="pc-action pc-action--inquire">
         <ChatCircle size={14} weight="bold" />
         Inquire
       </a>
     )
   }
+  if (cta === 'inquireForPrice') {
+    return (
+      <a href={inquiryHref} className="pc-action pc-action--inquire">
+        <ChatCircle size={14} weight="bold" />
+        Inquire for price
+      </a>
+    )
+  }
   return (
-    <a
-      href={product.productUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      style={{ ...ACTION_BASE, background: 'var(--black)', color: '#fff', border: 'none' }}
-      onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--green)')}
-      onMouseLeave={(e) => (e.currentTarget.style.background = 'var(--black)')}
-    >
+    <Link href={detailHref} className="pc-action pc-action--view">
       View Piece
       <ArrowUpRight size={14} weight="bold" />
-    </a>
+    </Link>
   )
 }
+
+const ACTION_STYLES = `
+.pc-action {
+  display: inline-flex; align-items: center; gap: 6px; padding: 9px 14px;
+  font-family: var(--font-display); font-size: var(--fs-10); font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase; white-space: nowrap;
+  border: none; border-radius: var(--radius-sm); text-decoration: none; cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.1s ease;
+}
+.pc-action--view { background: var(--black); color: #fff; }
+.pc-action--view:hover { background: var(--green); }
+.pc-action--inquire { background: transparent; color: var(--green); border: 1.5px solid var(--green); }
+.pc-action--inquire:hover { background: var(--green); color: #fff; }
+.pc-action--sold { background: transparent; color: var(--gray); border: 1px solid var(--border); cursor: not-allowed; }
+.pc-action:focus-visible { outline: 3px solid var(--tan); outline-offset: 2px; }
+.pc-action:not(.pc-action--sold):active { transform: translateY(1px); }
+@media (prefers-reduced-motion: reduce) {
+  .pc-action { transition: background 0.2s ease, color 0.2s ease; }
+  .pc-action:active { transform: none; }
+}
+`

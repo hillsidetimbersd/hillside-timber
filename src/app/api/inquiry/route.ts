@@ -1,9 +1,18 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { sendEmail, emailConfigured, escapeHtml, OWNER_EMAIL } from '@/lib/email'
+import { rateLimit, clientIp } from '@/lib/rate-limit'
 
 export async function POST(request: Request) {
   try {
+    const rl = rateLimit(`inquiry:${clientIp(request)}`, 5, 60_000)
+    if (!rl.ok) {
+      return NextResponse.json(
+        { error: 'Too many requests. Please wait a moment and try again.' },
+        { status: 429, headers: { 'Retry-After': String(rl.retryAfterSeconds) } },
+      )
+    }
+
     const formData = await request.formData()
 
     const name = formData.get('name') as string | null
@@ -38,28 +47,60 @@ export async function POST(request: Request) {
     if (!name || !email || !projectType || !budget || !vision) {
       return NextResponse.json({ error: 'Required fields missing' }, { status: 400 })
     }
+    if (!/.+@.+\..+/.test(email)) {
+      return NextResponse.json({ error: 'Please enter a valid email address.' }, { status: 400 })
+    }
+    // Server-side length caps: the form enforces these in the UI, but a direct caller
+    // could submit multi-megabyte fields that bloat the DB row and the notification email.
+    if (
+      name.length > 200 || email.length > 320 || vision.length > 5000 ||
+      projectType.length > 200 || budget.length > 200 ||
+      (phone?.length ?? 0) > 50 || (zip?.length ?? 0) > 20
+    ) {
+      return NextResponse.json({ error: 'One or more fields is too long.' }, { status: 400 })
+    }
 
-    const dimensions = dimensionsRaw ? JSON.parse(dimensionsRaw) : null
+    // Guarded like referencedPieces above: malformed dimensions drop to null rather than
+    // failing the whole inquiry with an opaque 500. Typed so the later read needs no cast.
+    let dimensions: { l?: string; w?: string; h?: string; unit?: string } | null = null
+    if (dimensionsRaw) {
+      try {
+        const parsed = JSON.parse(dimensionsRaw) as unknown
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+          dimensions = parsed as { l?: string; w?: string; h?: string; unit?: string }
+        }
+      } catch {
+        // Malformed dimensions: drop rather than fail the inquiry.
+      }
+    }
 
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!,
     )
 
+    // Server-side upload limits. DropZone enforces these in the UI, but a direct caller
+    // bypasses it: this endpoint writes to public storage with the service-role key, so
+    // it must bound count, size, and type itself. Trust the validated MIME (not the
+    // user-supplied filename) for both the type check and the stored extension.
+    const MAX_PHOTOS = 8
+    const MAX_BYTES = 10 * 1024 * 1024
+    const ALLOWED_TYPES: Record<string, string> = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' }
     const photoUrls: string[] = []
-    let i = 0
-    while (formData.get(`photo_${i}`)) {
-      const file = formData.get(`photo_${i}`) as File
-      const ext = file.name.split('.').pop() ?? 'jpg'
+    for (let i = 0; i < MAX_PHOTOS; i++) {
+      const entry = formData.get(`photo_${i}`)
+      if (!entry) break
+      if (!(entry instanceof File)) continue
+      const ext = ALLOWED_TYPES[entry.type]
+      if (!ext || entry.size === 0 || entry.size > MAX_BYTES) continue
       const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
       const { error: uploadError } = await supabase.storage
         .from('inquiry-photos')
-        .upload(path, file, { contentType: file.type })
+        .upload(path, entry, { contentType: entry.type })
       if (!uploadError) {
         const { data } = supabase.storage.from('inquiry-photos').getPublicUrl(path)
         photoUrls.push(data.publicUrl)
       }
-      i++
     }
 
     const { error } = await supabase.from('inquiries').insert({
@@ -87,8 +128,8 @@ export async function POST(request: Request) {
     // Best-effort notifications. The inquiry is already saved, so email failures
     // never fail the request.
     if (emailConfigured()) {
-      // The form submits dimensions as a JSON string of { l, w, h, unit }.
-      const dims = dimensions as { l?: string; w?: string; h?: string; unit?: string } | null
+      // dimensions is already typed and validated above (or null).
+      const dims = dimensions
       const dimsText = dims
         ? [dims.l, dims.w, dims.h].filter(Boolean).join(' x ') + (dims.unit ? ` ${dims.unit}` : '')
         : ''

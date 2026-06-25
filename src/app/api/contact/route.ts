@@ -1,8 +1,17 @@
 import { NextResponse } from 'next/server'
 import { sendEmail, emailConfigured, escapeHtml, OWNER_EMAIL } from '@/lib/email'
+import { rateLimit, clientIp } from '@/lib/rate-limit'
 
 export async function POST(request: Request) {
   try {
+    const rl = rateLimit(`contact:${clientIp(request)}`, 5, 60_000)
+    if (!rl.ok) {
+      return NextResponse.json(
+        { error: 'Too many messages. Please wait a moment and try again.' },
+        { status: 429, headers: { 'Retry-After': String(rl.retryAfterSeconds) } },
+      )
+    }
+
     const body = (await request.json()) as {
       name?: string
       email?: string
@@ -25,6 +34,10 @@ export async function POST(request: Request) {
     }
     if (!/.+@.+\..+/.test(email)) {
       return NextResponse.json({ error: 'Please enter a valid email address.' }, { status: 400 })
+    }
+    // Length caps so a direct caller cannot bloat the owner's notification email.
+    if (name.length > 200 || email.length > 320 || message.length > 5000) {
+      return NextResponse.json({ error: 'One or more fields is too long.' }, { status: 400 })
     }
     if (!emailConfigured()) {
       return NextResponse.json(

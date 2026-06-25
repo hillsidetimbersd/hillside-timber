@@ -4,15 +4,19 @@ import Link from 'next/link'
 
 const SQ = 'https://images.squarespace-cdn.com/content/v1/60007801ebc4a249bd3ce872/'
 
+// `species` is the canonical filter value the shop uses (from SPECIES_DICT in
+// squarespace.ts), so the deep-link `/shop?species=<value>` actually seeds the rail.
+// Several tiles share a canonical species (the three walnuts all filter to "Walnut",
+// the maples to "Maple"); that is correct, since the shop filter folds sub-types.
 const SPECIES = [
-  { name: 'Black Walnut', tag: 'Domestic · Iconic', img: `${SQ}1745095419568-LH71E35DTPQKHL61P6BK/9DF98A45-AB03-4795-9684-813C07F20FA3.jpeg?format=600w`, slug: 'walnut' },
-  { name: 'Claro Walnut', tag: 'Figured · Premium', img: `${SQ}1701369870793-FY5EXBGCQFL1FDGB96TN/P1034450.jpg?format=600w`, slug: 'claro-walnut' },
-  { name: 'Bastogne Walnut', tag: 'Hybrid · 10ft+', img: `${SQ}1750808621194-JX4ZOUAW9PR4AG1C9LDN/14D9FB14-4F2A-4D81-A063-50D1C1E6D7C3.jpeg?format=600w`, slug: 'bastogne' },
-  { name: 'Buckeye Burl', tag: 'Burl · Statement', img: `${SQ}1761697039666-AO6NP43V1TJMFDDBDK9T/880BD484-10A9-499E-98BB-80566B2C2A79.jpeg?format=600w`, slug: 'buckeye' },
-  { name: 'Redwood Burl', tag: 'Burl · Coastal', img: `${SQ}1759355687085-7AIZ7D8QCALT0C3GA1D6/9FAF763E-9726-4E27-A5F2-B0E353DFE575.jpeg?format=600w`, slug: 'redwood-burl' },
-  { name: 'Spalted Maple', tag: 'Domestic · Spalted', img: `${SQ}1761401660020-VJ5G2D3392H7MRV1C0LZ/A93426BF-DEC6-48AB-91DE-BB03E59DEA5D.jpeg?format=600w`, slug: 'spalted-maple' },
-  { name: 'Silver Maple', tag: 'Domestic · Mantel', img: `${SQ}1742855807836-AJ4CGF9Y2TAVS8UJNKRW/28D8A477-B232-454F-A79D-27E031680231.jpeg?format=600w`, slug: 'silver-maple' },
-  { name: 'Figured Aspen', tag: 'Domestic · Light', img: `${SQ}1697488198174-7SVF03EX4UGLZZ3I34GW/P1034392.jpg?format=600w`, slug: 'aspen' },
+  { name: 'Black Walnut', tag: 'Domestic · Iconic', img: `${SQ}1745095419568-LH71E35DTPQKHL61P6BK/9DF98A45-AB03-4795-9684-813C07F20FA3.jpeg?format=600w`, slug: 'black-walnut', species: 'Walnut' },
+  { name: 'Claro Walnut', tag: 'Figured · Premium', img: `${SQ}1701369870793-FY5EXBGCQFL1FDGB96TN/P1034450.jpg?format=600w`, slug: 'claro-walnut', species: 'Walnut' },
+  { name: 'Bastogne Walnut', tag: 'Hybrid · 10ft+', img: `${SQ}1750808621194-JX4ZOUAW9PR4AG1C9LDN/14D9FB14-4F2A-4D81-A063-50D1C1E6D7C3.jpeg?format=600w`, slug: 'bastogne-walnut', species: 'Walnut' },
+  { name: 'Buckeye Burl', tag: 'Burl · Statement', img: `${SQ}1761697039666-AO6NP43V1TJMFDDBDK9T/880BD484-10A9-499E-98BB-80566B2C2A79.jpeg?format=600w`, slug: 'buckeye', species: 'Buckeye' },
+  { name: 'Redwood Burl', tag: 'Burl · Coastal', img: `${SQ}1759355687085-7AIZ7D8QCALT0C3GA1D6/9FAF763E-9726-4E27-A5F2-B0E353DFE575.jpeg?format=600w`, slug: 'redwood-burl', species: 'Redwood' },
+  { name: 'Spalted Maple', tag: 'Domestic · Spalted', img: `${SQ}1761401660020-VJ5G2D3392H7MRV1C0LZ/A93426BF-DEC6-48AB-91DE-BB03E59DEA5D.jpeg?format=600w`, slug: 'spalted-maple', species: 'Maple' },
+  { name: 'Silver Maple', tag: 'Domestic · Mantel', img: `${SQ}1742855807836-AJ4CGF9Y2TAVS8UJNKRW/28D8A477-B232-454F-A79D-27E031680231.jpeg?format=600w`, slug: 'silver-maple', species: 'Maple' },
+  { name: 'Figured Aspen', tag: 'Domestic · Light', img: `${SQ}1697488198174-7SVF03EX4UGLZZ3I34GW/P1034392.jpg?format=600w`, slug: 'aspen', species: 'Aspen' },
 ]
 
 export default function SpeciesLibrary() {
@@ -24,7 +28,7 @@ export default function SpeciesLibrary() {
       borderBottom: '1px solid var(--border)',
     }}>
       <div style={{ maxWidth: 'var(--content-max)', margin: '0 auto' }}>
-        <div style={{
+        <div className="species-header" style={{
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
           gap: 60,
@@ -57,15 +61,17 @@ export default function SpeciesLibrary() {
           </p>
         </div>
 
-        <div style={{
+        <div className="species-tiles" style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(4, 1fr)',
           gap: 18,
         }}>
           {SPECIES.map((s) => (
-            <a
+            <Link
               key={s.slug}
-              href={`/shop?species=${s.slug}`}
+              href={`/shop?species=${encodeURIComponent(s.species)}`}
+              className="species-tile"
+              aria-label={`Shop ${s.name} pieces`}
               style={{
                 display: 'block',
                 textDecoration: 'none',
@@ -132,7 +138,7 @@ export default function SpeciesLibrary() {
                   {s.name}
                 </div>
               </div>
-            </a>
+            </Link>
           ))}
         </div>
 
@@ -140,6 +146,19 @@ export default function SpeciesLibrary() {
           <Link href="/shop" className="btn-ghost">See All 24+ Species</Link>
         </div>
       </div>
+
+      {/* Inline styles override the inline grid via !important (an external rule cannot
+          otherwise beat an inline style), matching the EcoPoxy/Picks responsive pattern. */}
+      <style>{`
+        .species-tile:focus-visible { outline: 3px solid var(--green); outline-offset: 3px; }
+        @media (max-width: 760px) {
+          .species-header { grid-template-columns: 1fr !important; gap: 28px !important; }
+          .species-tiles { grid-template-columns: repeat(2, 1fr) !important; }
+        }
+        @media (max-width: 440px) {
+          .species-tiles { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
     </section>
   )
 }

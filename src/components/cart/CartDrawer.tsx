@@ -92,7 +92,7 @@ export default function CartDrawer({ open, onClose }: Props) {
               Cart ({items.length})
             </span>
           </div>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--gray)' }}>
+          <button onClick={onClose} aria-label="Close cart" style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--gray)' }}>
             <X size={20} />
           </button>
         </div>
@@ -164,6 +164,7 @@ export default function CartDrawer({ open, onClose }: Props) {
                 </div>
                 <button
                   onClick={() => removeItem(item.id)}
+                  aria-label={`Remove ${item.name} from cart`}
                   style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--gray)', alignSelf: 'flex-start', padding: 4 }}
                 >
                   <Trash size={16} />

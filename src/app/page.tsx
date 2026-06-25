@@ -1,5 +1,6 @@
 import { cookies } from 'next/headers'
 import { getSquarespaceProducts, pickRandom, pickTopPicks, pickOnSale } from '@/lib/squarespace'
+import { getFeaturedPieces } from '@/lib/featured-pieces'
 import ParallaxHero from '@/components/home/ParallaxHero'
 import GalleryScroll from '@/components/home/GalleryScroll'
 import TopPicks from '@/components/home/TopPicks'
@@ -23,12 +24,13 @@ export default async function HomePage() {
   const brandKey = cookieStore.get('ww-brand')?.value ?? 'ht'
 
   if (brandKey === 'sfw') {
+    const featured = await getFeaturedPieces()
     return (
       <>
         <ParallaxHero />
         <FreightStrip />
         <VendorTicker />
-        <FeaturedPieces />
+        <FeaturedPieces pieces={featured} />
         <ProcessStrip />
         <CustomCtaStrip />
         <ReviewsSection />
